@@ -1,0 +1,172 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// System
+model User {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  name  String
+  email String @unique
+
+  // Relations
+  account    Account?
+  // 
+  logs       Logs[]
+  post       Post[]
+  follows    Follows[]
+  recovery   Recovery[]
+  comments   Comments[]
+  conference Conference[]
+}
+
+model Account {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  password String
+
+  // Relations
+  session Session[]
+  // 
+  user    User      @relation(fields: [user_id], references: [id])
+  user_id String    @unique @db.ObjectId
+}
+
+model Session {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+  expiry     DateTime
+
+  status     String? @default("active")
+  token      String  @unique
+  refresh_tk String
+
+  // Relations
+  account    Account? @relation(fields: [account_id], references: [id])
+  account_id String?  @db.ObjectId
+}
+
+model Recovery {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+  expiry     DateTime
+
+  token String @unique
+
+  // Relations
+  user    User?   @relation(fields: [user_id], references: [id])
+  user_id String? @db.ObjectId
+}
+
+model Logs {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  event   String
+  message String
+  status  String? @default("created")
+
+  // Relations
+  user    User?   @relation(fields: [user_id], references: [id])
+  user_id String? @db.ObjectId
+}
+
+// Main
+
+model Post {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  title String
+  body  String?
+  votes Boolean[]
+
+  // Relations
+  comments        Comments[]
+  conference_post Conference_Post[]
+  // 
+  user            User?             @relation(fields: [user_id], references: [id])
+  user_id         String?           @db.ObjectId
+
+  channel    Channel? @relation(fields: [channel_id], references: [id])
+  channel_id String?  @db.ObjectId
+}
+
+model Channel {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  name String?
+
+  post Post[]
+}
+
+model Conference {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  name String?
+
+  // Relation
+  conference_post Conference_Post[]
+  // 
+  user            User?             @relation(fields: [user_id], references: [id])
+  user_id         String?           @db.ObjectId
+}
+
+model Conference_Post {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  // Relation
+  Conference   Conference? @relation(fields: [conferenceId], references: [id])
+  conferenceId String?     @db.ObjectId
+  // 
+  Post         Post?       @relation(fields: [postId], references: [id])
+  postId       String?     @db.ObjectId
+}
+
+model Comments {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  body  String?
+  votes Boolean[]
+
+  // Relations
+  Post   Post?   @relation(fields: [postId], references: [id])
+  postId String? @db.ObjectId
+  // 
+  User   User?   @relation(fields: [userId], references: [id])
+  userId String? @db.ObjectId
+}
+
+model Follows {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  context    String?
+  context_id String?
+
+  // Relations
+  User   User?   @relation(fields: [userId], references: [id])
+  userId String? @db.ObjectId
+}

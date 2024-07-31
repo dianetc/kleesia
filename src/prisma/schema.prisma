@@ -33,6 +33,7 @@ model Account {
   updated_at DateTime?
 
   password String
+  status   String? @default("active")
 
   // Relations
   session Session[]

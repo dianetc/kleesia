@@ -2,17 +2,23 @@ import CryptoJS from "crypto-js";
 import prisma from "@/lib/prisma";
 import { isPayloadValid } from "@/lib/utils";
 import { messages } from "@/lib/request/responses";
+import { allowed_emails } from "@/lib/utils";
 
 export default async function CREATE(request, response) {
   let { method, body } = request ?? {};
 
   if (method != "POST")
-    return response.status(400).send({ msg: messages?.BAD_REQUEST });
+    return response.status(405).send({ msg: messages?.BAD_REQUEST });
 
   let validity = isPayloadValid({
     fields: ["name", "email", "password"],
     payload: body,
   });
+
+  if (!body?.email.match(allowed_emails))
+    return response
+      .status(500)
+      .send({ msg: "Sorry, only .edu emails are allowed.. Try again" });
 
   if (typeof validity === "string")
     return response.status(400).send({ msg: validity });
@@ -36,6 +42,6 @@ export default async function CREATE(request, response) {
 
     return response.status(200).send({ msg: `User ${body?.email} created` });
   } catch (error) {
-    return response.status(400).send({ msg: messages?.FATAL });
+    return response.status(500).send({ msg: messages?.FATAL });
   }
 }

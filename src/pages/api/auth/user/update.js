@@ -5,18 +5,18 @@ export default async function UPDATE(request, response) {
   let { method, query } = request ?? {};
 
   if (method != "PUT")
-    return response.status(405).send({ msg: messages?.BAD_REQUEST });
+    return response.status(405).send({ msg: messages?.METHOD_NOT_ALLOWED });
 
-  if (!query?.email || !query?.q || !query?.v)
+  if (!query?.q || !query?.i || !query?.v)
     return response.status(400).send({ msg: "Missing required params" });
 
   let { q, i, v } = query;
 
-  if (!["name"].includes(q))
-    return response.status(400).send({ msg: "Not allowed" });
+  if (!i.match(/(name)/))
+    return response.status(500).send({ msg: "Not allowed" });
 
   try {
-    await prisma.user.update({
+    let user = await prisma.user.update({
       where: {
         id: q,
       },
@@ -24,9 +24,12 @@ export default async function UPDATE(request, response) {
         updated_at: new Date(),
         [i]: v,
       },
+      select: {
+        email: true,
+      },
     });
 
-    return response.status(200).send({ msg: `${email}'s ${q} updated` });
+    return response.status(200).send({ msg: `${user?.email}'s ${i} updated` });
   } catch (error) {
     return response.status(500).send({ msg: messages?.FATAL });
   }

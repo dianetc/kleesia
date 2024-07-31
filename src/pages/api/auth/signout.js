@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { validateToken } from "./verify";
 import { messages } from "@/lib/request/responses";
+import { deleteCookie } from "cookies-next";
 
 export default async function LOGOUT(request, response) {
   let { method, headers } = request;
@@ -30,9 +31,15 @@ export default async function LOGOUT(request, response) {
         status: "inactive",
       },
     });
+
+    let params = { req: request, res: response };
+
+    deleteCookie("ABywFrtD", params);
+    deleteCookie("qBJpvRne", params);
+
+    return response.status(200).send({ msg: "Bye" });
   } catch (error) {
+    console.log(error);
     return response?.status(500).send({ msg: messages?.FATAL });
   }
-
-  return response.status(200).send({ msg: "Bye" });
 }

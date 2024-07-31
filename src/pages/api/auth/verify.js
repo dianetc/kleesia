@@ -5,7 +5,7 @@ export default async function VERIFY(request, response) {
   let { method, headers } = request;
 
   if (method !== "GET")
-    return response.status(405).send({ msg: messages?.BAD_REQUEST });
+    return response.status(405).send({ msg: messages?.METHOD_NOT_ALLOWED });
 
   let { authorization } = headers;
 

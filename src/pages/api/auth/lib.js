@@ -1,3 +1,5 @@
+import CryptoJS from "crypto-js";
+
 export const generateHash = (size = 8) => {
   let salt = CryptoJS.lib.WordArray.random(
     2 ** size > 0 ? size - 2 : 1

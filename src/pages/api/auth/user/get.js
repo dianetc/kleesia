@@ -2,31 +2,14 @@ import prisma from "@/lib/prisma";
 import { isPayloadValid } from "@/lib/utils";
 import { messages } from "@/lib/request/responses";
 
-export async function getUserId({ email }) {
-  try {
-    let user = await prisma.User.findUnique({
-      where: {
-        email,
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    return user?.id;
-  } catch (e) {
-    return false;
-  }
-}
-
 export default async function GET(request, response) {
   let { method, query } = request ?? {};
 
   if (method != "GET")
-    return response.status(400).send({ msg: messages?.BAD_REQUEST });
+    return response.status(405).send({ msg: messages?.BAD_REQUEST });
 
   let validity = isPayloadValid({
-    fields: ["id"],
+    fields: ["q"],
     payload: query,
   });
 
@@ -34,10 +17,10 @@ export default async function GET(request, response) {
     return response.status(400).send({ msg: validity });
 
   try {
-    let { id } = query;
+    let { q } = query;
 
     let user = await prisma.user.findUnique({
-      where: { id },
+      where: { id: q },
       select: {
         name: true,
         email: true,

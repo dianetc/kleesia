@@ -10,19 +10,20 @@ export default async function CREATE(request, response) {
     return response.status(405).send({ msg: messages.METHOD_NOT_ALLOWED });
 
   let validity = isPayloadValid({
-    fields: ["title", "body", "hex", "ch"],
+    fields: ["name"],
     payload: body,
   });
 
   if (typeof validity === "string")
     return response.status(400).send({ msg: validity });
 
-  var data = payloadMap(body);
+  let data = payloadMap(body);
 
   try {
-    await prisma.post.create({ data });
-
-    return response.status(200).send({ msg: `Post ${data?.title} created` });
+    await prisma.channel.create({ data });
+    return response
+      .status(200)
+      .send({ msg: `Channel ${data?.name} is created` });
   } catch (error) {
     return response.status(500).send({ msg: messages.FATAL });
   }

@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
-import { messages } from "@/lib/request/responses";
 import { payloadMap } from "../auth/lib";
 import { isPayloadValid } from "@/lib/utils";
+import { messages } from "@/lib/request/responses";
 
 export default async function CREATE(request, response) {
   let { method, body } = request ?? {};
@@ -10,19 +10,20 @@ export default async function CREATE(request, response) {
     return response.status(405).send({ msg: messages.METHOD_NOT_ALLOWED });
 
   let validity = isPayloadValid({
-    fields: ["title", "body", "hex", "ch"],
+    fields: ["body", "context", "contx", "hex"],
     payload: body,
   });
 
   if (typeof validity === "string")
     return response.status(400).send({ msg: validity });
 
-  var data = payloadMap(body);
+  let data = payloadMap(body);
 
   try {
-    await prisma.post.create({ data });
-
-    return response.status(200).send({ msg: `Post ${data?.title} created` });
+    await prisma.comments.create({ data });
+    return response
+      .status(200)
+      .send({ msg: `Comment: ${data?.body} is posted` });
   } catch (error) {
     return response.status(500).send({ msg: messages.FATAL });
   }

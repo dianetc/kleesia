@@ -25,6 +25,7 @@ model User {
   recovery   Recovery[]
   comments   Comments[]
   conference Conference[]
+  channel    Channel[]
 }
 
 model Account {
@@ -96,7 +97,6 @@ model Post {
   votes Boolean[]
 
   // Relations
-  comments        Comments[]
   conference_post Conference_Post[]
   // 
   user            User?             @relation(fields: [user_id], references: [id])
@@ -113,7 +113,11 @@ model Channel {
 
   name String?
 
+  // Relations
   post Post[]
+
+  user    User?   @relation(fields: [user_id], references: [id])
+  user_id String? @db.ObjectId
 }
 
 model Conference {
@@ -121,7 +125,7 @@ model Conference {
   created_at DateTime  @default(now())
   updated_at DateTime?
 
-  name String?
+  name String? @unique
 
   // Relation
   conference_post Conference_Post[]
@@ -136,11 +140,11 @@ model Conference_Post {
   updated_at DateTime?
 
   // Relation
-  Conference   Conference? @relation(fields: [conferenceId], references: [id])
-  conferenceId String?     @db.ObjectId
+  conference    Conference? @relation(fields: [conference_id], references: [id])
+  conference_id String?     @db.ObjectId
   // 
-  Post         Post?       @relation(fields: [postId], references: [id])
-  postId       String?     @db.ObjectId
+  post          Post?       @relation(fields: [post_id], references: [id])
+  post_id       String?     @db.ObjectId
 }
 
 model Comments {
@@ -151,12 +155,12 @@ model Comments {
   body  String?
   votes Boolean[]
 
-  // Relations
-  Post   Post?   @relation(fields: [postId], references: [id])
-  postId String? @db.ObjectId
+  context    String?
+  context_id String?
+
   // 
-  User   User?   @relation(fields: [userId], references: [id])
-  userId String? @db.ObjectId
+  user    User?   @relation(fields: [user_id], references: [id])
+  user_id String? @db.ObjectId
 }
 
 model Follows {
@@ -165,9 +169,9 @@ model Follows {
   updated_at DateTime?
 
   context    String?
-  context_id String?
+  context_id String? @unique
 
   // Relations
-  User   User?   @relation(fields: [userId], references: [id])
-  userId String? @db.ObjectId
+  user    User?   @relation(fields: [user_id], references: [id])
+  user_id String? @db.ObjectId
 }

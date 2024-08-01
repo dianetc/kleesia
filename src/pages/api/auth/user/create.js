@@ -15,13 +15,13 @@ export default async function CREATE(request, response) {
     payload: body,
   });
 
+  if (typeof validity === "string")
+    return response.status(400).send({ msg: validity });
+
   if (!body?.email.match(allowed_emails))
     return response
       .status(500)
       .send({ msg: "Sorry, only .edu emails are allowed.. Try again" });
-
-  if (typeof validity === "string")
-    return response.status(400).send({ msg: validity });
 
   let user = body;
   let hash = CryptoJS.SHA3(body?.password).toString(CryptoJS.enc.Hex);

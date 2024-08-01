@@ -19,13 +19,28 @@ export const generateHash = (size = 8) => {
 };
 
 export let payloadMap = (object) => {
-  if (object?.hex) {
-    object.user_id = object?.hex;
-    delete object.hex;
-  } else if (object?.q) {
-    object.id = object?.q;
-    delete object?.q;
-  }
+  let _temp = {};
+  Object.entries(object).forEach(([key, value]) => {
+    switch (key) {
+      case "hex":
+        _temp.user_id = value;
+        break;
+      case "q":
+        _temp.id = value;
+        break;
+      case "ch":
+        _temp.channel_id = value;
+        break;
+      case "contx":
+        _temp.context_id = value;
+        break;
+      default:
+        _temp[key] = value;
+        break;
+    }
 
-  return object;
+    return _temp;
+  });
+
+  return _temp;
 };

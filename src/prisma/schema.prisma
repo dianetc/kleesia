@@ -111,7 +111,8 @@ model Channel {
   created_at DateTime  @default(now())
   updated_at DateTime?
 
-  name String?
+  name  String?
+  rules String?
 
   // Relations
   post Post[]

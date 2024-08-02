@@ -3,16 +3,17 @@
 - **Frontend**: Next.js
 - **Backend**: Next.js API routes
 - **ORM**: Prisma ORM
-- **Database**: MongoDB Atlas
+- **Database**: ~~MongoDB Atlas~~
 - **Bundler**: Bun
 
 ## Features
 
 - **User Memberships**: Register and manage user profiles.
-- **Posting Topics**: Create and manage discussion topics.
+- **Creating Topics**: Create and manage discussion topics.
+- **Post Papers**: Create post about interesting papers.
 - **Commenting**: Engage in discussions through comments.
-- **Upvoting**: Upvote topics and comments to highlight popular content.
-- **Sharing**: Share interesting topics with peers.
+- **Upvoting**: Upvote posts and comments. 
+- **Sharing**: Share interesting papers with peers.
 - **Sorting & Filtering**: Sort and filter topics for better navigation.
 
 ## Get Started
@@ -21,7 +22,7 @@
 
 - Bun
 - Node.js
-- MongoDB Atlas account
+- ~~MongoDB Atlas account~~
 
 ### Installation
 
@@ -69,4 +70,4 @@
 
 - [Next Js](https://nextjs.org/docs)
 - [Prisma ORM 🚀](https://www.prisma.io/docs)
-- [Mongo DB](https://www.mongodb.com/docs/atlas)
+- ~~[Mongo DB](https://www.mongodb.com/docs/atlas)~~

@@ -1,28 +1,18 @@
-
-![wallpaper](https://plus.unsplash.com/premium_photo-1683887034146-c79058dbdcb1?q=80&w=3269&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)
-
-
-
-
-# Kleesia - University Science Forum
-
-Welcome to Kleesia! Kleesia is a dynamic and engaging university science forum designed to foster discussions on various scientific topics. This project leverages modern web development technologies to provide a seamless experience for users to post topics, comment, upvote, share, and sort & filter discussions. The project also supports user memberships to create a personalized experience.
-
 ## Tech Stack
 
 - **Frontend**: Next.js
 - **Backend**: Next.js API routes
 - **ORM**: Prisma ORM
-- **Database**: MongoDB Atlas
+- **Database**: MongoDB Atlas ---> Needs to change to postgres. 
 - **Bundler**: Bun
 
 ## Features
 
 - **User Memberships**: Register and manage user profiles.
-- **Posting Topics**: Create and manage discussion topics.
+- **Create Topics**: Create and manage discussion topics.
+- **Post Papers**: Post your paper and summarize findings.  
 - **Commenting**: Engage in discussions through comments.
-- **Upvoting**: Upvote topics and comments to highlight popular content.
-- **Sharing**: Share interesting topics with peers.
+- **Upvoting**: Upvote topics and comments. 
 - **Sorting & Filtering**: Sort and filter topics for better navigation.
 
 
@@ -33,7 +23,7 @@ Welcome to Kleesia! Kleesia is a dynamic and engaging university science forum d
 
 - Bun
 - Node.js
-- MongoDB Atlas account
+- MongoDB Atlas account --> Needs to change postgres. 
 
 ### Installation
 
@@ -78,6 +68,6 @@ The plaform will be available on `http://localhost:5555`
 
  - [Next Js](https://nextjs.org/docs)
  - [Prisma ORM  🚀](https://www.prisma.io/docs)
- - [Mongo DB](https://www.mongodb.com/docs/atlas)
+ - [Mongo DB](https://www.mongodb.com/docs/atlas) --> Needs to change to postgres. 
  
 

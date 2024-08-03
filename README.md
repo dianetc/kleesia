@@ -3,7 +3,7 @@
 - **Frontend**: Next.js
 - **Backend**: Next.js API routes
 - **ORM**: Prisma ORM
-- **Database**: ~~MongoDB Atlas~~
+- **Database**: Postgres 16
 - **Bundler**: Bun
 
 ## Features
@@ -12,7 +12,7 @@
 - **Creating Topics**: Create and manage discussion topics.
 - **Post Papers**: Create post about interesting papers.
 - **Commenting**: Engage in discussions through comments.
-- **Upvoting**: Upvote posts and comments. 
+- **Upvoting**: Upvote posts and comments.
 - **Sharing**: Share interesting papers with peers.
 - **Sorting & Filtering**: Sort and filter topics for better navigation.
 
@@ -22,7 +22,7 @@
 
 - Bun
 - Node.js
-- ~~MongoDB Atlas account~~
+- Postgres 16
 
 ### Installation
 
@@ -40,19 +40,25 @@
    ```
 
 3. **Set up environment variables**:
-   Create a `.env` file in the root of the project and add your MongoDB Atlas connection string and other necessary environment variables:
+   Create a `.env` file in the root of the project and add your Postgres SQL connection string and other necessary environment variables:
 
    ```plaintext
-   DATABASE_URL="your_mongodb_atlas_connection_string"
+   DATABASE_URL="postgresql://[HOST]:[PASSWORD]@[HOST]:[PORT]/[DATABASE]?schema=public"
    ```
 
-4. **Run database migrations**:
+4. **Setup Prisma Client**:
+
+   ```bash
+   bun prisma generate
+   ```
+
+5. **Sync Database Migrations**:
 
    ```bash
    bun prisma migrate dev
    ```
 
-5. **Start the development server**:
+6. **Start the Development Server**:
 
    ```bash
    bun dev
@@ -60,7 +66,7 @@
 
    The project will be available at `http://localhost:3000`.
 
-6. **Access the data management platform offered by Prisma**:
+7. **Access the Data Management Platform offered by Prisma**:
    ```
    bun prisma studio
    ```
@@ -70,4 +76,4 @@
 
 - [Next Js](https://nextjs.org/docs)
 - [Prisma ORM 🚀](https://www.prisma.io/docs)
-- ~~[Mongo DB](https://www.mongodb.com/docs/atlas)~~
+- [Postgres SQL](https://www.postgresql.org/docs/current/tutorial-install.html)

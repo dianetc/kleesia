@@ -3,13 +3,13 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 // System
 model User {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  id         String    @id @default(uuid())
   created_at DateTime  @default(now())
   updated_at DateTime?
 
@@ -29,7 +29,7 @@ model User {
 }
 
 model Account {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  id         String    @id @default(uuid())
   created_at DateTime  @default(now())
   updated_at DateTime?
 
@@ -40,11 +40,11 @@ model Account {
   session Session[]
   // 
   user    User      @relation(fields: [user_id], references: [id])
-  user_id String    @unique @db.ObjectId
+  user_id String    @unique
 }
 
 model Session {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  id         String    @id @default(uuid())
   created_at DateTime  @default(now())
   updated_at DateTime?
   expiry     DateTime
@@ -55,11 +55,11 @@ model Session {
 
   // Relations
   account    Account? @relation(fields: [account_id], references: [id])
-  account_id String?  @db.ObjectId
+  account_id String?
 }
 
 model Recovery {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  id         String    @id @default(uuid())
   created_at DateTime  @default(now())
   updated_at DateTime?
   expiry     DateTime
@@ -68,11 +68,11 @@ model Recovery {
 
   // Relations
   user    User?   @relation(fields: [user_id], references: [id])
-  user_id String? @db.ObjectId
+  user_id String?
 }
 
 model Logs {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  id         String    @id @default(uuid())
   created_at DateTime  @default(now())
   updated_at DateTime?
 
@@ -82,13 +82,13 @@ model Logs {
 
   // Relations
   user    User?   @relation(fields: [user_id], references: [id])
-  user_id String? @db.ObjectId
+  user_id String?
 }
 
 // Main
 
 model Post {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  id         String    @id @default(uuid())
   created_at DateTime  @default(now())
   updated_at DateTime?
 
@@ -100,14 +100,14 @@ model Post {
   conference_post Conference_Post[]
   // 
   user            User?             @relation(fields: [user_id], references: [id])
-  user_id         String?           @db.ObjectId
+  user_id         String?
 
   channel    Channel? @relation(fields: [channel_id], references: [id])
-  channel_id String?  @db.ObjectId
+  channel_id String?
 }
 
 model Channel {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  id         String    @id @default(uuid())
   created_at DateTime  @default(now())
   updated_at DateTime?
 
@@ -118,11 +118,11 @@ model Channel {
   post Post[]
 
   user    User?   @relation(fields: [user_id], references: [id])
-  user_id String? @db.ObjectId
+  user_id String?
 }
 
 model Conference {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  id         String    @id @default(uuid())
   created_at DateTime  @default(now())
   updated_at DateTime?
 
@@ -132,24 +132,24 @@ model Conference {
   conference_post Conference_Post[]
   // 
   user            User?             @relation(fields: [user_id], references: [id])
-  user_id         String?           @db.ObjectId
+  user_id         String?
 }
 
 model Conference_Post {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  id         String    @id @default(uuid())
   created_at DateTime  @default(now())
   updated_at DateTime?
 
   // Relation
   conference    Conference? @relation(fields: [conference_id], references: [id])
-  conference_id String?     @db.ObjectId
+  conference_id String?
   // 
   post          Post?       @relation(fields: [post_id], references: [id])
-  post_id       String?     @db.ObjectId
+  post_id       String?
 }
 
 model Comments {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  id         String    @id @default(uuid())
   created_at DateTime  @default(now())
   updated_at DateTime?
 
@@ -161,11 +161,11 @@ model Comments {
 
   // 
   user    User?   @relation(fields: [user_id], references: [id])
-  user_id String? @db.ObjectId
+  user_id String?
 }
 
 model Follows {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  id         String    @id @default(uuid())
   created_at DateTime  @default(now())
   updated_at DateTime?
 
@@ -174,5 +174,5 @@ model Follows {
 
   // Relations
   user    User?   @relation(fields: [user_id], references: [id])
-  user_id String? @db.ObjectId
+  user_id String?
 }

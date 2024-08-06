@@ -1,6 +1,7 @@
 "use client";
 
 import axios from "axios";
+import { getCookie } from "cookies-next";
 
 const request = axios.create({
   baseURL: "/api/",
@@ -9,7 +10,7 @@ const request = axios.create({
 
 function checkAuthorization(init) {
   init.interceptors.request.use(async (config) => {
-    let token = getCookie("IjAjlYED");
+    let token = getCookie("ABywFrtD");
 
     if (token)
       config.headers = {

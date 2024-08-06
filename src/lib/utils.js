@@ -1,3 +1,6 @@
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 export const allowed_emails = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[eE][dD][uU]$/;
 
 export function isPayloadValid({ fields = [], payload }) {
@@ -35,3 +38,11 @@ export let getExpiry = (hours) => {
   let now = new Date();
   return new Date(now.setHours(now.getHours() + hours));
 };
+
+export function Notify({ status = "", content = "..." }) {
+  let config = {
+    position: "bottom-right",
+  };
+
+  status ? toast[status](content, config) : toast(content, config);
+}

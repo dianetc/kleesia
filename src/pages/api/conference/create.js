@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import { payloadMap } from "../auth/lib";
+import { payloadMap } from "@/lib/request/lib";
 import { isPayloadValid } from "@/lib/utils";
 import { messages } from "@/lib/request/responses";
 

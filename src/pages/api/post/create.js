@@ -1,6 +1,6 @@
 import prisma from "@/lib/prisma";
 import { messages } from "@/lib/request/responses";
-import { payloadMap } from "../auth/lib";
+import { payloadMap } from "@/lib/request/lib";
 import { isPayloadValid } from "@/lib/utils";
 
 export default async function CREATE(request, response) {

@@ -58,10 +58,10 @@ export default async function SIGNIN(request, response) {
     },
   });
 
-  let { status } = session;
+  let { status } = session ?? {};
 
   if (status === "active")
-    return response.status(500).send({ msg: "You already logged in" });
+    return response.status(400).send({ msg: "You already logged in" });
 
   let token = generateHash();
   let refresh_tk = generateHash();

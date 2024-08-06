@@ -7,6 +7,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  moderator
+  user
+}
+
 // System
 model User {
   id         String    @id @default(uuid())
@@ -14,6 +19,7 @@ model User {
   updated_at DateTime?
 
   name  String
+  role  Role?  @default(user)
   email String @unique
 
   // Relations
@@ -92,7 +98,7 @@ model Post {
   created_at DateTime  @default(now())
   updated_at DateTime?
 
-  title String
+  title String    @unique
   body  String?
   votes Boolean[]
 
@@ -111,7 +117,7 @@ model Channel {
   created_at DateTime  @default(now())
   updated_at DateTime?
 
-  name  String?
+  name  String? @unique
   rules String?
 
   // Relations

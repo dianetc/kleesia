@@ -11,12 +11,13 @@ import request from "@/lib/request";
 
 import { Notify } from "@/lib/utils";
 
-import Card from "@mui/material/Card";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputAdornment from "@mui/material/InputAdornment";
 
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
+
+import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
@@ -28,6 +29,7 @@ import Typography from "@mui/material/Typography";
 // Icon
 import { IoMdEye as EyeIcon } from "react-icons/io";
 import { FaUser as UserIcon } from "react-icons/fa6";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
   return (
@@ -41,6 +43,7 @@ let Login = () => {
   let [data, setData] = useState({});
   let [view_password, setViewPassword] = useState(false);
 
+  let router = useRouter();
   let dispatch = useDispatch();
 
   function handleChange(e) {
@@ -70,6 +73,7 @@ let Login = () => {
         status: status !== 400 ? "error" : "info",
         content: data?.msg ?? error?.message,
       });
+      status === 400 && router.push("/home");
     }
   }
 

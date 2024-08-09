@@ -128,9 +128,6 @@ let LeftBar = () => {
               </AccordionSummary>
               <AccordionDetails>...</AccordionDetails>
             </Accordion>
-            <Button variant="secondary" startIcon={<PlusIcon size={20} />}>
-              Create a new conference
-            </Button>
           </Stack>
         </Stack>
 

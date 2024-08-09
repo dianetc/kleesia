@@ -29,6 +29,7 @@ import Typography from "@mui/material/Typography";
 
 import { useRouter } from "next/navigation";
 // Icon
+import { MdAlternateEmail as EmailIcon } from "react-icons/md";
 import { IoMdEye as EyeIcon } from "react-icons/io";
 import { FaUser as UserIcon } from "react-icons/fa6";
 
@@ -44,12 +45,12 @@ export default function Page() {
         background: (theme) => theme?.palette?.background?.main,
       }}
     >
-      <Login />
+      <Signup />
     </Stack>
   );
 }
 
-let Login = () => {
+let Signup = () => {
   let [data, setData] = useState({});
   let [view_password, setViewPassword] = useState(false);
 
@@ -88,7 +89,7 @@ let Login = () => {
   }
 
   return (
-    <Card sx={{ width: 446, padding: 2 }}>
+    <Card sx={{ width: 746, padding: 2 }}>
       <CardHeader
         avatar={
           <Image
@@ -112,14 +113,15 @@ let Login = () => {
         <form onSubmit={submit}>
           <Stack spacing={3}>
             <Typography variant="h5" fontWeight={600}>
-              Welcome back!
+              Create a new Account
             </Typography>
             <Stack spacing={2}>
               <OutlinedInput
-                id="email"
+                id="name"
+                size="medium"
                 onChange={handleChange}
-                placeholder="Email or username"
-                type="varchar"
+                placeholder="Enter your fullname"
+                type="text"
                 endAdornment={
                   <InputAdornment position="end">
                     <UserIcon size={20} />
@@ -127,26 +129,53 @@ let Login = () => {
                 }
               />
               <OutlinedInput
-                id="password"
+                id="email"
                 onChange={handleChange}
-                placeholder="Password"
-                type={view_password ? "varchar" : "password"}
+                placeholder="Email Address"
+                type="varchar"
                 endAdornment={
                   <InputAdornment position="end">
-                    <EyeIcon
-                      size={25}
-                      className="cursor-pointer"
-                      onClick={() => setViewPassword(!view_password)}
-                    />
+                    <EmailIcon size={20} />
                   </InputAdornment>
                 }
               />
-            </Stack>
-            <Stack direction="row" justifyContent="end">
-              <Link href={"/"}>Forgot password?</Link>
+              <Stack direction="row" justifyContent="space-between" spacing={2}>
+                <OutlinedInput
+                  id="password"
+                  sx={{ width: "100%" }}
+                  onChange={handleChange}
+                  placeholder="Create a New Password"
+                  type={view_password ? "varchar" : "password"}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <EyeIcon
+                        size={25}
+                        className="cursor-pointer"
+                        onClick={() => setViewPassword(!view_password)}
+                      />
+                    </InputAdornment>
+                  }
+                />
+                <OutlinedInput
+                  id="rpt-password"
+                  sx={{ width: "100%" }}
+                  onChange={handleChange}
+                  placeholder="Repeat the Password"
+                  type={view_password ? "varchar" : "password"}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <EyeIcon
+                        size={25}
+                        className="cursor-pointer"
+                        onClick={() => setViewPassword(!view_password)}
+                      />
+                    </InputAdornment>
+                  }
+                />
+              </Stack>
             </Stack>
             <Button variant={"contained"} type="submit" disableElevation>
-              Login
+              Sign up
             </Button>
           </Stack>
         </form>
@@ -158,7 +187,7 @@ let Login = () => {
         sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}
       >
         <Typography variant="p">
-          New to kleesia? <Link href="/signup">Sign up</Link>
+          Already have an account? <Link href="/login">Login</Link>
         </Typography>
       </CardActions>
     </Card>

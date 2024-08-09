@@ -7,35 +7,46 @@ const Satoshi = localFont({ src: "font/satoshi.ttf" });
 
 import { ThemeProvider } from "@emotion/react";
 
+console.log(Satoshi);
+
 const theme = createTheme({
   palette: {
     primary: {
       light: "#FEC200",
       main: "#FEC200",
-      dark: "#002884",
-      contrastText: "#fff",
+      dark: "#050E28",
+      contrastText: "#050E28",
     },
     secondary: {
       light: "#050E28",
       main: "#050E28",
-      dark: "#ba000d",
-      contrastText: "#000",
+      dark: "#FEC200",
+      contrastText: "#FEC200",
     },
     background: {
       main: "#E8E8E8",
     },
   },
   typography: {
-    fontFamily: "Satoshi, sans-serif",
+    fontFamily: "'Satoshi', sans-serif",
   },
   components: {
     MuiCssBaseline: {
       styleOverrides: `
         @font-face {
           font-family: 'Satoshi', sans-serif;
-          src: local('Satoshi) url(./font/satoshi.ttf) format('ttf');
+          src: local('Satoshi) url(${Satoshi}) format('ttf');
         }
       `,
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          "&:focus": {
+            border: "none",
+          },
+        },
+      },
     },
     MuiAccordion: {
       defaultProps: {
@@ -44,18 +55,23 @@ const theme = createTheme({
     },
     MuiButton: {
       styleOverrides: {
+        contained: {
+          "&:hover": {
+            color: "#FEC200",
+          },
+        },
+        outlined: {
+          color: "#050E28",
+          border: "1px solid #BEBEBE",
+          "&:hover": {
+            border: "1px solid #050E28",
+            background: "#050E28",
+            color: "#FEC200",
+          },
+        },
         root: {
           textTransform: "capitalize",
-          fontWeight: 700,
-          variants: [
-            {
-              props: { variant: "primary", color: "secondary" },
-            },
-          ],
         },
-      },
-      defaultProps: {
-        disableElevation: true,
       },
     },
   },

@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { logout } from "@/store/slices/persisted";
 
 import Stack from "@mui/material/Stack";
+import Input from "@mui/material/Input";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputAdornment from "@mui/material/InputAdornment";
 
@@ -24,6 +25,8 @@ import { IoIosSearch as SearchIcon } from "react-icons/io";
 import { IoAddCircleSharp as PlusIcon } from "react-icons/io5";
 import { FaArrowRight as RightArrowIcon } from "react-icons/fa6";
 import { VscTriangleDown as DownArrowIcon } from "react-icons/vsc";
+import { useSession } from "@/lib/hooks/auth";
+import { useRouter } from "next/navigation";
 
 let Layout = ({ children }) => {
   return (
@@ -39,38 +42,91 @@ let Layout = ({ children }) => {
 };
 
 let Navigation = () => {
+  let { isactive } = useSession();
+
+  let SessionActions = () => {
+    const router = useRouter();
+
+    if (!isactive) {
+      return (
+        <>
+          <Button
+            size="large"
+            variant="outlined"
+            onClick={() => {
+              router.push("/login");
+            }}
+          >
+            <Stack direction="row" spacing={3} alignItems="center">
+              <Typography>Login</Typography>
+              <RightArrowIcon size={20} />
+            </Stack>
+          </Button>
+          <Button
+            size="large"
+            variant="outlined"
+            onClick={() => {
+              router.push("/signup");
+            }}
+          >
+            <Stack direction="row" spacing={3} alignItems="center">
+              <Typography>Sign up</Typography>
+              <RightArrowIcon size={20} />
+            </Stack>
+          </Button>
+        </>
+      );
+    } else {
+      return (
+        <Button size="large" variant="outlined">
+          <Stack direction="row" spacing={3} alignItems="center">
+            <Typography>My Profile</Typography>
+            <RightArrowIcon size={20} />
+          </Stack>
+        </Button>
+      );
+    }
+  };
+
   return (
     <Stack
       direction="row"
       justifyContent={"space-between"}
-      sx={{ height: "10vh", padding: 3, border: "1px solid #E8E8E8" }}
-      spacing={4}
+      alignItems="center"
+      sx={{
+        width: "100vw",
+        height: "10vh",
+        padding: "0 1.45em",
+        borderBottom: "1px solid #E8E8E8",
+      }}
     >
-      <Image src="/icons/logo.svg" width={46} height={46} alt={"Kleesia"} />
-      <OutlinedInput
-        sx={{ width: "446px" }}
-        placeholder="Start typing..."
-        endAdornment={
-          <InputAdornment position="end">
-            <SearchIcon size={20} />
-          </InputAdornment>
-        }
-      />
-      <Stack direction={"row"} spacing={2}>
-        <Button
-          size="large"
-          variant="outlined"
-          endIcon={<RightArrowIcon size={20} />}
-        >
-          Login
-        </Button>
-        <Button
-          size="large"
-          variant="contained"
-          endIcon={<RightArrowIcon size={20} />}
-        >
-          Sign up
-        </Button>
+      <Stack sx={{ width: "35%" }}>
+        <Image src="/icons/logo.svg" width={46} height={46} alt={"Kleesia"} />
+      </Stack>
+      <Stack sx={{ width: "40%" }}>
+        <OutlinedInput
+          sx={{
+            width: "446px",
+            height: "46px",
+            border: "none",
+            background: (theme) => theme.palette.background.main,
+          }}
+          autoFocus={false}
+          placeholder="Start typing..."
+          endAdornment={
+            <InputAdornment position="end">
+              <SearchIcon size={20} />
+            </InputAdornment>
+          }
+        />
+      </Stack>
+      <Stack
+        sx={{ width: "25%", height: "100%", maxHeight: "46px" }}
+        direction={"row"}
+        justifyContent={"end"}
+        spacing={2}
+      >
+        <SessionActions />
       </Stack>
     </Stack>
   );
@@ -92,6 +148,7 @@ let Content = ({ children }) => {
 
 let LeftBar = () => {
   let dispatch = useDispatch();
+  let { isactive } = useSession();
 
   return (
     <Box sx={{ width: "25%", border: "1px solid #E8E8E8" }}>
@@ -137,12 +194,14 @@ let LeftBar = () => {
           </Stack>
         </Stack>
 
-        <Button variant="secondary" onClick={() => dispatch(logout(request))}>
-          <Stack direction={"row"} spacing={2} alignItems={"center"}>
-            <Image src={"/icons/log-out.svg"} width={40} height={40} />
-            <Typography fontWeight={600}>Log Out</Typography>
-          </Stack>
-        </Button>
+        {isactive && (
+          <Button variant="secondary" onClick={() => dispatch(logout(request))}>
+            <Stack direction={"row"} spacing={2} alignItems={"center"}>
+              <Image src={"/icons/log-out.svg"} width={40} height={40} />
+              <Typography fontWeight={600}>Log Out</Typography>
+            </Stack>
+          </Button>
+        )}
       </Stack>
     </Box>
   );

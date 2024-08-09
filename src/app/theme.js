@@ -34,6 +34,27 @@ const theme = createTheme({
         }
       `,
     },
+    MuiAccordion: {
+      defaultProps: {
+        disableElevation: true,
+      },
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: "capitalize",
+          fontWeight: 700,
+          variants: [
+            {
+              props: { variant: "primary", color: "secondary" },
+            },
+          ],
+        },
+      },
+      defaultProps: {
+        disableElevation: true,
+      },
+    },
   },
 });
 

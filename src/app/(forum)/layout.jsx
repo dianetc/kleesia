@@ -11,8 +11,11 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AccordionActions from "@mui/material/AccordionActions";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
+import Typography from "@mui/material/Typography";
 
+import { VscTriangleDown as DownArrowIcon } from "react-icons/vsc";
 import { FaUsers as UserIcon } from "react-icons/fa6";
+import { FaArrowRight as RightArrowIcon } from "react-icons/fa6";
 
 import { IoIosSearch as SearchIcon } from "react-icons/io";
 
@@ -52,8 +55,20 @@ let Navigation = () => {
         }
       />
       <Stack direction={"row"} spacing={2}>
-        <Button variant="contained">Login</Button>
-        <Button variant="contained">Sign up</Button>
+        <Button
+          size="large"
+          variant="outlined"
+          endIcon={<RightArrowIcon size={20} />}
+        >
+          Login
+        </Button>
+        <Button
+          size="large"
+          variant="contained"
+          endIcon={<RightArrowIcon size={20} />}
+        >
+          Sign up
+        </Button>
       </Stack>
     </Stack>
   );
@@ -70,39 +85,59 @@ let Content = ({ children }) => {
 let LeftBar = () => {
   return (
     <Box sx={{ width: "20%", border: "1px solid #E8E8E8" }}>
-      <Stack spacing={3} sx={{ padding: 3 }}>
-        <Stack alignItems="start" spacing={2}>
-          <Accordion>
-            <AccordionSummary
-              // startIcon={}
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1-content"
-              id="panel1-header"
-            >
-              Topics
-            </AccordionSummary>
-            <AccordionDetails>...</AccordionDetails>
-          </Accordion>
-          <Button variant="text" startIcon={<PlusIcon size={20} />}>
-            Create a new topic
-          </Button>
+      <Stack
+        sx={{ width: "100%", height: "100%" }}
+        direction="column"
+        alignItems={"stretch"}
+        justifyContent={"space-between"}
+      >
+        <Stack spacing={3} sx={{ padding: 3 }}>
+          <Stack alignItems="start" spacing={2}>
+            <Accordion sx={{ width: "100%" }}>
+              <AccordionSummary
+                expandIcon={<DownArrowIcon size={20} />}
+                aria-controls="panel1-content"
+                id="panel1-header"
+              >
+                <Stack direction={"row"} alignItems={"center"} spacing={4}>
+                  <Image src="/icons/topics.svg" width={30} height={30} />
+                  <Typography variant="secondary">Topics</Typography>
+                </Stack>
+              </AccordionSummary>
+              <AccordionDetails>...</AccordionDetails>
+            </Accordion>
+            <Button variant="secondary" startIcon={<PlusIcon size={20} />}>
+              Create a new topic
+            </Button>
+          </Stack>
+          <Stack alignItems="start" spacing={2}>
+            <Accordion sx={{ width: "100%" }}>
+              <AccordionSummary
+                expandIcon={<DownArrowIcon size={20} />}
+                aria-controls="panel1-content"
+                id="panel1-header"
+              >
+                <Stack direction={"row"} alignItems={"center"} spacing={4}>
+                  <Image src="/icons/conferences.svg" width={30} height={30} />
+                  <Typography variant="secondary">Conferences</Typography>
+                </Stack>
+              </AccordionSummary>
+              <AccordionDetails>...</AccordionDetails>
+            </Accordion>
+            <Button variant="secondary" startIcon={<PlusIcon size={20} />}>
+              Create a new conference
+            </Button>
+          </Stack>
         </Stack>
-        <Stack alignItems="start" spacing={2}>
-          <Accordion>
-            <AccordionSummary
-              startIcon={<UserIcon size={20} />}
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1-content"
-              id="panel1-header"
-            >
-              Conferences
-            </AccordionSummary>
-            <AccordionDetails>...</AccordionDetails>
-          </Accordion>
-          <Button variant="text" startIcon={<PlusIcon size={20} />}>
-            Create a new conference
-          </Button>
-        </Stack>
+
+        <Button
+          variant="secondary"
+          startIcon={
+            <Image src={"/icons/log-out.svg"} width={40} height={40} />
+          }
+        >
+          Log out
+        </Button>
       </Stack>
     </Box>
   );

@@ -26,11 +26,9 @@ let Page = () => {
                 <Typography variant="h4">{post?.title}</Typography>
                 {/* Metadata */}
                 <Stack direction="row" justifyContent="space-between">
-                  <Stack direction="row" alignItems="center" spacing={2}>
-                    <Typography>{post?.user?.name}</Typography>
-                    <Button variant="contained" disableElevation>
-                      Follow
-                    </Button>
+                  <Stack direction="row" alignItems="center" spacing={3}>
+                    <Typography fontWeight={100}>{post?.user?.name}</Typography>
+                    <Button variant="contained">Follow</Button>
                   </Stack>
                   <Typography fontWeight={100}>{post?.user?.date}</Typography>
                 </Stack>
@@ -44,6 +42,7 @@ let Page = () => {
                   <Button
                     variant="text"
                     onClick={() => setReadMore(post?.title)}
+                    sx={{ width: "100%" }}
                   >
                     Read full post
                   </Button>

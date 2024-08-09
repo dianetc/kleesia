@@ -11,6 +11,7 @@ import request from "@/lib/request";
 
 import { Notify } from "@/lib/utils";
 
+import Box from "@mui/material/Box";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputAdornment from "@mui/material/InputAdornment";
 
@@ -26,16 +27,25 @@ import Divider from "@mui/material/Divider";
 
 import Typography from "@mui/material/Typography";
 
+import { useRouter } from "next/navigation";
 // Icon
 import { IoMdEye as EyeIcon } from "react-icons/io";
 import { FaUser as UserIcon } from "react-icons/fa6";
-import { useRouter } from "next/navigation";
 
 export default function Page() {
   return (
-    <main className="w-full h-screen flex flex-col items-center justify-center">
+    <Stack
+      direction="col"
+      justifyContent="center"
+      alignItems="center"
+      sx={{
+        width: "100%",
+        height: "100vh",
+        background: (theme) => theme?.palette?.background?.main,
+      }}
+    >
       <Login />
-    </main>
+    </Stack>
   );
 }
 

@@ -21,6 +21,9 @@ const theme = createTheme({
       dark: "#ba000d",
       contrastText: "#000",
     },
+    background: {
+      main: "#E8E8E8",
+    },
   },
   typography: {
     fontFamily: "Satoshi, sans-serif",

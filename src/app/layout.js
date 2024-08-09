@@ -3,6 +3,7 @@ import "./globals.css";
 import StoreProvider from "./provider";
 
 import SWR from "./swr";
+import Box from "@mui/material/Box";
 import MuiThemeProvider from "./theme";
 
 import { ToastContainer } from "react-toastify";

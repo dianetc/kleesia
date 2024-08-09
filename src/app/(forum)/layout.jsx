@@ -78,7 +78,13 @@ let Navigation = () => {
 
 let Content = ({ children }) => {
   return (
-    <Box sx={{ width: "60%", backgroundColor: "#E8E8E8", overflowY: "scroll" }}>
+    <Box
+      sx={{
+        width: "50%",
+        background: (theme) => theme.palette.background.main,
+        overflowY: "scroll",
+      }}
+    >
       {children}
     </Box>
   );
@@ -88,7 +94,7 @@ let LeftBar = () => {
   let dispatch = useDispatch();
 
   return (
-    <Box sx={{ width: "20%", border: "1px solid #E8E8E8" }}>
+    <Box sx={{ width: "25%", border: "1px solid #E8E8E8" }}>
       <Stack
         sx={{ width: "100%", height: "100%" }}
         direction="column"
@@ -143,7 +149,7 @@ let LeftBar = () => {
 };
 
 let RightBar = () => {
-  return <Box sx={{ width: "20%", border: "1px solid #E8E8E8" }}></Box>;
+  return <Box sx={{ width: "25%", border: "1px solid #E8E8E8" }}></Box>;
 };
 
 export default Layout;

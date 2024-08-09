@@ -43,7 +43,6 @@ export function logout(request) {
         }
 
         dispatch({ type: "LOGOUT" });
-        // user_type !== "client" && redirect("/");
       })
       .catch((error) => {
         let { msg } = error?.response?.data;

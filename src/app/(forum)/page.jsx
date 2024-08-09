@@ -20,7 +20,8 @@ let Page = () => {
   let [readMore, setReadMore] = useState({ id: "", active: false });
 
   return (
-    <Stack spacing={3} sx={{ padding: 8 }}>
+    <Stack spacing={6} sx={{ padding: 8 }}>
+      <Typography variant="h3">Trending</Typography>
       {Posts?.map((post, index) => {
         return (
           <Card key={index}>

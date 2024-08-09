@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+import Image from "next/image";
+
 import { Posts } from "./data";
 import { trimming } from "@/lib/utils";
 
@@ -9,6 +11,7 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 
 import Card from "@mui/material/Card";
+import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
@@ -54,7 +57,53 @@ let Page = () => {
                 </Stack>
               </Stack>
             </CardContent>
-            <CardActions>{/*  */}</CardActions>
+
+            <Divider sx={{ marginLeft: 3, marginRight: 3 }} />
+
+            <CardActions sx={{ padding: 4 }}>
+              <Stack
+                sx={{ width: "100%" }}
+                direction="row"
+                justifyContent="space-between"
+              >
+                <Stack direction="row" spacing={4}>
+                  {/* Comments */}
+                  <Button
+                    variant="outline"
+                    sx={{ border: "1px solid #bebebe" }}
+                  >
+                    <Stack direction={"row"} spacing={2} alignItems={"center"}>
+                      <Image
+                        src={"/icons/comment.svg"}
+                        width={26}
+                        height={26}
+                      />
+                      <Typography>256</Typography>
+                    </Stack>
+                  </Button>
+
+                  {/* Up voting */}
+                  <Stack
+                    direction={"row"}
+                    spacing={2}
+                    alignItems={"center"}
+                    sx={{
+                      border: "1px solid #bebebe",
+                      borderRadius: "6px",
+                      padding: "8px 14px",
+                    }}
+                  >
+                    <Image src={"/icons/arrow-up.svg"} width={26} height={26} />
+                    <Typography>472</Typography>
+                    <Image
+                      src={"/icons/arrow-down.svg"}
+                      width={26}
+                      height={26}
+                    />
+                  </Stack>
+                </Stack>
+              </Stack>
+            </CardActions>
           </Card>
         );
       })}

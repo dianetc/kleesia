@@ -46,7 +46,8 @@ export function logout(request) {
         // user_type !== "client" && redirect("/");
       })
       .catch((error) => {
-        Notify({ status: "error", content: error?.message });
+        let { msg } = error?.response?.data;
+        Notify({ status: "error", content: msg ?? error?.message });
       });
   };
 }

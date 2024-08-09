@@ -18,7 +18,8 @@ export default async function LOGOUT(request, response) {
 
   let status = await validateToken(token);
 
-  if (!status) return response.status(500).send({ msg: "Invalid session" });
+  if (!status)
+    return response.status(500).send({ msg: "Session Does not exist" });
 
   let now = new Date();
 

@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 
+import request from "@/lib/request";
+
 import { useDispatch } from "react-redux";
 import { logout } from "@/store/slices/persisted";
 
@@ -132,7 +134,7 @@ let LeftBar = () => {
           </Stack>
         </Stack>
 
-        <Button variant="secondary" onClick={() => dispatch(logout())}>
+        <Button variant="secondary" onClick={() => dispatch(logout(request))}>
           <Stack direction={"row"} spacing={2} alignItems={"center"}>
             <Image src={"/icons/log-out.svg"} width={40} height={40} />
             <Typography fontWeight={600}>Log Out</Typography>

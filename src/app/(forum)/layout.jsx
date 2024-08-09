@@ -1,27 +1,27 @@
+"use client";
+
 import Image from "next/image";
+
+import { useDispatch } from "react-redux";
+import { logout } from "@/store/slices/persisted";
 
 import Stack from "@mui/material/Stack";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputAdornment from "@mui/material/InputAdornment";
 
+import { Box } from "@mui/material";
 import Button from "@mui/material/Button";
-
 import Accordion from "@mui/material/Accordion";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import Typography from "@mui/material/Typography";
 import AccordionActions from "@mui/material/AccordionActions";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
-import Typography from "@mui/material/Typography";
 
-import { VscTriangleDown as DownArrowIcon } from "react-icons/vsc";
-import { FaUsers as UserIcon } from "react-icons/fa6";
-import { FaArrowRight as RightArrowIcon } from "react-icons/fa6";
-
+// Icons
 import { IoIosSearch as SearchIcon } from "react-icons/io";
-
-import { Box } from "@mui/material";
-
 import { IoAddCircleSharp as PlusIcon } from "react-icons/io5";
+import { FaArrowRight as RightArrowIcon } from "react-icons/fa6";
+import { VscTriangleDown as DownArrowIcon } from "react-icons/vsc";
 
 let Layout = ({ children }) => {
   return (
@@ -83,6 +83,8 @@ let Content = ({ children }) => {
 };
 
 let LeftBar = () => {
+  let dispatch = useDispatch();
+
   return (
     <Box sx={{ width: "20%", border: "1px solid #E8E8E8" }}>
       <Stack
@@ -91,7 +93,7 @@ let LeftBar = () => {
         alignItems={"stretch"}
         justifyContent={"space-between"}
       >
-        <Stack spacing={3} sx={{ padding: 3 }}>
+        <Stack spacing={4} sx={{ padding: 3 }}>
           <Stack alignItems="start" spacing={2}>
             <Accordion sx={{ width: "100%" }}>
               <AccordionSummary
@@ -130,13 +132,11 @@ let LeftBar = () => {
           </Stack>
         </Stack>
 
-        <Button
-          variant="secondary"
-          startIcon={
+        <Button variant="secondary" onClick={() => dispatch(logout())}>
+          <Stack direction={"row"} spacing={2} alignItems={"center"}>
             <Image src={"/icons/log-out.svg"} width={40} height={40} />
-          }
-        >
-          Log out
+            <Typography fontWeight={600}>Log Out</Typography>
+          </Stack>
         </Button>
       </Stack>
     </Box>

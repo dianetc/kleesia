@@ -14,7 +14,7 @@ import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
 
 let Page = () => {
-  let [readMore, setReadMore] = useState(0);
+  let [readMore, setReadMore] = useState({ id: "", active: false });
 
   return (
     <Stack spacing={3} sx={{ padding: 8 }}>
@@ -35,14 +35,19 @@ let Page = () => {
                 {/* Description */}
                 <Stack spacing={1}>
                   <Typography variant="p">
-                    {readMore && readMore === post?.title
+                    {readMore?.id === post?.title && readMore?.active
                       ? post?.description
                       : trimming(post?.description, 500)}
                   </Typography>
                   <Button
-                    variant="text"
-                    onClick={() => setReadMore(post?.title)}
-                    sx={{ width: "100%" }}
+                    variant="secondary"
+                    onClick={() =>
+                      setReadMore({
+                        id: post?.title,
+                        active: true,
+                      })
+                    }
+                    sx={{ width: "100%", maxWidth: "8vw" }}
                   >
                     Read full post
                   </Button>

@@ -29,7 +29,7 @@ export const { saveSession, destroy } = persisted.actions;
 
 export function logout(request) {
   return async (dispatch, getState) => {
-    if (!hasCookie("IjAjlYED")) return;
+    if (!hasCookie("ABywFrtD")) return;
 
     let { type } = getState().persisted.user;
     let user_type = type;

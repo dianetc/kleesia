@@ -29,6 +29,11 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: "'Satoshi', sans-serif",
+    body2: {
+      fontsize: '0.875rem',
+      lineHeight: 1.43,
+      letterSpacing: '0.01071em',
+    },
   },
   components: {
     MuiCssBaseline: {
@@ -59,6 +64,10 @@ const theme = createTheme({
           "&:hover": {
             color: "#FEC200",
           },
+        },
+        fixed: {
+          color: "#050E28",
+          border: "1px solid #BEBEBE",
         },
         outlined: {
           color: "#050E28",

@@ -98,14 +98,6 @@ let Login = () => {
             alt={"Kleesia logo"}
           />
         }
-        action={
-          <Image
-            src="/icons/close.svg"
-            width={46}
-            height={46}
-            alt={"Close Icon"}
-          />
-        }
       />
 
       <CardContent>

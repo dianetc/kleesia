@@ -21,13 +21,13 @@ let Page = () => {
 
   return (
     <Stack spacing={6} sx={{ padding: 8 }}>
-      <Typography variant="h3">Trending</Typography>
+      <Typography variant="h4">Trending</Typography>
       {Posts?.map((post, index) => {
         return (
           <Card key={index}>
             <CardContent>
               <Stack spacing={3} sx={{ padding: 2 }}>
-                <Typography variant="h4">{post?.title}</Typography>
+                <Typography variant="h5">{post?.title}</Typography>
                 {/* Metadata */}
                 <Stack direction="row" justifyContent="space-between">
                   <Stack direction="row" alignItems="center" spacing={3}>
@@ -37,24 +37,30 @@ let Page = () => {
                   <Typography fontWeight={100}>{post?.user?.date}</Typography>
                 </Stack>
                 {/* Description */}
-                <Stack spacing={1}>
+                <Stack spacing={2}>
                   <Typography variant="p">
                     {readMore?.id === post?.title && readMore?.active
                       ? post?.description
                       : trimming(post?.description, 500)}
                   </Typography>
-                  <Button
-                    variant="secondary"
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: 'text.secondary',
+                      textDecoration: 'underline',
+                      cursor: 'pointer',
+                    }}
                     onClick={() =>
-                      setReadMore({
+                      setReadMore((prevState) => ({
                         id: post?.title,
-                        active: true,
-                      })
+                        active: prevState.id === post?.title ? !prevState.active : true,
+                      }))
                     }
-                    sx={{ width: "100%", maxWidth: "8vw" }}
                   >
-                    Read full post
-                  </Button>
+                    {readMore?.id === post?.title && readMore?.active
+                    ? "Show Less"
+                    : "Learn More"}
+                  </Typography>
                 </Stack>
               </Stack>
             </CardContent>

@@ -99,28 +99,20 @@ let Signup = () => {
             alt={"Kleesia logo"}
           />
         }
-        action={
-          <Image
-            src="/icons/close.svg"
-            width={46}
-            height={46}
-            alt={"Close Icon"}
-          />
-        }
       />
 
       <CardContent>
         <form onSubmit={submit}>
           <Stack spacing={3}>
             <Typography variant="h5" fontWeight={600}>
-              Create a new Account
+              Create your account
             </Typography>
             <Stack spacing={2}>
               <OutlinedInput
-                id="name"
+                id="username"
                 size="medium"
                 onChange={handleChange}
-                placeholder="Enter your fullname"
+                placeholder="Username"
                 type="text"
                 endAdornment={
                   <InputAdornment position="end">
@@ -144,7 +136,7 @@ let Signup = () => {
                   id="password"
                   sx={{ width: "100%" }}
                   onChange={handleChange}
-                  placeholder="Create a New Password"
+                  placeholder="Password"
                   type={view_password ? "varchar" : "password"}
                   endAdornment={
                     <InputAdornment position="end">
@@ -160,7 +152,7 @@ let Signup = () => {
                   id="rpt-password"
                   sx={{ width: "100%" }}
                   onChange={handleChange}
-                  placeholder="Repeat the Password"
+                  placeholder="Repeat Password"
                   type={view_password ? "varchar" : "password"}
                   endAdornment={
                     <InputAdornment position="end">

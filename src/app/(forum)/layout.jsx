@@ -52,7 +52,7 @@ let Navigation = () => {
         <>
           <Button
             size="large"
-            variant="outlined"
+            variant="fixed"
             onClick={() => {
               router.push("/login");
             }}
@@ -64,7 +64,7 @@ let Navigation = () => {
           </Button>
           <Button
             size="large"
-            variant="outlined"
+            variant="contained"
             onClick={() => {
               router.push("/signup");
             }}
@@ -112,7 +112,7 @@ let Navigation = () => {
             background: (theme) => theme.palette.background.main,
           }}
           autoFocus={false}
-          placeholder="Start typing..."
+          placeholder="Search Topic or Paper.."
           endAdornment={
             <InputAdornment position="end">
               <SearchIcon size={20} />
@@ -173,7 +173,11 @@ let LeftBar = () => {
               </AccordionSummary>
               <AccordionDetails>...</AccordionDetails>
             </Accordion>
-            <Button variant="secondary" startIcon={<PlusIcon size={20} />}>
+            <Button 
+              variant="secondary" 
+              startIcon={<PlusIcon size={20} />}
+              sx={{ fontWeight: "bold", textTransform: "none" }} 
+            >
               Create a new topic
             </Button>
           </Stack>

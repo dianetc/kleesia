@@ -49,6 +49,7 @@ let Page = () => {
                       color: 'text.secondary',
                       textDecoration: 'underline',
                       cursor: 'pointer',
+                      fontWeight: 'bold'
                     }}
                     onClick={() =>
                       setReadMore((prevState) => ({

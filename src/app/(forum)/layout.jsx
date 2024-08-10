@@ -168,7 +168,7 @@ let LeftBar = () => {
               >
                 <Stack direction={"row"} alignItems={"center"} spacing={4}>
                   <Image src="/icons/topics.svg" width={30} height={30} />
-                  <Typography variant="secondary">Topics</Typography>
+                  <Typography variant="secondary" fontWeight="bold">Topics</Typography>
                 </Stack>
               </AccordionSummary>
               <AccordionDetails>...</AccordionDetails>
@@ -190,7 +190,7 @@ let LeftBar = () => {
               >
                 <Stack direction={"row"} alignItems={"center"} spacing={4}>
                   <Image src="/icons/conferences.svg" width={30} height={30} />
-                  <Typography variant="secondary">Conferences</Typography>
+                  <Typography variant="secondary" fontWeight="bold">Conferences</Typography>
                 </Stack>
               </AccordionSummary>
               <AccordionDetails>...</AccordionDetails>

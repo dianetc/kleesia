@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  details: {},
+  post: { id: "" },
 };
 
 const data = createSlice({
@@ -9,10 +9,10 @@ const data = createSlice({
   initialState,
   reducers: {
     destroy: (state, action) => {
-      state.details = {};
+      state.post = {};
     },
     setDetailsContext: (state, action) => {
-      state.details = action.payload;
+      state.post = action.payload;
     },
   },
 });

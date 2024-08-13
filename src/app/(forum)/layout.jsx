@@ -8,7 +8,6 @@ import { useDispatch } from "react-redux";
 import { logout } from "@/store/slices/persisted";
 
 import Stack from "@mui/material/Stack";
-import Input from "@mui/material/Input";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputAdornment from "@mui/material/InputAdornment";
 

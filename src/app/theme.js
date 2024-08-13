@@ -30,9 +30,9 @@ const theme = createTheme({
   typography: {
     fontFamily: "'Satoshi', sans-serif",
     body2: {
-      fontsize: '0.875rem',
+      fontsize: "0.875rem",
       lineHeight: 1.43,
-      letterSpacing: '0.01071em',
+      letterSpacing: "0.01071em",
     },
   },
   components: {

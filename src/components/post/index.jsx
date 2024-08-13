@@ -2,15 +2,18 @@
 
 import Image from "next/image";
 
+import { useState } from "react";
+
 import { toggle } from "@/store/slices/ui";
 import { useDispatch, useSelector } from "react-redux";
 
 import { trimming } from "@/lib/utils";
 
 import { useSession } from "@/lib/hooks/auth";
-
 // Icon
 import { IoAdd as PlusIcon } from "react-icons/io5";
+
+import TextField from "@mui/material/TextField";
 
 import Link from "@mui/material/Link";
 import Card from "@mui/material/Card";
@@ -24,6 +27,7 @@ import CardActions from "@mui/material/CardActions";
 
 let Post = ({ id, children, comments = 0, votes = 0, conferences = [] }) => {
   let { isactive } = useSession();
+  let [viewComments, setViewComments] = useState(false);
 
   let Votes = () => {
     return (
@@ -54,11 +58,12 @@ let Post = ({ id, children, comments = 0, votes = 0, conferences = [] }) => {
     );
   };
 
-  let Comments = () => {
+  let Comment = () => {
     return (
       <Button
         variant="outline"
         sx={{ border: "1px solid #bebebe" }}
+        onClick={() => setViewComments(!viewComments)}
         disabled={!isactive}
       >
         <Stack direction={"row"} spacing={2} alignItems={"center"}>
@@ -85,29 +90,74 @@ let Post = ({ id, children, comments = 0, votes = 0, conferences = [] }) => {
   };
 
   return (
-    <Card key={id}>
-      <CardContent>
-        <Stack spacing={3} sx={{ padding: 2 }}>
-          {children}
-        </Stack>
-      </CardContent>
-
-      <Divider sx={{ marginLeft: 3, marginRight: 3 }} />
-
-      <CardActions sx={{ padding: 4 }}>
-        <Stack
-          sx={{ width: "100%" }}
-          direction="row"
-          justifyContent="space-between"
-        >
-          <Stack direction="row" spacing={4}>
-            <Votes />
-            <Comments />
+    <Stack direction="column" spacing={4}>
+      <Card key={id}>
+        <CardContent>
+          <Stack spacing={3} sx={{ padding: 2 }}>
+            {children}
           </Stack>
-          <Conferences list={conferences} />
+        </CardContent>
+
+        <Divider sx={{ marginLeft: 3, marginRight: 3 }} />
+
+        <CardActions sx={{ padding: 4 }}>
+          <Stack
+            sx={{ width: "100%" }}
+            direction="row"
+            justifyContent="space-between"
+          >
+            <Stack direction="row" spacing={4}>
+              <Votes />
+              <Comment />
+            </Stack>
+            <Conferences list={conferences} />
+          </Stack>
+        </CardActions>
+      </Card>
+      {isactive && viewComments && <Comments count={comments} />}
+    </Stack>
+  );
+};
+
+let Comments = ({ count = 0 }) => {
+  let [replies, setReplies] = useState([]);
+
+  return (
+    <Stack spacing={4}>
+      <Typography variant="h5">Comments {`(${count})`}</Typography>
+      <Card>
+        <CardContent>
+          <TextField sx={{ width: "100%" }} multiline />
+        </CardContent>
+        <CardActions sx={{ padding: 2 }}>
+          <Button variant="contained">Reply</Button>
+          <Button variant="contained">Cancel</Button>
+        </CardActions>
+        {/* Replies */}
+        <Stack direction="col" spacing={2}>
+          {replies.map((reply, index) => {
+            return (
+              <Reply key={index}>
+                <Reply.User>{reply?.user}</Reply.User>
+                <Reply.Comment>{reply?.comment}</Reply.Comment>
+              </Reply>
+            );
+          })}
         </Stack>
-      </CardActions>
-    </Card>
+      </Card>
+    </Stack>
+  );
+};
+
+let Reply = ({ children }) => {
+  return (
+    <Stack direction="col" spacing={2}>
+      <Stack direction="row" alignItems="center" spacing={3}>
+        <Image src={""} width={40} height={40} alt={"avatar"} />
+        <Typography fontWeight={100}>{name}</Typography>
+      </Stack>
+      <Typography variant={"p"}>{children}</Typography>
+    </Stack>
   );
 };
 

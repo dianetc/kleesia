@@ -102,9 +102,10 @@ let Comments = ({ count = 0 }) => {
           <Button variant="contained">Reply</Button>
           <Button variant="outlined">Cancel</Button>
         </CardActions>
+
         {/* Replies */}
         <CardContent>
-          <Stack spacing={2}>
+          <Stack spacing={4}>
             {replies.map((reply, index) => {
               return <Reply key={index} {...reply} />;
             })}

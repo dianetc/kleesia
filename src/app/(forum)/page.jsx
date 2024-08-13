@@ -9,7 +9,7 @@ import Typography from "@mui/material/Typography";
 let Page = () => {
   return (
     <Stack spacing={6} sx={{ padding: 8 }}>
-      <Typography variant="h3">Trending</Typography>
+      <Typography variant="h4">Trending</Typography>
       {Posts?.map((post, index) => {
         return (
           <Post key={index}>

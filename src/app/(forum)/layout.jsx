@@ -54,7 +54,7 @@ let Navigation = () => {
         <>
           <Button
             size="large"
-            variant="outlined"
+            variant="fixed"
             onClick={() => {
               router.push("/login");
             }}
@@ -66,7 +66,7 @@ let Navigation = () => {
           </Button>
           <Button
             size="large"
-            variant="outlined"
+            variant="contained"
             onClick={() => {
               router.push("/signup");
             }}
@@ -114,7 +114,7 @@ let Navigation = () => {
             background: (theme) => theme.palette.background.main,
           }}
           autoFocus={false}
-          placeholder="Start typing..."
+          placeholder="Search Topic or Paper.."
           endAdornment={
             <InputAdornment position="end">
               <SearchIcon size={20} />
@@ -170,7 +170,9 @@ let LeftBar = () => {
               >
                 <Stack direction={"row"} alignItems={"center"} spacing={4}>
                   <Image src="/icons/topics.svg" width={30} height={30} />
-                  <Typography variant="secondary">Topics</Typography>
+                  <Typography variant="secondary" fontWeight="bold">
+                    Topics
+                  </Typography>
                 </Stack>
               </AccordionSummary>
               <AccordionDetails>...</AccordionDetails>
@@ -194,7 +196,9 @@ let LeftBar = () => {
               >
                 <Stack direction={"row"} alignItems={"center"} spacing={4}>
                   <Image src="/icons/conferences.svg" width={30} height={30} />
-                  <Typography variant="secondary">Conferences</Typography>
+                  <Typography variant="secondary" fontWeight="bold">
+                    Conferences
+                  </Typography>
                 </Stack>
               </AccordionSummary>
               <AccordionDetails>...</AccordionDetails>

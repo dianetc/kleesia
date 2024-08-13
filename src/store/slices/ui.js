@@ -2,9 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   menu: { active: false, id: "" },
-  tabs: { active: false, id: "" },
   modal: { active: false, id: "" },
-  accordian: { active: false, id: "" },
   post: { readMore: { active: false, id: "" } },
 };
 
@@ -14,9 +12,8 @@ const ui = createSlice({
   reducers: {
     destroy: (state, action) => {
       state.menu = { active: false, id: "" };
-      state.tabs = { active: false, id: "" };
       state.modal = { active: false, id: "" };
-      state.accordian = { active: false, id: "" };
+      state.post = { readMore: { active: false, id: "" } };
     },
     toggle: (state, action) => {
       let { type } = action?.payload;
@@ -29,14 +26,8 @@ const ui = createSlice({
         case "MENU":
           state.menu = action.payload;
           break;
-        case "TAB":
-          state.tabs = action.payload;
-          break;
         case "MODAL":
           state.modal = action.payload;
-          break;
-        case "ACCORDIAN":
-          state.accordian = action.payload;
           break;
       }
     },

@@ -7,18 +7,22 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { trimming } from "@/lib/utils";
 
-import Stack from "@mui/material/Stack";
-import Button from "@mui/material/Button";
+import { useSession } from "@/lib/hooks/auth";
+
+// Icon
+import { IoAdd as PlusIcon } from "react-icons/io5";
 
 import Link from "@mui/material/Link";
 import Card from "@mui/material/Card";
+import Chip from "@mui/material/Chip";
+import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
-import { useSession } from "@/lib/hooks/auth";
 
-let Post = ({ id, children, comments = 0, votes = 0 }) => {
+let Post = ({ id, children, comments = 0, votes = 0, conferences = [] }) => {
   let { isactive } = useSession();
 
   let Votes = () => {
@@ -70,6 +74,16 @@ let Post = ({ id, children, comments = 0, votes = 0 }) => {
     );
   };
 
+  let Conferences = ({ list = [] }) => {
+    return (
+      <Stack direction="row" alignContent="center" spacing={1}>
+        {list.map((conference, index) => {
+          return <Chip key={index} label={conference} />;
+        })}
+      </Stack>
+    );
+  };
+
   return (
     <Card key={id}>
       <CardContent>
@@ -90,6 +104,7 @@ let Post = ({ id, children, comments = 0, votes = 0 }) => {
             <Votes />
             <Comments />
           </Stack>
+          <Conferences list={conferences} />
         </Stack>
       </CardActions>
     </Card>
@@ -111,8 +126,11 @@ let User = ({ name, date }) => {
     <Stack direction="row" justifyContent="space-between">
       <Stack direction="row" alignItems="center" spacing={3}>
         <Typography fontWeight={100}>{name}</Typography>
-        <Button variant="contained" disabled={!isactive}>
-          Follow
+        <Button variant="contained" size="small" disabled={!isactive}>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <Typography>Follow</Typography>
+            <PlusIcon size={20} />
+          </Stack>
         </Button>
       </Stack>
       <Typography fontWeight={100}>{date}</Typography>

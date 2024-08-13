@@ -12,7 +12,12 @@ let Page = () => {
       <Typography variant="h4">Trending</Typography>
       {Posts?.map((post, index) => {
         return (
-          <Post key={index}>
+          <Post
+            key={index}
+            votes={post?.votes}
+            comments={post?.comments}
+            conferences={post?.conferences}
+          >
             <Post.Title>{post?.title}</Post.Title>
             <Post.User {...post?.user} />
             <Post.Description id={post?.title}>

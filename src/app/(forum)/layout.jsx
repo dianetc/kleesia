@@ -175,7 +175,7 @@ let LeftBar = () => {
                   </Typography>
                 </Stack>
               </AccordionSummary>
-              <AccordionDetails>...</AccordionDetails>
+              <AccordionDetails>No topics yet..</AccordionDetails>
               <Divider sx={{ padding: 2 }} />
               <AccordionActions sx={{ justifyContent: "start" }}>
                 <Button variant="secondary" startIcon={<PlusIcon size={20} />}>
@@ -201,7 +201,7 @@ let LeftBar = () => {
                   </Typography>
                 </Stack>
               </AccordionSummary>
-              <AccordionDetails>...</AccordionDetails>
+              <AccordionDetails>No conferences yet</AccordionDetails>
             </Accordion>
           </Stack>
         </Stack>

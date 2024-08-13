@@ -85,7 +85,9 @@ export default async function SIGNIN(request, response) {
 
     delete user?.account;
 
-    return response.status(200).send({ msg: `Welcome, ${user?.name}`, user });
+    return response
+      .status(200)
+      .send({ msg: `Welcome, ${user?.name}`, data: user });
   } catch (e) {
     return response.status(500).send({ msg: messages.FATAL });
   }

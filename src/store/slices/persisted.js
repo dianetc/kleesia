@@ -2,7 +2,6 @@
 import { Notify } from "@/lib/utils";
 import { createSlice } from "@reduxjs/toolkit";
 import { hasCookie } from "cookies-next";
-import { redirect } from "next/navigation";
 
 let initialState = {
   user: {},
@@ -30,9 +29,6 @@ export const { saveSession, destroy } = persisted.actions;
 export function logout(request) {
   return async (dispatch, getState) => {
     if (!hasCookie("ABywFrtD")) return;
-
-    let { type } = getState().persisted.user;
-    let user_type = type;
 
     await request
       .post("auth/signout")

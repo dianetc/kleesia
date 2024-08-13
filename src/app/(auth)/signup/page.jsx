@@ -77,7 +77,7 @@ let Signup = () => {
       let { msg, data: user } = response?.data ?? {};
       Notify({ status: "success", content: msg });
       dispatch(saveSession(user?.data));
-      router.push("/home");
+      router.push("/");
     } catch (error) {
       let { data, status } = error?.response ?? {};
       Notify({
@@ -104,6 +104,7 @@ let Signup = () => {
             src="/icons/close.svg"
             width={46}
             height={46}
+            onClick={() => router.push("/")}
             alt={"Close Icon"}
           />
         }

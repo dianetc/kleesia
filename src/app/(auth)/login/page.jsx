@@ -6,12 +6,12 @@ import Image from "next/image";
 import { useState } from "react";
 
 import { useDispatch } from "react-redux";
+import { saveSession } from "@/store/slices/persisted";
 
 import request from "@/lib/request";
 
 import { Notify } from "@/lib/utils";
 
-import Box from "@mui/material/Box";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputAdornment from "@mui/material/InputAdornment";
 
@@ -75,13 +75,14 @@ let Login = () => {
       let response = await request.post("auth/signin", data);
       let { msg, data: user } = response?.data ?? {};
       Notify({ status: "success", content: msg });
-      dispatch(saveSession(user?.data));
-      router.push("/home");
+      dispatch(saveSession(user));
+      router.push("/");
     } catch (error) {
-      let { data, status } = error?.response ?? {};
+      console.log(error);
+      let { status } = error?.response ?? {};
       Notify({
         status: status !== 400 ? "error" : "info",
-        content: data?.msg ?? error?.message,
+        content: error?.response?.data?.msg ?? error?.message,
       });
       status === 400 && router.push("/home");
     }
@@ -103,6 +104,7 @@ let Login = () => {
             src="/icons/close.svg"
             width={46}
             height={46}
+            onClick={() => router.push("/")}
             alt={"Close Icon"}
           />
         }

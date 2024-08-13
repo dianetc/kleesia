@@ -5,6 +5,7 @@ const initialState = {
   tabs: { active: false, id: "" },
   modal: { active: false, id: "" },
   accordian: { active: false, id: "" },
+  post: { readMore: { active: false, id: "" } },
 };
 
 const ui = createSlice({
@@ -23,6 +24,8 @@ const ui = createSlice({
       delete action.payload.type;
 
       switch (type) {
+        case "READMORE":
+          state.post.readMore = action.payload;
         case "MENU":
           state.menu = action.payload;
           break;

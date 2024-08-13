@@ -12,6 +12,8 @@ import Input from "@mui/material/Input";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputAdornment from "@mui/material/InputAdornment";
 
+import Divider from "@mui/material/Divider";
+
 import { Box } from "@mui/material";
 import Button from "@mui/material/Button";
 import Accordion from "@mui/material/Accordion";
@@ -158,9 +160,9 @@ let LeftBar = () => {
         alignItems={"stretch"}
         justifyContent={"space-between"}
       >
-        <Stack spacing={4} sx={{ padding: 3 }}>
+        <Stack spacing={3} sx={{ padding: 3 }}>
           <Stack alignItems="start" spacing={2}>
-            <Accordion sx={{ width: "100%" }}>
+            <Accordion sx={{ width: "100%" }} disabled={!isactive}>
               <AccordionSummary
                 expandIcon={<DownArrowIcon size={20} />}
                 aria-controls="panel1-content"
@@ -172,13 +174,19 @@ let LeftBar = () => {
                 </Stack>
               </AccordionSummary>
               <AccordionDetails>...</AccordionDetails>
+              <Divider sx={{ padding: 2 }} />
+              <AccordionActions sx={{ justifyContent: "start" }}>
+                <Button variant="secondary" startIcon={<PlusIcon size={20} />}>
+                  Create a new topic
+                </Button>
+              </AccordionActions>
             </Accordion>
-            <Button variant="secondary" startIcon={<PlusIcon size={20} />}>
-              Create a new topic
-            </Button>
           </Stack>
+
+          <Divider />
+
           <Stack alignItems="start" spacing={2}>
-            <Accordion sx={{ width: "100%" }}>
+            <Accordion sx={{ width: "100%" }} disabled={!isactive}>
               <AccordionSummary
                 expandIcon={<DownArrowIcon size={20} />}
                 aria-controls="panel1-content"
@@ -195,12 +203,19 @@ let LeftBar = () => {
         </Stack>
 
         {isactive && (
-          <Button variant="secondary" onClick={() => dispatch(logout(request))}>
-            <Stack direction={"row"} spacing={2} alignItems={"center"}>
-              <Image src={"/icons/log-out.svg"} width={40} height={40} />
-              <Typography fontWeight={600}>Log Out</Typography>
-            </Stack>
-          </Button>
+          <Stack
+            onClick={() => {
+              dispatch(logout(request));
+            }}
+            direction={"row"}
+            spacing={2}
+            padding={4}
+            alignItems={"center"}
+            sx={{ cursor: "pointer" }}
+          >
+            <Image src={"/icons/log-out.svg"} width={40} height={40} />
+            <Typography fontWeight={600}>Log Out</Typography>
+          </Stack>
         )}
       </Stack>
     </Box>

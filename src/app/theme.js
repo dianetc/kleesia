@@ -55,6 +55,10 @@ const theme = createTheme({
     },
     MuiButton: {
       styleOverrides: {
+        defaultProps: {
+          disableElevation: true,
+        },
+
         contained: {
           "&:hover": {
             color: "#FEC200",

@@ -29,56 +29,6 @@ let Post = ({ id, children, comments = 0, votes = 0, conferences = [] }) => {
   let { isactive } = useSession();
   let [viewComments, setViewComments] = useState(false);
 
-  let Votes = () => {
-    return (
-      <Stack
-        direction={"row"}
-        spacing={2}
-        alignItems={"center"}
-        sx={{
-          border: "1px solid #bebebe",
-          borderRadius: "6px",
-          padding: "8px 14px",
-        }}
-      >
-        <Image
-          src={"/icons/arrow-up.svg"}
-          width={26}
-          height={26}
-          alt="upvote"
-        />
-        <Typography>{votes}</Typography>
-        <Image
-          src={"/icons/arrow-down.svg"}
-          width={26}
-          height={26}
-          alt="downvote"
-        />
-      </Stack>
-    );
-  };
-
-  let Comment = () => {
-    return (
-      <Button
-        variant="outline"
-        sx={{ border: "1px solid #bebebe" }}
-        onClick={() => setViewComments(!viewComments)}
-        disabled={!isactive}
-      >
-        <Stack direction={"row"} spacing={2} alignItems={"center"}>
-          <Image
-            src={"/icons/comment.svg"}
-            width={26}
-            height={26}
-            alt="Comment"
-          />
-          <Typography>{comments}</Typography>
-        </Stack>
-      </Button>
-    );
-  };
-
   let Conferences = ({ list = [] }) => {
     return (
       <Stack direction="row" alignContent="center" spacing={1}>
@@ -107,8 +57,11 @@ let Post = ({ id, children, comments = 0, votes = 0, conferences = [] }) => {
             justifyContent="space-between"
           >
             <Stack direction="row" spacing={4}>
-              <Votes />
-              <Comment />
+              <Votes count={votes} />
+              <Comment
+                count={comments}
+                toggle={() => setViewComments(!viewComments)}
+              />
             </Stack>
             <Conferences list={conferences} />
           </Stack>
@@ -120,7 +73,23 @@ let Post = ({ id, children, comments = 0, votes = 0, conferences = [] }) => {
 };
 
 let Comments = ({ count = 0 }) => {
-  let [replies, setReplies] = useState([]);
+  let [replies, setReplies] = useState([
+    {
+      user: { name: "aman arosh", avatar: "", lastUpdated: "14h" },
+      comment:
+        "That's a fascinating take! The way you've explained quantum entanglement makes it so much more approachable. It's incredible how particles can be linked over vast distances, almost like they're communicating instantly. This could totally revolutionize how we understand the universe. Thanks for breaking it down so clearly!",
+    },
+    {
+      user: { name: "aman arosh", avatar: "", lastUpdated: "14h" },
+      comment:
+        "That's a fascinating take! The way you've explained quantum entanglement makes it so much more approachable. It's incredible how particles can be linked over vast distances, almost like they're communicating instantly. This could totally revolutionize how we understand the universe. Thanks for breaking it down so clearly!",
+    },
+    {
+      user: { name: "aman arosh", avatar: "", lastUpdated: "14h" },
+      comment:
+        "That's a fascinating take! The way you've explained quantum entanglement makes it so much more approachable. It's incredible how particles can be linked over vast distances, almost like they're communicating instantly. This could totally revolutionize how we understand the universe. Thanks for breaking it down so clearly!",
+    },
+  ]);
 
   return (
     <Stack spacing={4}>
@@ -131,32 +100,97 @@ let Comments = ({ count = 0 }) => {
         </CardContent>
         <CardActions sx={{ padding: 2 }}>
           <Button variant="contained">Reply</Button>
-          <Button variant="contained">Cancel</Button>
+          <Button variant="outlined">Cancel</Button>
         </CardActions>
         {/* Replies */}
-        <Stack direction="col" spacing={2}>
-          {replies.map((reply, index) => {
-            return (
-              <Reply key={index}>
-                <Reply.User>{reply?.user}</Reply.User>
-                <Reply.Comment>{reply?.comment}</Reply.Comment>
-              </Reply>
-            );
-          })}
-        </Stack>
+        <CardContent>
+          <Stack spacing={2}>
+            {replies.map((reply, index) => {
+              return <Reply key={index} {...reply} />;
+            })}
+          </Stack>
+        </CardContent>
       </Card>
     </Stack>
   );
 };
 
-let Reply = ({ children }) => {
+let Votes = ({ count }) => {
   return (
-    <Stack direction="col" spacing={2}>
-      <Stack direction="row" alignItems="center" spacing={3}>
-        <Image src={""} width={40} height={40} alt={"avatar"} />
-        <Typography fontWeight={100}>{name}</Typography>
+    <Stack
+      direction={"row"}
+      spacing={2}
+      alignItems={"center"}
+      sx={{
+        border: "1px solid #bebebe",
+        borderRadius: "6px",
+        padding: "8px 14px",
+      }}
+    >
+      <Image src={"/icons/arrow-up.svg"} width={26} height={26} alt="upvote" />
+      <Typography>{count}</Typography>
+      <Image
+        src={"/icons/arrow-down.svg"}
+        width={26}
+        height={26}
+        alt="downvote"
+      />
+    </Stack>
+  );
+};
+
+let Comment = ({ toggle, count }) => {
+  let { isactive } = useSession();
+
+  return (
+    <Button
+      variant="outline"
+      sx={{ border: "1px solid #bebebe" }}
+      onClick={toggle}
+      disabled={!isactive}
+    >
+      <Stack direction={"row"} spacing={2} alignItems={"center"}>
+        <Image
+          src={"/icons/comment.svg"}
+          width={26}
+          height={26}
+          alt="Comment"
+        />
+        <Typography>{count}</Typography>
       </Stack>
-      <Typography variant={"p"}>{children}</Typography>
+    </Button>
+  );
+};
+
+let Reply = ({ user, comment = "" }) => {
+  return (
+    <Stack spacing={3}>
+      <Stack direction="row" alignItems="center" spacing={1}>
+        <Image
+          src={"https://placehold.co/50"}
+          className="rounded-full"
+          width={50}
+          height={50}
+          alt={"avatar"}
+        />
+        <Typography fontWeight={600} variant="h6">
+          @{user?.name}
+        </Typography>
+        <Typography fontWeight={200} variant="h6">
+          {user?.lastUpdated} ago
+        </Typography>
+      </Stack>
+      <Typography fontWeight={300} variant="p">
+        {comment}
+      </Typography>
+      <Divider />
+      <Stack direction="row" spacing={2}>
+        <Button variant="outline">
+          <PlusIcon size={20} />
+        </Button>
+        <Comment count={40} />
+        <Votes count={20} />
+      </Stack>
     </Stack>
   );
 };

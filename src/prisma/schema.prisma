@@ -31,7 +31,7 @@ model User {
   recovery   Recovery[]
   comments   Comments[]
   conference Conference[]
-  channel    Channel[]
+  Topic      Topic[]
 }
 
 model Account {
@@ -108,17 +108,17 @@ model Post {
   user            User?             @relation(fields: [user_id], references: [id])
   user_id         String?
 
-  channel    Channel? @relation(fields: [channel_id], references: [id])
-  channel_id String?
+  Topic    Topic?  @relation(fields: [topic_id], references: [id])
+  topic_id String?
 }
 
-model Channel {
+model Topic {
   id         String    @id @default(uuid())
   created_at DateTime  @default(now())
   updated_at DateTime?
 
   name  String? @unique
-  rules String?
+  rules Json[]
 
   // Relations
   post Post[]

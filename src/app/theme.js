@@ -7,8 +7,6 @@ const Satoshi = localFont({ src: "font/satoshi.ttf" });
 
 import { ThemeProvider } from "@emotion/react";
 
-console.log(Satoshi);
-
 const theme = createTheme({
   palette: {
     primary: {

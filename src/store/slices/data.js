@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  post: { id: "" },
+  context: { name: "", id: "" },
 };
 
 const data = createSlice({
@@ -11,12 +11,13 @@ const data = createSlice({
     destroy: (state, action) => {
       state.post = {};
     },
-    setDetailsContext: (state, action) => {
-      state.post = action.payload;
+    setContext: (state, action) => {
+      let { type: name, id } = action.payload;
+      state.context = { name, id };
     },
   },
 });
 
-export const { setDetailsContext, destroy } = data.actions;
+export const { setContext, destroy } = data.actions;
 
 export default data.reducer;

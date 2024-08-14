@@ -1,38 +1,36 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 import request from "@/lib/request";
+import { useSession } from "@/lib/hooks/auth";
 
 import { useDispatch } from "react-redux";
 import { logout } from "@/store/slices/persisted";
 
+import Modals from "./modals";
+
+import { Topics, Conferences } from "@/modules/selector-list";
+
 import Stack from "@mui/material/Stack";
+import Divider from "@mui/material/Divider";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputAdornment from "@mui/material/InputAdornment";
 
-import Divider from "@mui/material/Divider";
-
-import { Box } from "@mui/material";
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Accordion from "@mui/material/Accordion";
 import Typography from "@mui/material/Typography";
-import AccordionActions from "@mui/material/AccordionActions";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
 
 // Icons
 import { IoIosSearch as SearchIcon } from "react-icons/io";
-import { IoAddCircleSharp as PlusIcon } from "react-icons/io5";
 import { FaArrowRight as RightArrowIcon } from "react-icons/fa6";
-import { VscTriangleDown as DownArrowIcon } from "react-icons/vsc";
-import { useSession } from "@/lib/hooks/auth";
-import { useRouter } from "next/navigation";
 
 let Layout = ({ children }) => {
   return (
     <main>
       <Navigation />
+      <Modals />
       <Stack direction="row" sx={{ height: "90vh" }}>
         <LeftBar />
         <Content>{children}</Content>
@@ -160,49 +158,9 @@ let LeftBar = () => {
         justifyContent={"space-between"}
       >
         <Stack spacing={3} sx={{ padding: 3 }}>
-          <Stack alignItems="start" spacing={2}>
-            <Accordion sx={{ width: "100%" }} disabled={!isactive}>
-              <AccordionSummary
-                expandIcon={<DownArrowIcon size={20} />}
-                aria-controls="panel1-content"
-                id="panel1-header"
-              >
-                <Stack direction={"row"} alignItems={"center"} spacing={4}>
-                  <Image src="/icons/topics.svg" width={30} height={30} />
-                  <Typography variant="secondary" fontWeight="bold">
-                    Topics
-                  </Typography>
-                </Stack>
-              </AccordionSummary>
-              <AccordionDetails>No topics yet..</AccordionDetails>
-              <Divider sx={{ padding: 2 }} />
-              <AccordionActions sx={{ justifyContent: "start" }}>
-                <Button variant="secondary" startIcon={<PlusIcon size={20} />}>
-                  Create a new topic
-                </Button>
-              </AccordionActions>
-            </Accordion>
-          </Stack>
-
+          <Topics />
           <Divider />
-
-          <Stack alignItems="start" spacing={2}>
-            <Accordion sx={{ width: "100%" }} disabled={!isactive}>
-              <AccordionSummary
-                expandIcon={<DownArrowIcon size={20} />}
-                aria-controls="panel1-content"
-                id="panel1-header"
-              >
-                <Stack direction={"row"} alignItems={"center"} spacing={4}>
-                  <Image src="/icons/conferences.svg" width={30} height={30} />
-                  <Typography variant="secondary" fontWeight="bold">
-                    Conferences
-                  </Typography>
-                </Stack>
-              </AccordionSummary>
-              <AccordionDetails>No conferences yet</AccordionDetails>
-            </Accordion>
-          </Stack>
+          <Conferences />
         </Stack>
 
         {isactive && (
@@ -226,7 +184,132 @@ let LeftBar = () => {
 };
 
 let RightBar = () => {
-  return <Box sx={{ width: "25%", border: "1px solid #E8E8E8" }}></Box>;
+  let { isactive } = useSession();
+
+  let data = undefined;
+  return (
+    <Box sx={{ width: "25%", border: "1px solid #E8E8E8", padding: 4 }}>
+      {data ? (
+        <TopicDetails />
+      ) : (
+        <Stack
+          width="100%"
+          height="100%"
+          alignItems="center"
+          justifyContent="center"
+        >
+          <Typography variant="p">
+            {isactive
+              ? "Pick a topic to view details"
+              : "Login in to participate in the conversation"}
+          </Typography>
+        </Stack>
+      )}
+    </Box>
+  );
 };
 
+let TopicDetails = () => {
+  return (
+    <Stack spacing={4}>
+      <Featured
+        data={{
+          name: "Placeholder for title, even if this is two lines",
+          followers: 48839,
+          online: 3930200,
+        }}
+      />
+      <Rules list={[]} />
+    </Stack>
+  );
+};
+
+let Featured = ({ data = {} }) => {
+  return (
+    <Box
+      sx={{
+        padding: 3,
+        borderRadius: 1,
+        background: (theme) => theme.palette.background.main,
+      }}
+    >
+      <Stack spacing={6}>
+        <Typography variant="h6" fontWeight={600}>
+          {data?.name}
+        </Typography>
+        <Stack spacing={2}>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Typography fontWeight={100} variant="p">
+              Followers
+            </Typography>
+            <Typography fontWeight={100} variant="p">
+              {data?.followers}
+            </Typography>
+          </Stack>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Typography fontWeight={100} variant="p">
+              Online
+            </Typography>
+            <Typography fontWeight={100} variant="p">
+              {data?.online}
+            </Typography>
+          </Stack>
+        </Stack>
+        <Stack direction="row" spacing={2}>
+          <Button variant="outlined">New post</Button>
+          <Button variant="contained">Follow</Button>
+        </Stack>
+        <Divider />
+        <Stack>
+          <Typography>Tags:</Typography>
+          <Stack direction="row" alignContent="center" spacing={1}>
+            {data?.conferences?.map((conference) => {
+              return <Chip key={conference?.id} label={conference} />;
+            })}
+          </Stack>
+        </Stack>
+      </Stack>
+    </Box>
+  );
+};
+
+let Rules = ({ list = [] }) => {
+  // Child
+  let Rule = ({ children }) => <Stack spacing={0}>{children}</Stack>;
+  let Name = ({ children }) => <Typography variant="h6">{children}</Typography>;
+  let Details = ({ children }) => (
+    <Typography variant="p" fontWeight={200}>
+      {children}
+    </Typography>
+  );
+
+  Rule.Name = Name;
+  Rule.Details = Details;
+
+  return (
+    <Stack spacing={2}>
+      <Typography variant="h5" fontWeight={600}>
+        Our Rules
+      </Typography>
+      {list?.map((rule, index) => {
+        return (
+          <Rule key={rule?.id}>
+            <Rule.Name>
+              {index + 1}. {rule?.name}
+            </Rule.Name>
+            <Rule.Details>{rule?.details}</Rule.Details>
+          </Rule>
+        );
+      })}
+    </Stack>
+  );
+};
 export default Layout;

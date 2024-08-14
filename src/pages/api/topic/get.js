@@ -16,24 +16,24 @@ export default async function GET(request, response) {
     let user = await getUserRole(headers);
 
     // Fetch followed channels
-    let followed_channels = await prisma.follows.findMany({
-      where: { user_id: user?.id, context: "channel" },
+    let followed_topics = await prisma.follows.findMany({
+      where: { user_id: user?.id, context: "topic" },
       select: { context_id: true },
     });
 
-    let followed_channels_list = followed_channels.map(
-      (channel_id) => channel_id?.context_id
+    let followed_topics_list = followed_topics.map(
+      (topic_id) => topic_id?.context_id
     );
 
     // Fetch all authored channels
-    let all_channels = await prisma.channel.findMany({
+    let all_topics = await prisma.topic.findMany({
       where: {
-        OR: [{ user_id: user?.id }, { id: { in: followed_channels_list } }],
+        OR: [{ user_id: user?.id }, { id: { in: followed_topics_list } }],
       },
       select: { id: true, name: true },
     });
 
-    return response.status(200).send({ all_channels });
+    return response.status(200).send({ all_topics });
   } catch (error) {
     return response.status(500).send({ msg: messages.FATAL });
   }

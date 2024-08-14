@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   menu: { active: false, id: "" },
-  modal: { active: false, id: "" },
+  modal: { active: false, id: "", size: "small" },
   post: { readMore: { active: false, id: "" } },
 };
 
@@ -12,7 +12,7 @@ const ui = createSlice({
   reducers: {
     destroy: (state, action) => {
       state.menu = { active: false, id: "" };
-      state.modal = { active: false, id: "" };
+      state.modal = { active: false, id: "", size: "" };
       state.post = { readMore: { active: false, id: "" } };
     },
     toggle: (state, action) => {

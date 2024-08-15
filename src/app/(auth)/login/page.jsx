@@ -84,7 +84,7 @@ let Login = () => {
         status: status !== 400 ? "error" : "info",
         content: error?.response?.data?.msg ?? error?.message,
       });
-      status === 400 && router.push("/home");
+      status === 400 && router.push("/");
     }
   }
 

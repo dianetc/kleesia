@@ -54,41 +54,46 @@ export default async function SIGNIN(request, response) {
     },
     select: {
       token: true,
+      refresh_tk: true,
       status: true,
     },
   });
 
-  let { status } = session ?? {};
-
-  if (status === "active")
-    return response.status(400).send({ msg: "You already logged in" });
-
-  let token = generateHash();
-  let refresh_tk = generateHash();
+  let { status, token, refresh_tk } = session ?? {};
 
   let expiry = getExpiry(8);
+
+  let params = { req: request, res: response, maxAge: expiry };
+
+  if (status === "active") {
+    setCookie("ABywFrtD", token, params);
+    setCookie("qBJpvRne", refresh_tk, params);
+    return response.status(400).send({ msg: "You already logged in" });
+  }
+
+  let nw_token = generateHash();
+  let nw_refresh_tk = generateHash();
 
   try {
     await prisma.session.create({
       data: {
         expiry,
-        token,
-        refresh_tk,
+        token: nw_token,
+        refresh_tk: nw_refresh_tk,
         account_id: account?.id,
       },
     });
 
-    let params = { req: request, res: response, maxAge: expiry };
-
-    setCookie("ABywFrtD", token, params);
-    setCookie("qBJpvRne", refresh_tk, params);
+    setCookie("ABywFrtD", nw_token, params);
+    setCookie("qBJpvRne", nw_refresh_tk, params);
 
     delete user?.account;
 
     return response
       .status(200)
       .send({ msg: `Welcome, ${user?.name}`, data: user });
-  } catch (e) {
+  } catch (error) {
+    console.log(error);
     return response.status(500).send({ msg: messages.FATAL });
   }
 }

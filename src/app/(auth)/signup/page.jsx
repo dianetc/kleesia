@@ -84,7 +84,7 @@ let Signup = () => {
         status: status !== 400 ? "error" : "info",
         content: data?.msg ?? error?.message,
       });
-      status === 400 && router.push("/home");
+      status === 400 && router.push("/");
     }
   }
 

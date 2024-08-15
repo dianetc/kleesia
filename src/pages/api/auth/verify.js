@@ -13,7 +13,7 @@ export default async function VERIFY(request, response) {
 
   let status = await validateToken(token);
 
-  return response.status(status ? 200 : 500).send({ status });
+  return response.status(status ? 200 : 500).send(status);
 }
 
 export async function validateToken(token) {

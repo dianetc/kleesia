@@ -6,12 +6,12 @@ import Image from "next/image";
 import { useState } from "react";
 
 import { useDispatch } from "react-redux";
+import { saveSession } from "@/store/slices/persisted";
 
 import request from "@/lib/request";
 
-import { Notify } from "@/lib/utils";
+import { allowed_emails, Notify } from "@/lib/utils";
 
-import Box from "@mui/material/Box";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputAdornment from "@mui/material/InputAdornment";
 
@@ -52,31 +52,52 @@ export default function Page() {
 
 let Signup = () => {
   let [data, setData] = useState({});
-  let [view_password, setViewPassword] = useState(false);
+  let [view, setView] = useState({
+    password: false,
+    rp_password: false,
+  });
+
+  let [error, setError] = useState(false);
 
   let router = useRouter();
   let dispatch = useDispatch();
 
+  let validateEmail = (email) => {
+    setError(email?.length > 0 && !email.match(allowed_emails));
+  };
+
   function handleChange(e) {
     let { id, value } = e.target;
+    id === "email" && validateEmail(value);
     setData({ ...data, [id]: value });
   }
 
-  let is_empty = () => !data?.email || !data?.password;
+  let is_empty = () =>
+    data?.name || data?.email || data?.password || data?.rp_password;
+
+  let is_password_match = () => data?.password === data?.rp_password;
 
   async function submit(e) {
     e.preventDefault();
 
-    if (is_empty()) {
+    if (!is_empty) {
       Notify({ status: "error", content: "Please fill all the fields" });
       return;
     }
 
+    if (!is_password_match) {
+      Notify({ status: "error", content: "Passwords dont match" });
+      return;
+    }
+
+    let payload = data;
+    delete payload?.rp_password;
+
     try {
-      let response = await request.post("auth/signin", data);
+      let response = await request.post("auth/user/create", payload);
       let { msg, data: user } = response?.data ?? {};
       Notify({ status: "success", content: msg });
-      dispatch(saveSession(user?.data));
+      dispatch(saveSession(user));
       router.push("/");
     } catch (error) {
       let { data, status } = error?.response ?? {};
@@ -118,11 +139,12 @@ let Signup = () => {
             </Typography>
             <Stack spacing={2}>
               <OutlinedInput
-                id="username"
+                id="name"
                 size="medium"
                 onChange={handleChange}
                 placeholder="Username"
                 type="text"
+                required={true}
                 endAdornment={
                   <InputAdornment position="end">
                     <UserIcon size={20} />
@@ -132,8 +154,10 @@ let Signup = () => {
               <OutlinedInput
                 id="email"
                 onChange={handleChange}
-                placeholder="Email Address"
+                placeholder="Email Address, eg: name@domain.edu"
                 type="varchar"
+                error={error}
+                required={true}
                 endAdornment={
                   <InputAdornment position="end">
                     <EmailIcon size={20} />
@@ -146,29 +170,33 @@ let Signup = () => {
                   sx={{ width: "100%" }}
                   onChange={handleChange}
                   placeholder="Password"
-                  type={view_password ? "varchar" : "password"}
+                  required={true}
+                  type={view?.password ? "varchar" : "password"}
                   endAdornment={
                     <InputAdornment position="end">
                       <EyeIcon
                         size={25}
                         className="cursor-pointer"
-                        onClick={() => setViewPassword(!view_password)}
+                        onClick={() => setView({ password: !view?.password })}
                       />
                     </InputAdornment>
                   }
                 />
                 <OutlinedInput
-                  id="rpt-password"
+                  id="rp_password"
                   sx={{ width: "100%" }}
                   onChange={handleChange}
                   placeholder="Repeat Password"
-                  type={view_password ? "varchar" : "password"}
+                  required={true}
+                  type={view?.rp_password ? "varchar" : "password"}
                   endAdornment={
                     <InputAdornment position="end">
                       <EyeIcon
                         size={25}
                         className="cursor-pointer"
-                        onClick={() => setViewPassword(!view_password)}
+                        onClick={() =>
+                          setView({ rp_password: !view?.rp_password })
+                        }
                       />
                     </InputAdornment>
                   }

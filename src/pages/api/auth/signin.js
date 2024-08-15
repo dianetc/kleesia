@@ -87,6 +87,7 @@ export default async function SIGNIN(request, response) {
     setCookie("ABywFrtD", nw_token, params);
     setCookie("qBJpvRne", nw_refresh_tk, params);
 
+    delete user?.id;
     delete user?.account;
 
     return response

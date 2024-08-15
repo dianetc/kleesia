@@ -4,7 +4,7 @@ import { messages } from "@/lib/request/responses";
 import { getUserRole } from "../auth/user/details";
 
 export default async function GET(request, response) {
-  let { method, headers } = request ?? {};
+  let { method, query } = request ?? {};
 
   if (method !== "GET")
     return response.status(405).send({ msg: messages.METHOD_NOT_ALLOWED });
@@ -13,27 +13,24 @@ export default async function GET(request, response) {
 
   try {
     // Get user role
-    let user = await getUserRole(headers);
+    let { id } = query ?? {};
 
-    // Fetch followed channels
-    let followed_topics = await prisma.follows.findMany({
-      where: { user_id: user?.id, context: "topic" },
-      select: { context_id: true },
-    });
-
-    let followed_topics_list = followed_topics.map(
-      (topic_id) => topic_id?.context_id
-    );
-
-    // Fetch all authored channels
-    let all_topics = await prisma.topic.findMany({
+    let topic = await prisma.topic.findUnique({
       where: {
-        OR: [{ user_id: user?.id }, { id: { in: followed_topics_list } }],
+        id,
       },
-      select: { id: true, name: true },
+      select: {
+        name: true,
+        rules: true,
+        post: {
+          select: {
+            title: true,
+          },
+        },
+      },
     });
 
-    return response.status(200).send({ all_topics });
+    return response.status(200).send(topic);
   } catch (error) {
     return response.status(500).send({ msg: messages.FATAL });
   }

@@ -22,7 +22,7 @@ const theme = createTheme({
       contrastText: "#FEC200",
     },
     background: {
-      main: "#E8E8E8",
+      main: "#F6F6F6",
     },
   },
   typography: {

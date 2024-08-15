@@ -3,10 +3,10 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-import request from "@/lib/request";
+import request, { fetcher } from "@/lib/request";
 import { useSession } from "@/lib/hooks/auth";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "@/store/slices/persisted";
 
 import Modals from "./modals";
@@ -25,6 +25,8 @@ import Typography from "@mui/material/Typography";
 // Icons
 import { IoIosSearch as SearchIcon } from "react-icons/io";
 import { FaArrowRight as RightArrowIcon } from "react-icons/fa6";
+import useSWR from "swr";
+import { useEffect } from "react";
 
 let Layout = ({ children }) => {
   return (
@@ -186,11 +188,17 @@ let LeftBar = () => {
 let RightBar = () => {
   let { isactive } = useSession();
 
-  let data = undefined;
+  let { id, name } = useSelector((state) => state.unpersisted.data.context);
+
+  let { data } = useSWR(
+    name === "TOPIC" ? `topic/get?id=${id}` : undefined,
+    fetcher
+  );
+
   return (
     <Box sx={{ width: "25%", border: "1px solid #E8E8E8", padding: 4 }}>
       {data ? (
-        <TopicDetails />
+        <TopicDetails data={data} />
       ) : (
         <Stack
           width="100%"
@@ -209,17 +217,17 @@ let RightBar = () => {
   );
 };
 
-let TopicDetails = () => {
+let TopicDetails = ({ data }) => {
   return (
     <Stack spacing={4}>
       <Featured
         data={{
-          name: "Placeholder for title, even if this is two lines",
+          name: data?.name,
           followers: 48839,
           online: 3930200,
         }}
       />
-      <Rules list={[]} />
+      <Rules list={data?.rules} />
     </Stack>
   );
 };
@@ -233,7 +241,7 @@ let Featured = ({ data = {} }) => {
         background: (theme) => theme.palette.background.main,
       }}
     >
-      <Stack spacing={6}>
+      <Stack spacing={4}>
         <Typography variant="h6" fontWeight={600}>
           {data?.name}
         </Typography>

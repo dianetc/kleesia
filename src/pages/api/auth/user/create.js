@@ -1,8 +1,9 @@
 import CryptoJS from "crypto-js";
 import prisma from "@/lib/prisma";
-import { isPayloadValid } from "@/lib/utils";
+import { setCookie } from "cookies-next";
+import { generateHash } from "../lib";
 import { messages } from "@/lib/request/responses";
-import { allowed_emails } from "@/lib/utils";
+import { isPayloadValid, allowed_emails, getExpiry } from "@/lib/utils";
 
 export default async function CREATE(request, response) {
   let { method, body } = request ?? {};
@@ -23,6 +24,13 @@ export default async function CREATE(request, response) {
       .status(500)
       .send({ msg: "Sorry, only .edu emails are allowed.. Try again" });
 
+  let exists = await prisma.user.findUnique({
+    where: { email: body?.email },
+  });
+
+  if (exists)
+    return response.status(500).send({ msg: "This email already exists" });
+
   let user = body;
   let hash = CryptoJS.SHA3(body?.password).toString(CryptoJS.enc.Hex);
 
@@ -38,10 +46,42 @@ export default async function CREATE(request, response) {
           },
         },
       },
+      select: {
+        name: true,
+        email: true,
+        account: {
+          select: {
+            id: true,
+          },
+        },
+      },
     });
 
-    return response.status(200).send({ msg: `User ${body?.email} created` });
+    let expiry = getExpiry(8);
+    let nw_token = generateHash();
+    let nw_refresh_tk = generateHash();
+
+    await prisma.session.create({
+      data: {
+        expiry,
+        token: nw_token,
+        refresh_tk: nw_refresh_tk,
+        account_id: user?.account?.id,
+      },
+    });
+
+    let params = { req: request, res: response, maxAge: expiry };
+
+    setCookie("ABywFrtD", nw_token, params);
+    setCookie("qBJpvRne", nw_refresh_tk, params);
+
+    delete user?.account;
+
+    return response
+      .status(200)
+      .send({ msg: `User ${body?.email} created`, data: user });
   } catch (error) {
+    console.log(error);
     return response.status(500).send({ msg: messages?.FATAL });
   }
 }

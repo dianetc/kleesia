@@ -33,7 +33,7 @@ export let useSession = () => {
 
   useEffect(() => {
     validateToken();
-  }, [user, cookie]);
+  }, [user]);
 
   return { isactive };
 };

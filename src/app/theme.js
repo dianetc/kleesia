@@ -42,15 +42,6 @@ const theme = createTheme({
         }
       `,
     },
-    MuiOutlinedInput: {
-      styleOverrides: {
-        root: {
-          "&:focus": {
-            border: "none",
-          },
-        },
-      },
-    },
     MuiAccordion: {
       defaultProps: {
         disableElevation: true,
@@ -58,10 +49,6 @@ const theme = createTheme({
     },
     MuiButton: {
       styleOverrides: {
-        defaultProps: {
-          disableElevation: true,
-        },
-
         contained: {
           "&:hover": {
             color: "#FEC200",

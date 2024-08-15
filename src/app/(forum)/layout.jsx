@@ -1,16 +1,20 @@
 "use client";
 
+import useSWR from "swr";
+import { useEffect } from "react";
+
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-import request, { fetcher } from "@/lib/request";
 import { useSession } from "@/lib/hooks/auth";
+import request, { fetcher } from "@/lib/request";
+import { createFollow } from "@/lib/features/follows";
 
-import { useDispatch, useSelector } from "react-redux";
+import { toggle } from "@/store/slices/ui";
 import { logout } from "@/store/slices/persisted";
+import { useDispatch, useSelector } from "react-redux";
 
 import Modals from "./modals";
-
 import { Topics, Conferences } from "@/modules/selector-list";
 
 import Stack from "@mui/material/Stack";
@@ -23,10 +27,10 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
 // Icons
+import { IoAdd as PlusIcon } from "react-icons/io5";
 import { IoIosSearch as SearchIcon } from "react-icons/io";
+import { FaPlusSquare as SquarePlusIcon } from "react-icons/fa";
 import { FaArrowRight as RightArrowIcon } from "react-icons/fa6";
-import useSWR from "swr";
-import { useEffect } from "react";
 
 let Layout = ({ children }) => {
   return (
@@ -176,7 +180,12 @@ let LeftBar = () => {
             alignItems={"center"}
             sx={{ cursor: "pointer" }}
           >
-            <Image src={"/icons/log-out.svg"} width={40} height={40} />
+            <Image
+              src={"/icons/log-out.svg"}
+              width={40}
+              height={40}
+              alt={"logout"}
+            />
             <Typography fontWeight={600}>Log Out</Typography>
           </Stack>
         )}
@@ -220,81 +229,120 @@ let RightBar = () => {
 let TopicDetails = ({ data }) => {
   return (
     <Stack spacing={4}>
-      <Featured
-        data={{
-          name: data?.name,
-          followers: 48839,
-          online: 3930200,
-        }}
-      />
+      <Featured {...data} />
       <Rules list={data?.rules} />
     </Stack>
   );
 };
 
-let Featured = ({ data = {} }) => {
+let Featured = ({ id, name, followers = 0, online = 0, conferences = [] }) => {
+  let dispatch = useDispatch();
+
   return (
-    <Box
-      sx={{
-        padding: 3,
-        borderRadius: 1,
-        background: (theme) => theme.palette.background.main,
-      }}
-    >
-      <Stack spacing={4}>
-        <Typography variant="h6" fontWeight={600}>
-          {data?.name}
-        </Typography>
-        <Stack spacing={2}>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Typography fontWeight={100} variant="p">
-              Followers
-            </Typography>
-            <Typography fontWeight={100} variant="p">
-              {data?.followers}
-            </Typography>
-          </Stack>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Typography fontWeight={100} variant="p">
-              Online
-            </Typography>
-            <Typography fontWeight={100} variant="p">
-              {data?.online}
-            </Typography>
-          </Stack>
+    <Stack spacing={4}>
+      <Typography variant="h6" fontWeight={600}>
+        {name}
+      </Typography>
+      <Stack spacing={2}>
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <Typography fontWeight={100} variant="p">
+            Followers
+          </Typography>
+          <Typography fontWeight={100} variant="p">
+            {followers}
+          </Typography>
         </Stack>
-        <Stack direction="row" spacing={2}>
-          <Button variant="outlined">New post</Button>
-          <Button variant="contained">Follow</Button>
-        </Stack>
-        <Divider />
-        <Stack>
-          <Typography>Tags:</Typography>
-          <Stack direction="row" alignContent="center" spacing={1}>
-            {data?.conferences?.map((conference) => {
-              return <Chip key={conference?.id} label={conference} />;
-            })}
-          </Stack>
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <Typography fontWeight={100} variant="p">
+            Online
+          </Typography>
+          <Typography fontWeight={100} variant="p">
+            {online}
+          </Typography>
         </Stack>
       </Stack>
-    </Box>
+      <Stack
+        direction="row"
+        alignItems="center"
+        justifyContent="center"
+        spacing={2}
+      >
+        <Button fullWidth variant="outlined">
+          <Stack
+            direction="row"
+            spacing={2}
+            alignItems="center"
+            justifyContent="center"
+            onClick={() => {
+              dispatch(
+                toggle({
+                  type: "MODAL",
+                  active: true,
+                  id: "create_post",
+                  size: "medium",
+                })
+              );
+            }}
+          >
+            <Typography>New Post</Typography>
+            <SquarePlusIcon size={16} />
+          </Stack>
+        </Button>
+        <Button
+          fullWidth
+          variant="contained"
+          onClick={() => {
+            createFollow({ context: "topic", contx: id });
+          }}
+        >
+          <Stack
+            direction="row"
+            spacing={2}
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Typography>Follow</Typography>
+            <PlusIcon size={20} />
+          </Stack>
+        </Button>
+      </Stack>
+      <Divider />
+      <Stack>
+        <Typography>Tags:</Typography>
+        <Stack direction="row" alignContent="center" spacing={1}>
+          {conferences?.map((conference, index) => {
+            return (
+              <Chip
+                key={conference?.id}
+                label={conference}
+                color={`#${index * 3}${index * 7}${index * 8}`}
+              />
+            );
+          })}
+        </Stack>
+      </Stack>
+    </Stack>
   );
 };
 
 let Rules = ({ list = [] }) => {
   // Child
   let Rule = ({ children }) => <Stack spacing={0}>{children}</Stack>;
-  let Name = ({ children }) => <Typography variant="h6">{children}</Typography>;
+  let Name = ({ children }) => (
+    <Typography variant="p" fontWeight={600}>
+      {children}
+    </Typography>
+  );
   let Details = ({ children }) => (
-    <Typography variant="p" fontWeight={200}>
+    <Typography variant="small" fontWeight={200}>
       {children}
     </Typography>
   );
@@ -304,7 +352,7 @@ let Rules = ({ list = [] }) => {
 
   return (
     <Stack spacing={2}>
-      <Typography variant="h5" fontWeight={600}>
+      <Typography variant="h5" fontWeight={500}>
         Our Rules
       </Typography>
       {list?.map((rule, index) => {

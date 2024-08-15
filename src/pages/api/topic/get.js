@@ -20,6 +20,7 @@ export default async function GET(request, response) {
         id,
       },
       select: {
+        id: true,
         name: true,
         rules: true,
         post: {

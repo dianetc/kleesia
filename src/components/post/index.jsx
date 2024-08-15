@@ -24,6 +24,7 @@ import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
+import { createFollow } from "@/lib/features/follows";
 
 let Post = ({ id, children, comments = 0, votes = 0, conferences = [] }) => {
   let { isactive } = useSession();
@@ -211,7 +212,14 @@ let User = ({ name, date }) => {
     <Stack direction="row" justifyContent="space-between">
       <Stack direction="row" alignItems="center" spacing={3}>
         <Typography fontWeight={100}>{name}</Typography>
-        <Button variant="contained" size="small" disabled={!isactive}>
+        <Button
+          variant="contained"
+          size="small"
+          disabled={!isactive}
+          onClick={() => {
+            createFollow({ context: "user", contx: "" });
+          }}
+        >
           <Stack direction="row" spacing={1} alignItems="center">
             <Typography>Follow</Typography>
             <PlusIcon size={20} />

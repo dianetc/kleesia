@@ -26,6 +26,13 @@ export default async function CREATE(request, response) {
 
   data.user_id = user?.id;
 
+  let exists = await prisma.follows.findUnique({ where: data });
+
+  if (exists)
+    return response
+      .status(500)
+      .send({ msg: `You have already followed this ${data?.context}` });
+
   try {
     await prisma.follows.create({ data });
 

@@ -27,6 +27,7 @@ let Modals = () => {
 
   let content = {
     create_topic: <CreateTopic />,
+    create_post: <CreatePost />,
   };
 
   let sizes = {
@@ -167,4 +168,104 @@ let CreateTopic = () => {
     </Stack>
   );
 };
+
+let CreatePost = () => {
+  let [topic, setTopic] = useState("");
+  let [rule, setRule] = useState({ name: "", details: "" });
+  let [rules, setRules] = useState([]);
+
+  function handleChange(e) {
+    let { id, value } = e.target;
+
+    if (id === "topic") {
+      setTopic(value);
+    } else {
+      let _id = id?.split("-")[1];
+      setRule({ ...rule, [_id]: value });
+    }
+  }
+
+  function addRule() {
+    setRules((prev) => [...prev, rule]);
+    setRule({});
+  }
+
+  async function submit(e) {
+    e.preventDefault();
+
+    let data = { name: topic, rules };
+
+    try {
+      await request.post("topic/create", data);
+      Notify({ status: "success", content: `Topic ${topic} created` });
+      //
+      setTopic("");
+      setRule({ name: "", details: "" });
+      setRules([]);
+    } catch (error) {
+      let msg = error?.response?.data?.msg ?? error?.message;
+      Notify({ status: "error", content: msg });
+    }
+  }
+
+  return (
+    <Stack spacing={3}>
+      <Stack spacing={2}>
+        <Typography variant="h1" fontWeight={600}>
+          Create a new post
+        </Typography>
+        <OutlinedInput
+          id="title"
+          label="Title"
+          onChange={handleChange}
+          size="small"
+          value={topic}
+          placeholder="Enter post title"
+        />
+        <TextField
+          id="body"
+          label="Summary"
+          onChange={handleChange}
+          placeholder="Enter post summary"
+          minRows={6}
+          value={rule?.details}
+          multiline
+        />
+        <OutlinedInput
+          id="arxix_link"
+          label="Arxix abstract link"
+          onChange={handleChange}
+          size="small"
+          value={topic}
+          placeholder="Enter link"
+        />
+        <OutlinedInput
+          id="conferences"
+          label="Conferences"
+          onChange={handleChange}
+          size="small"
+          value={topic}
+          placeholder="Search for acronym"
+        />
+        <OutlinedInput
+          id="authors"
+          label="Co-authors"
+          onChange={handleChange}
+          size="small"
+          value={topic}
+          placeholder="Enter names, use commas to separate"
+        />
+      </Stack>
+
+      <Stack direction="row" justifyContent="end">
+        <Button variant="contained" size="large" onClick={submit}>
+          <Typography variant="h5" fontWeight={600}>
+            Publish Post
+          </Typography>
+        </Button>
+      </Stack>
+    </Stack>
+  );
+};
+
 export default Modals;

@@ -30,6 +30,12 @@ export async function validateToken(token) {
       },
     });
 
+    if (check?.length === 0)
+      await prisma.session.update({
+        where: { token },
+        data: { status: "inactive" },
+      });
+
     return check?.length > 0;
   } catch (error) {
     return false;

@@ -66,9 +66,15 @@ export default async function SIGNIN(request, response) {
   let params = { req: request, res: response, maxAge: expiry };
 
   if (status === "active") {
+    delete user?.id;
+    delete user?.account;
+
     setCookie("ABywFrtD", token, params);
     setCookie("qBJpvRne", refresh_tk, params);
-    return response.status(400).send({ msg: "You already logged in" });
+
+    return response
+      .status(200)
+      .send({ msg: "You already logged in", data: user });
   }
 
   let nw_token = generateHash();

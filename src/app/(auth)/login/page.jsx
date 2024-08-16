@@ -78,13 +78,8 @@ let Login = () => {
       dispatch(saveSession(user));
       router.push("/");
     } catch (error) {
-      console.log(error);
-      let { status } = error?.response ?? {};
-      Notify({
-        status: status !== 400 ? "error" : "info",
-        content: error?.response?.data?.msg ?? error?.message,
-      });
-      status === 400 && router.push("/");
+      let msg = error?.response?.data?.msg ?? error?.message;
+      Notify({ status: "error", content: msg });
     }
   }
 

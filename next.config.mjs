@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  transpilePackages: ["mui-chips-input"],
   images: {
     dangerouslyAllowSVG: true,
     contentDispositionType: "attachment",

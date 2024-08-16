@@ -7,24 +7,26 @@ const Satoshi = localFont({ src: "font/satoshi.ttf" });
 
 import { ThemeProvider } from "@emotion/react";
 
-const theme = createTheme({
-  palette: {
-    primary: {
-      light: "#FEC200",
-      main: "#FEC200",
-      dark: "#050E28",
-      contrastText: "#050E28",
-    },
-    secondary: {
-      light: "#050E28",
-      main: "#050E28",
-      dark: "#FEC200",
-      contrastText: "#FEC200",
-    },
-    background: {
-      main: "#F6F6F6",
-    },
+const palette = {
+  primary: {
+    light: "#FEC200",
+    main: "#FEC200",
+    dark: "#050E28",
+    contrastText: "#050E28",
   },
+  secondary: {
+    light: "#050E28",
+    main: "#050E28",
+    dark: "#FEC200",
+    contrastText: "#FEC200",
+  },
+  background: {
+    main: "#F6F6F6",
+  },
+};
+
+const theme = createTheme({
+  palette,
   typography: {
     fontFamily: "'Satoshi', sans-serif",
     body2: {
@@ -47,24 +49,25 @@ const theme = createTheme({
         disableElevation: true,
       },
     },
+
     MuiButton: {
       styleOverrides: {
         contained: {
           "&:hover": {
-            color: "#FEC200",
+            color: palette.primary.main,
           },
         },
         fixed: {
-          color: "#050E28",
-          border: "1px solid #BEBEBE",
+          color: palette.secondary.main,
+          border: `1px solid ${palette.background.main}`,
         },
         outlined: {
-          color: "#050E28",
-          border: "1px solid #BEBEBE",
+          color: palette.secondary.main,
+          border: `1px solid ${palette.secondary.main}`,
           "&:hover": {
-            border: "1px solid #050E28",
-            background: "#050E28",
-            color: "#FEC200",
+            color: palette.primary.main,
+            border: `1px solid ${palette.secondary.main}`,
+            background: palette.secondary.main,
           },
         },
         root: {

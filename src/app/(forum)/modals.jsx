@@ -16,8 +16,9 @@ import Chip from "@mui/material/Chip";
 import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
-import Typography from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
+import { MuiChipsInput } from "mui-chips-input";
 
 let Modals = () => {
   let dispatch = useDispatch();
@@ -45,7 +46,7 @@ let Modals = () => {
     width: sizes[size],
     bgcolor: "background.paper",
     borderRadius: 1,
-    p: 2,
+    p: 3,
   };
 
   return (
@@ -104,7 +105,7 @@ let CreateTopic = () => {
   return (
     <Stack spacing={3}>
       <Stack spacing={2}>
-        <Typography variant="h1" fontWeight={600}>
+        <Typography variant="h5" fontWeight={500}>
           Create a new topic
         </Typography>
         <OutlinedInput
@@ -117,7 +118,7 @@ let CreateTopic = () => {
       </Stack>
 
       <Stack spacing={2}>
-        <Typography variant="h3" fontWeight={500}>
+        <Typography variant="h6" fontWeight={500}>
           Topic rules
         </Typography>
 
@@ -160,7 +161,7 @@ let CreateTopic = () => {
 
       <Stack direction="row" justifyContent="end">
         <Button variant="contained" size="large" onClick={submit}>
-          <Typography variant="h5" fontWeight={600}>
+          <Typography variant="p" fontWeight={500}>
             Create topic
           </Typography>
         </Button>
@@ -170,38 +171,34 @@ let CreateTopic = () => {
 };
 
 let CreatePost = () => {
-  let [topic, setTopic] = useState("");
-  let [rule, setRule] = useState({ name: "", details: "" });
-  let [rules, setRules] = useState([]);
+  let [post, setPost] = useState({});
+  let [co_authors, setAuthors] = useState([]);
+  let [conferences, setConferences] = useState([]);
+
+  let { id: topic_id } = useSelector((state) => state.unpersisted.data.context);
 
   function handleChange(e) {
     let { id, value } = e.target;
-
-    if (id === "topic") {
-      setTopic(value);
-    } else {
-      let _id = id?.split("-")[1];
-      setRule({ ...rule, [_id]: value });
-    }
+    setPost({ ...post, [id]: value });
   }
 
-  function addRule() {
-    setRules((prev) => [...prev, rule]);
-    setRule({});
+  function handleConferences(value) {
+    setConferences(value);
+  }
+
+  function handleAuthors(value) {
+    setAuthors(value);
   }
 
   async function submit(e) {
     e.preventDefault();
 
-    let data = { name: topic, rules };
+    let data = { ...post, co_authors, conferences, topic_id };
 
     try {
-      await request.post("topic/create", data);
-      Notify({ status: "success", content: `Topic ${topic} created` });
+      await request.post("post/create", data);
+      Notify({ status: "success", content: `Post ${post?.title} created` });
       //
-      setTopic("");
-      setRule({ name: "", details: "" });
-      setRules([]);
     } catch (error) {
       let msg = error?.response?.data?.msg ?? error?.message;
       Notify({ status: "error", content: msg });
@@ -210,56 +207,57 @@ let CreatePost = () => {
 
   return (
     <Stack spacing={3}>
-      <Stack spacing={2}>
-        <Typography variant="h1" fontWeight={600}>
-          Create a new post
-        </Typography>
+      <Typography variant="h5" fontWeight={500}>
+        Create a new post
+      </Typography>
+      <Stack spacing={1}>
+        <Typography variant="label">Title</Typography>
         <OutlinedInput
           id="title"
-          label="Title"
           onChange={handleChange}
           size="small"
-          value={topic}
           placeholder="Enter post title"
         />
+      </Stack>
+      <Stack spacing={1}>
+        <Typography variant="label">Summary</Typography>
         <TextField
           id="body"
-          label="Summary"
           onChange={handleChange}
           placeholder="Enter post summary"
           minRows={6}
-          value={rule?.details}
           multiline
         />
+      </Stack>
+      <Stack spacing={1}>
+        <Typography variant="label">Arxix abstract link</Typography>
         <OutlinedInput
           id="arxix_link"
-          label="Arxix abstract link"
           onChange={handleChange}
           size="small"
-          value={topic}
           placeholder="Enter link"
         />
-        <OutlinedInput
-          id="conferences"
-          label="Conferences"
-          onChange={handleChange}
+      </Stack>
+      <Stack spacing={1}>
+        <Typography variant="label">Conference{"(s)"}</Typography>
+        <MuiChipsInput
           size="small"
-          value={topic}
-          placeholder="Search for acronym"
+          value={conferences}
+          onChange={handleConferences}
         />
-        <OutlinedInput
-          id="authors"
-          label="Co-authors"
-          onChange={handleChange}
+      </Stack>
+      <Stack spacing={1}>
+        <Typography variant="label">Co-author{"(s)"}</Typography>
+        <MuiChipsInput
           size="small"
-          value={topic}
-          placeholder="Enter names, use commas to separate"
+          value={co_authors}
+          onChange={handleAuthors}
         />
       </Stack>
 
       <Stack direction="row" justifyContent="end">
         <Button variant="contained" size="large" onClick={submit}>
-          <Typography variant="h5" fontWeight={600}>
+          <Typography variant="p" fontWeight={500}>
             Publish Post
           </Typography>
         </Button>

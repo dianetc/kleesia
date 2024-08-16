@@ -23,6 +23,7 @@
     "cookies-next": "^4.2.1",
     "crypto-js": "^4.2.0",
     "ldrs": "^1.0.2",
+    "mui-chips-input": "^2.1.5",
     "next": "14.2.3",
     "nodemailer": "^6.9.14",
     "prisma": "5.16.2",

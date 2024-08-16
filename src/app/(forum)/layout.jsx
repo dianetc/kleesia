@@ -357,7 +357,7 @@ let Rules = ({ list = [] }) => {
       </Typography>
       {list?.map((rule, index) => {
         return (
-          <Rule key={rule?.id}>
+          <Rule key={index}>
             <Rule.Name>
               {index + 1}. {rule?.name}
             </Rule.Name>

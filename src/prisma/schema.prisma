@@ -98,15 +98,19 @@ model Post {
   created_at DateTime  @default(now())
   updated_at DateTime?
 
-  title String    @unique
-  body  String?
-  votes Boolean[]
+  title      String  @unique
+  body       String?
+  arxix_link String? @unique
+  upvote     Int?
+  downvote   Int?
+
+  // 
+  co_authors  String[]
+  conferences String[]
 
   // Relations
-  conference_post Conference_Post[]
-  // 
-  user            User?             @relation(fields: [user_id], references: [id])
-  user_id         String?
+  user    User?   @relation(fields: [user_id], references: [id])
+  user_id String?
 
   Topic    Topic?  @relation(fields: [topic_id], references: [id])
   topic_id String?
@@ -134,24 +138,9 @@ model Conference {
 
   name String? @unique
 
-  // Relation
-  conference_post Conference_Post[]
   // 
-  user            User?             @relation(fields: [user_id], references: [id])
-  user_id         String?
-}
-
-model Conference_Post {
-  id         String    @id @default(uuid())
-  created_at DateTime  @default(now())
-  updated_at DateTime?
-
-  // Relation
-  conference    Conference? @relation(fields: [conference_id], references: [id])
-  conference_id String?
-  // 
-  post          Post?       @relation(fields: [post_id], references: [id])
-  post_id       String?
+  user    User?   @relation(fields: [user_id], references: [id])
+  user_id String?
 }
 
 model Comments {

@@ -19,9 +19,12 @@ let Page = () => {
       <Stack spacing={4}>
         {name === "TOPIC" && (
           <Typography
-            sx={{ width: "10%", cursor: "pointer" }}
+            sx={{
+              width: "10%",
+              cursor: "pointer",
+              color: "#1976d2",
+            }}
             variant="text"
-            color={"secondary"}
             fontWeight={600}
             onClick={() => {
               dispatch(setContext({ name: "", id: "" }));

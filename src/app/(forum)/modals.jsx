@@ -11,6 +11,9 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 
 import { Box } from "@mui/material";
 import Modal from "@mui/material/Modal";
+import { IoAdd as PlusIcon } from "react-icons/io5";
+import CloseIcon from '@mui/icons-material/Close';
+import IconButton from '@mui/material/IconButton';
 
 import Chip from "@mui/material/Chip";
 import Grid from "@mui/material/Grid";
@@ -102,12 +105,22 @@ let CreateTopic = () => {
     }
   }
 
+  const dispatch = useDispatch();
+  const handleClose = () => {
+    dispatch(toggle({ type: "MODAL", active: false, id: "", size: "" }));
+  };
+
   return (
     <Stack spacing={3}>
-      <Stack spacing={2}>
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Typography variant="h5" fontWeight={500}>
-          Create a new topic
+          Create a New Topic
         </Typography>
+        <IconButton onClick={handleClose}>
+          <CloseIcon />
+        </IconButton>
+      </Stack>
+      <Stack spacing={2}>
         <OutlinedInput
           id="topic"
           onChange={handleChange}
@@ -116,7 +129,6 @@ let CreateTopic = () => {
           placeholder="Enter topic name"
         />
       </Stack>
-
       <Stack spacing={2}>
         <Typography variant="h6" fontWeight={500}>
           Topic rules
@@ -154,8 +166,15 @@ let CreateTopic = () => {
           variant="outlined"
           type="button"
           onClick={() => addRule()}
+          sx={{
+            alignSelf: 'flex-start',
+            width: '30%',
+          }}
         >
-          Add Rule{" "}
+          <Stack direction="row" spacing={1} alignItems="center">
+            <Typography> Add Rule</Typography>
+            <PlusIcon size={20} />
+          </Stack>
         </Button>
       </Stack>
 
@@ -215,14 +234,23 @@ let CreatePost = () => {
       Notify({ status: "error", content: msg });
     }
   }
+  const dispatch = useDispatch();
+  const handleClose = () => {
+    dispatch(toggle({ type: "MODAL", active: false, id: "", size: "" }));
+  };
 
   return (
     <Stack spacing={3}>
-      <Typography variant="h5" fontWeight={500}>
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Typography variant="h5" fontWeight={500}>
         Create a new post
-      </Typography>
+        </Typography>
+        <IconButton onClick={handleClose}>
+          <CloseIcon />
+        </IconButton>
+      </Stack>
       <Stack spacing={1}>
-        <Typography variant="label">Title</Typography>
+        <Typography variant="label">Title *</Typography>
         <OutlinedInput
           id="title"
           onChange={handleChange}
@@ -231,7 +259,7 @@ let CreatePost = () => {
         />
       </Stack>
       <Stack spacing={1}>
-        <Typography variant="label">Summary</Typography>
+        <Typography variant="label">Summary *</Typography>
         <TextField
           id="body"
           onChange={handleChange}
@@ -241,12 +269,12 @@ let CreatePost = () => {
         />
       </Stack>
       <Stack spacing={1}>
-        <Typography variant="label">Arxix abstract link</Typography>
+        <Typography variant="label">Arxiv Abstract Link *</Typography>
         <OutlinedInput
-          id="arxix_link"
+          id="arxiv_link"
           onChange={handleChange}
           size="small"
-          placeholder="Enter link"
+          placeholder="Enter abstract link, e.g, arxiv.org/abs/<id>"
         />
       </Stack>
       <Stack spacing={1}>

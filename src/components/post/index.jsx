@@ -76,19 +76,19 @@ let Post = ({ id, children, comments = 0, votes = 0, conferences = [] }) => {
 let Comments = ({ count = 0 }) => {
   let [replies, setReplies] = useState([
     {
-      user: { name: "aman arosh", avatar: "", lastUpdated: "14h" },
+      user: { name: "aarosh", avatar: "", lastUpdated: "3h" },
       comment:
-        "That's a fascinating take! The way you've explained quantum entanglement makes it so much more approachable. It's incredible how particles can be linked over vast distances, almost like they're communicating instantly. This could totally revolutionize how we understand the universe. Thanks for breaking it down so clearly!",
+        "Can you break down your proof of theorem 1 a bit more? Like, how...",
     },
     {
-      user: { name: "aman arosh", avatar: "", lastUpdated: "14h" },
+      user: { name: "the_michaelLake", avatar: "", lastUpdated: "6h" },
       comment:
-        "That's a fascinating take! The way you've explained quantum entanglement makes it so much more approachable. It's incredible how particles can be linked over vast distances, almost like they're communicating instantly. This could totally revolutionize how we understand the universe. Thanks for breaking it down so clearly!",
+        "This paper reminds me of another from..",
     },
     {
-      user: { name: "aman arosh", avatar: "", lastUpdated: "14h" },
+      user: { name: "swatigup", avatar: "", lastUpdated: "7h" },
       comment:
-        "That's a fascinating take! The way you've explained quantum entanglement makes it so much more approachable. It's incredible how particles can be linked over vast distances, almost like they're communicating instantly. This could totally revolutionize how we understand the universe. Thanks for breaking it down so clearly!",
+        "Cool paper, do you man on extending to...?",
     },
   ]);
 
@@ -190,8 +190,8 @@ let Reply = ({ user, comment = "" }) => {
         <Button variant="outline">
           <PlusIcon size={20} />
         </Button>
-        <Comment count={40} />
-        <Votes count={20} />
+        <Comment count={1} />
+        <Votes count={3} />
       </Stack>
     </Stack>
   );
@@ -245,7 +245,8 @@ let Description = ({ id, children }) => {
       </Typography>
       <Link
         sx={{ cursor: "pointer" }}
-        color="secondary"
+        color="text.secondary"
+        fontWeight="bold"
         onClick={() => {
           dispatch(toggle({ type: "READMORE", id: id, active: !active }));
         }}

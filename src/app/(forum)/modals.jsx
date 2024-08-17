@@ -186,8 +186,19 @@ let CreatePost = () => {
     setConferences(value);
   }
 
+  const getUsername = async (name) => {
+    try {
+      let response = await request.get(`auth/user/get?q=name=${name}&rtf=name`);
+      console.log(response?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   function handleAuthors(value) {
-    setAuthors(value);
+    console.log(value);
+    // let name = getUsername(value);
+    // setAuthors(value);
   }
 
   async function submit(e) {
@@ -251,7 +262,8 @@ let CreatePost = () => {
         <MuiChipsInput
           size="small"
           value={co_authors}
-          onChange={handleAuthors}
+          onInputChange={handleAuthors}
+          // onChange={handleAuthors}
         />
       </Stack>
 

@@ -165,7 +165,7 @@ model Follows {
   updated_at DateTime?
 
   context    String?
-  context_id String? @unique
+  context_id String?
 
   // Relations
   user    User?   @relation(fields: [user_id], references: [id])

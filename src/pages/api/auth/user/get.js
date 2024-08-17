@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { isPayloadValid } from "@/lib/utils";
 import { messages } from "@/lib/request/responses";
+import { getParams } from "../../lib";
 
 export default async function GET(request, response) {
   let { method, query } = request ?? {};
@@ -8,26 +9,12 @@ export default async function GET(request, response) {
   if (method != "GET")
     return response.status(405).send({ msg: messages?.BAD_REQUEST });
 
-  let validity = isPayloadValid({
-    fields: ["q"],
-    payload: query,
-  });
-
-  if (typeof validity === "string")
-    return response.status(400).send({ msg: validity });
+  let options = getParams(query);
 
   try {
-    let { q } = query;
+    let user = await prisma.user.findMany(options);
 
-    let user = await prisma.user.findUnique({
-      where: { id: q },
-      select: {
-        name: true,
-        email: true,
-      },
-    });
-
-    return response.status(200).send({ user });
+    return response.status(200).send(user);
   } catch (error) {
     return response.status(500).send({ msg: messages?.FATAL });
   }

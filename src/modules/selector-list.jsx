@@ -5,6 +5,8 @@ import { toggle } from "@/store/slices/ui";
 
 import Button from "@mui/material/Button";
 import Selector from "@/components/selector";
+import Typography from "@mui/material/Typography"; // Add this import statement
+
 
 // Icons
 import { FaCirclePlus as PlusIcon } from "react-icons/fa6";
@@ -51,7 +53,7 @@ export let Topics = () => {
           }}
           startIcon={<PlusIcon size={20} />}
         >
-          Create a new topic
+          <Typography variant="body2" fontWeight={600}>Create Topic</Typography>
         </Button>
       </Selector.Action>
     </Selector>

@@ -217,8 +217,8 @@ let RightBar = () => {
         >
           <Typography variant="p">
             {isactive
-              ? "Pick a topic to view details"
-              : "Login in to participate in the conversation"}
+              ? "Enter a Topics channel to view pertinent posts. "
+              : "Login in to like, comment on, or share papers. "}
           </Typography>
         </Stack>
       )}
@@ -240,95 +240,99 @@ let Featured = ({ id, name, followers = 0, online = 0, conferences = [] }) => {
 
   return (
     <Stack spacing={4}>
-      <Typography variant="h6" fontWeight={600}>
-        {name}
-      </Typography>
-      <Stack spacing={2}>
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-        >
-          <Typography fontWeight={100} variant="p">
-            Followers
-          </Typography>
-          <Typography fontWeight={100} variant="p">
-            {followers}
-          </Typography>
-        </Stack>
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-        >
-          <Typography fontWeight={100} variant="p">
-            Online
-          </Typography>
-          <Typography fontWeight={100} variant="p">
-            {online}
-          </Typography>
-        </Stack>
-      </Stack>
-      <Stack
-        direction="row"
-        alignItems="center"
-        justifyContent="center"
-        spacing={2}
+      <Box
+        sx={{
+          backgroundColor: '#f5f5f5', // Grey background
+          borderRadius: 1, // Rounded corners
+          padding: 2, // Padding around the content
+        }}
       >
-        <Button fullWidth variant="outlined">
+        <Stack spacing={2}>
+          <Typography variant="h6" fontWeight={600}>
+            {name}
+          </Typography>
+          <Stack spacing={1}>
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Typography fontWeight={300} variant="p" color="text.secondary">
+                Followers
+              </Typography>
+              <Typography fontWeight={300} variant="p" color="text.secondary">
+                {followers}
+              </Typography>
+            </Stack>
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Typography fontWeight={300} variant="p" color="text.secondary">
+                Online
+              </Typography>
+              <Typography fontWeight={300} variant="p" color="text.secondary">
+                {online}
+              </Typography>
+            </Stack>
+          </Stack>
           <Stack
             direction="row"
-            spacing={2}
             alignItems="center"
             justifyContent="center"
-            onClick={() => {
-              dispatch(
-                toggle({
-                  type: "MODAL",
-                  active: true,
-                  id: "create_post",
-                  size: "medium",
-                })
-              );
-            }}
-          >
-            <Typography>New Post</Typography>
-            <SquarePlusIcon size={16} />
-          </Stack>
-        </Button>
-        <Button
-          fullWidth
-          variant="contained"
-          onClick={() => {
-            createFollow({ context: "topic", contx: id });
-          }}
-        >
-          <Stack
-            direction="row"
             spacing={2}
-            alignItems="center"
-            justifyContent="center"
           >
-            <Typography>Follow</Typography>
-            <PlusIcon size={20} />
+            <Button fullWidth variant="outlined">
+              <Stack
+                direction="row"
+                spacing={2}
+                alignItems="center"
+                justifyContent="center"
+                onClick={() => {
+                  dispatch(
+                    toggle({
+                      type: "MODAL",
+                      active: true,
+                      id: "create_post",
+                      size: "medium",
+                    })
+                  );
+                }}
+              >
+                <Typography>New Post</Typography>
+                <SquarePlusIcon size={16} />
+              </Stack>
+            </Button>
+            <Button fullWidth variant="contained">
+              <Stack
+                direction="row"
+                spacing={2}
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Typography>Follow</Typography>
+                <PlusIcon size={20} />
+              </Stack>
+            </Button>
           </Stack>
-        </Button>
-      </Stack>
-      <Divider />
-      <Stack>
-        <Typography>Tags:</Typography>
-        <Stack direction="row" alignContent="center" spacing={1}>
-          {conferences?.map((conference, index) => {
-            return (
-              <Chip
-                key={conference?.id}
-                label={conference}
-                color={`#${index * 3}${index * 7}${index * 8}`}
-              />
-            );
-          })}
         </Stack>
-      </Stack>
+        <Divider sx={{ margin: '16px 0' }} />
+        <Stack>
+          <Typography fontWeight={600}>Tags:</Typography>
+          <Stack direction="row" alignContent="center" spacing={1}>
+            {conferences?.map((conference, index) => {
+              return (
+                <Chip
+                  key={conference?.id}
+                  label={conference}
+                  color={`#${index * 3}${index * 7}${index * 8}`}
+                />
+              );
+            })}
+          </Stack>
+        </Stack>
+      </Box>
     </Stack>
   );
 };
@@ -352,7 +356,7 @@ let Rules = ({ list = [] }) => {
 
   return (
     <Stack spacing={2}>
-      <Typography variant="h5" fontWeight={500}>
+      <Typography variant="h5" fontWeight={500} color="text.secondary">
         Our Rules
       </Typography>
       {list?.map((rule, index) => {

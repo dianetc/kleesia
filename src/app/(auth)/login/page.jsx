@@ -94,15 +94,6 @@ let Login = () => {
             alt={"Kleesia logo"}
           />
         }
-        action={
-          <Image
-            src="/icons/close.svg"
-            width={46}
-            height={46}
-            onClick={() => router.push("/")}
-            alt={"Close Icon"}
-          />
-        }
       />
 
       <CardContent>

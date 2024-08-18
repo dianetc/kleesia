@@ -106,7 +106,7 @@ let Login = () => {
               <OutlinedInput
                 id="email"
                 onChange={handleChange}
-                placeholder="Email or username"
+                placeholder="Email"
                 type="varchar"
                 endAdornment={
                   <InputAdornment position="end">

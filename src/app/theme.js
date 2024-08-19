@@ -49,8 +49,10 @@ const theme = createTheme({
         disableElevation: true,
       },
     },
-
     MuiButton: {
+      defaultProps: {
+        disableElevation: true,
+      },
       styleOverrides: {
         contained: {
           "&:hover": {

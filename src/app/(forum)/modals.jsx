@@ -12,8 +12,8 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import { Box } from "@mui/material";
 import Modal from "@mui/material/Modal";
 import { IoAdd as PlusIcon } from "react-icons/io5";
-import CloseIcon from '@mui/icons-material/Close';
-import IconButton from '@mui/material/IconButton';
+import CloseIcon from "@mui/icons-material/Close";
+import IconButton from "@mui/material/IconButton";
 
 import Chip from "@mui/material/Chip";
 import Grid from "@mui/material/Grid";
@@ -167,8 +167,8 @@ let CreateTopic = () => {
           type="button"
           onClick={() => addRule()}
           sx={{
-            alignSelf: 'flex-start',
-            width: '30%',
+            alignSelf: "flex-start",
+            width: "30%",
           }}
         >
           <Stack direction="row" spacing={1} alignItems="center">
@@ -194,7 +194,7 @@ let CreatePost = () => {
   let [co_authors, setAuthors] = useState([]);
   let [conferences, setConferences] = useState([]);
 
-  let { id: topic_id } = useSelector((state) => state.unpersisted.data.context);
+  let { id: topic_id } = useSelector((state) => state.unpersisted.data.topic);
 
   function handleChange(e) {
     let { id, value } = e.target;
@@ -243,7 +243,7 @@ let CreatePost = () => {
     <Stack spacing={3}>
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Typography variant="h5" fontWeight={500}>
-        Create a new post
+          Create a new post
         </Typography>
         <IconButton onClick={handleClose}>
           <CloseIcon />
@@ -271,7 +271,7 @@ let CreatePost = () => {
       <Stack spacing={1}>
         <Typography variant="label">Arxiv Abstract Link *</Typography>
         <OutlinedInput
-          id="arxiv_link"
+          id="arxix_link"
           onChange={handleChange}
           size="small"
           placeholder="Enter abstract link, e.g, arxiv.org/abs/<id>"

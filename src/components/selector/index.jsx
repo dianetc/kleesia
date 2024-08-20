@@ -25,7 +25,7 @@ let Selector = ({ id = "", icon, list = [], label = "", children }) => {
   let dispatch = useDispatch();
 
   return (
-    <Accordion sx={{ width: "100%" }} disabled={!isactive}>
+    <Accordion>
       <AccordionSummary
         expandIcon={<DownArrowIcon size={20} />}
         aria-controls="panel1-content"
@@ -39,7 +39,15 @@ let Selector = ({ id = "", icon, list = [], label = "", children }) => {
         </Stack>
       </AccordionSummary>
       <AccordionDetails>
-        <Stack spacing={2} sx={{ paddingX: 1.3 }}>
+        <Stack
+          spacing={2}
+          sx={{
+            paddingX: 1.3,
+            height: "100%",
+            maxHeight: "14em",
+            overflowY: "scroll",
+          }}
+        >
           {list?.length > 0 &&
             list?.map((child, index) => {
               return (
@@ -47,9 +55,7 @@ let Selector = ({ id = "", icon, list = [], label = "", children }) => {
                   direction="row"
                   key={child.id}
                   onClick={() => {
-                    dispatch(
-                      setContext({ type: id?.toUpperCase(), id: child?.id })
-                    );
+                    dispatch(setContext({ type: id, id: child?.id }));
                   }}
                   spacing={2}
                   sx={{ cursor: "pointer" }}

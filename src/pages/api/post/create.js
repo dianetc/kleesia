@@ -34,6 +34,7 @@ export default async function CREATE(request, response) {
 
     return response.status(200).send({ msg: `Post ${body?.title} created` });
   } catch (error) {
+    console.log(error);
     return response.status(500).send({ msg: messages.FATAL });
   }
 }

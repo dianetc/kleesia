@@ -1,37 +1,34 @@
 "use client";
 
+import { useState } from "react";
+
 import Link from "next/link";
 import Image from "next/image";
-
-import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { useDispatch } from "react-redux";
 import { saveSession } from "@/store/slices/persisted";
 
 import request from "@/lib/request";
-
 import { allowed_emails, Notify } from "@/lib/utils";
 
-import OutlinedInput from "@mui/material/OutlinedInput";
-import InputAdornment from "@mui/material/InputAdornment";
+import {
+  OutlinedInput,
+  InputAdornment,
+  Stack,
+  Button,
+  Divider,
+  Typography,
+  Card,
+  CardHeader,
+  CardContent,
+  CardActions,
+} from "@mui/material";
 
-import Stack from "@mui/material/Stack";
-import Button from "@mui/material/Button";
-
-import Card from "@mui/material/Card";
-import CardHeader from "@mui/material/CardHeader";
-import CardContent from "@mui/material/CardContent";
-import CardActions from "@mui/material/CardActions";
-
-import Divider from "@mui/material/Divider";
-
-import Typography from "@mui/material/Typography";
-
-import { useRouter } from "next/navigation";
 // Icon
-import { MdAlternateEmail as EmailIcon } from "react-icons/md";
 import { IoMdEye as EyeIcon } from "react-icons/io";
 import { FaUser as UserIcon } from "react-icons/fa6";
+import { MdAlternateEmail as EmailIcon } from "react-icons/md";
 
 export default function Page() {
   return (
@@ -194,7 +191,7 @@ let Signup = () => {
                 />
               </Stack>
             </Stack>
-            <Button variant={"contained"} type="submit" disableElevation>
+            <Button variant={"contained"} type="submit">
               Sign up
             </Button>
           </Stack>

@@ -101,8 +101,7 @@ model Post {
   title      String  @unique
   body       String?
   arxix_link String? @unique
-  upvote     Int?
-  downvote   Int?
+  votes      Int?    @default(0)
 
   // 
   co_authors  String[]

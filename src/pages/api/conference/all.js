@@ -12,6 +12,8 @@ export default async function GET(request, response) {
   // Filter individual
 
   try {
+    let options = { select: { id: true, name: true } };
+
     // Get user role
     let user = await getUserRole(headers);
 
@@ -25,13 +27,13 @@ export default async function GET(request, response) {
       (topic_id) => topic_id?.context_id
     );
 
-    // Fetch all authored channels
-    let all_conference = await prisma.conference.findMany({
-      where: {
+    if (user)
+      options.where = {
         OR: [{ user_id: user?.id }, { id: { in: followed_conference_list } }],
-      },
-      select: { id: true, name: true },
-    });
+      };
+
+    // Fetch all authored channels
+    let all_conference = await prisma.conference.findMany(options);
 
     return response.status(200).send(all_conference);
   } catch (error) {

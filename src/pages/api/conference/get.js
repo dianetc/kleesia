@@ -12,16 +12,25 @@ export default async function GET(request, response) {
 
   let options = getParams(query);
 
+  options.select = {
+    id: true,
+    created_at: true,
+    title: true,
+    body: true,
+    votes: true,
+    user: { select: { name: true } },
+  };
+
   if (query?.q === "recent") {
     let user = await getUserRole(headers);
 
     if (!user) return response.status(500).send({ msg: messages.UNAUTHORIZED });
 
-    let { topic_list } = getFollowIDs(user);
+    let { topic_list, user_list } = getFollowIDs(user);
 
     options.where = {
       ...options.where,
-      OR: [{ user_id: user?.id }, { id: { in: topic_list } }],
+      OR: [{ user_id: { in: user_list } }, { topic_id: { in: topic_list } }],
     };
   }
 
@@ -30,10 +39,9 @@ export default async function GET(request, response) {
   };
 
   try {
-    let topics = await prisma.topic.findMany(options);
-    return response.status(200).send(topics);
+    let posts = await prisma.post.findMany(options);
+    return response.status(200).send(posts);
   } catch (error) {
-    console.log(error);
     return response.status(500).send({ msg: messages?.FATAL });
   }
 }
@@ -47,5 +55,13 @@ async function getFollowIDs(user) {
 
   let topic_list = topics.map((topic_id) => topic_id?.context_id);
 
-  return { topic_list };
+  let users = await prisma.follows.findMany({
+    where: { user_id: user?.id, context: "user" },
+    select: { context_id: true },
+  });
+
+  let user_list = users.map((user) => user?.context_id);
+  user_list.push(user?.id);
+
+  return { topic_list, user_list };
 }

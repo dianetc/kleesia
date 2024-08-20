@@ -1,12 +1,13 @@
 import Image from "next/image";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toggle } from "@/store/slices/ui";
 
 import Button from "@mui/material/Button";
 import Selector from "@/components/selector";
-import Typography from "@mui/material/Typography"; // Add this import statement
 
+// Materials
+import Typography from "@mui/material/Typography"; // Add this import statement
 
 // Icons
 import { FaCirclePlus as PlusIcon } from "react-icons/fa6";
@@ -17,8 +18,11 @@ import { fetcher } from "@/lib/request";
 
 export let Topics = () => {
   let dispatch = useDispatch();
+  let { name } = useSelector((state) => state.unpersisted.data.context);
 
-  let { data } = useSWR("topic/all", fetcher, {
+  let get_filter = () => (name === "recent" ? "?q=recent" : "");
+
+  let { data } = useSWR(`topic/get${get_filter()}`, fetcher, {
     revalidateOnFocus: true,
     revalidateIfStale: true,
   });
@@ -29,8 +33,8 @@ export let Topics = () => {
       icon={
         <Image
           src={"/icons/topics.svg"}
-          width={40}
-          height={40}
+          width={30}
+          height={30}
           alt={"topic icon"}
         />
       }
@@ -53,7 +57,9 @@ export let Topics = () => {
           }}
           startIcon={<PlusIcon size={20} />}
         >
-          <Typography variant="body2" fontWeight={600}>Create Topic</Typography>
+          <Typography variant="body2" fontWeight={600}>
+            Create Topic
+          </Typography>
         </Button>
       </Selector.Action>
     </Selector>
@@ -69,13 +75,13 @@ export let Conferences = () => {
       icon={
         <Image
           src={"/icons/conferences.svg"}
-          width={40}
-          height={40}
+          width={30}
+          height={30}
           alt={"topic icon"}
         />
       }
       list={data}
       label="Conferences"
-    />
+    ></Selector>
   );
 };

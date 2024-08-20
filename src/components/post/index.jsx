@@ -2,29 +2,30 @@
 
 import Image from "next/image";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { toggle } from "@/store/slices/ui";
 import { useDispatch, useSelector } from "react-redux";
 
-import { trimming } from "@/lib/utils";
-
+import request from "@/lib/request";
+import { Notify, trimming } from "@/lib/utils";
 import { useSession } from "@/lib/hooks/auth";
+import { createFollow } from "@/lib/features/follows";
+
 // Icon
 import { IoAdd as PlusIcon } from "react-icons/io5";
 
-import TextField from "@mui/material/TextField";
-
+// Material
 import Link from "@mui/material/Link";
 import Card from "@mui/material/Card";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
+import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
-import { createFollow } from "@/lib/features/follows";
 
 let Post = ({ id, children, comments = 0, votes = 0, conferences = [] }) => {
   let { isactive } = useSession();
@@ -58,8 +59,9 @@ let Post = ({ id, children, comments = 0, votes = 0, conferences = [] }) => {
             justifyContent="space-between"
           >
             <Stack direction="row" spacing={4}>
-              <Votes count={votes} />
+              <Votes id={id} count={votes} />
               <Comment
+                id={id}
                 count={comments}
                 toggle={() => setViewComments(!viewComments)}
               />
@@ -73,7 +75,7 @@ let Post = ({ id, children, comments = 0, votes = 0, conferences = [] }) => {
   );
 };
 
-let Comments = ({ count = 0 }) => {
+let Comments = ({ id, count = 0 }) => {
   let [replies, setReplies] = useState([
     {
       user: { name: "aarosh", avatar: "", lastUpdated: "3h" },
@@ -82,13 +84,11 @@ let Comments = ({ count = 0 }) => {
     },
     {
       user: { name: "the_michaelLake", avatar: "", lastUpdated: "6h" },
-      comment:
-        "This paper reminds me of another from..",
+      comment: "This paper reminds me of another from..",
     },
     {
       user: { name: "swatigup", avatar: "", lastUpdated: "7h" },
-      comment:
-        "Cool paper, do you man on extending to...?",
+      comment: "Cool paper, do you man on extending to...?",
     },
   ]);
 
@@ -117,7 +117,28 @@ let Comments = ({ count = 0 }) => {
   );
 };
 
-let Votes = ({ count }) => {
+let Votes = ({ id, count }) => {
+  let [votes, setVotes] = useState(0);
+
+  async function upvote() {
+    try {
+      await request.put(`post/update?id=${id}`, { votes });
+      Notify({ status: "success", content: "Voted" });
+    } catch (error) {
+      let msg = error?.response?.data?.msg ?? error?.message;
+      Notify({ status: "error", content: msg });
+    }
+  }
+
+  useEffect(() => {
+    setVotes(count);
+  }, []);
+
+  useEffect(() => {
+    console.log("New Vote: ", votes);
+    upvote();
+  }, [votes]);
+
   return (
     <Stack
       direction={"row"}
@@ -129,10 +150,21 @@ let Votes = ({ count }) => {
         padding: "8px 14px",
       }}
     >
-      <Image src={"/icons/arrow-up.svg"} width={26} height={26} alt="upvote" />
-      <Typography>{count}</Typography>
+      <Image
+        src={"/icons/arrow-up.svg"}
+        onClick={() => {
+          setVotes(votes + 1);
+        }}
+        width={26}
+        height={26}
+        alt="upvote"
+      />
+      <Typography>{votes}</Typography>
       <Image
         src={"/icons/arrow-down.svg"}
+        onClick={() => {
+          setVotes(votes - 1);
+        }}
         width={26}
         height={26}
         alt="downvote"

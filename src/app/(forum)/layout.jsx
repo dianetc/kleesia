@@ -1,7 +1,7 @@
 "use client";
 
 import useSWR from "swr";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -57,7 +57,7 @@ let Navigation = () => {
         <>
           <Button
             size="large"
-            variant="fixed"
+            variant="outlined"
             onClick={() => {
               router.push("/login");
             }}
@@ -163,7 +163,7 @@ let LeftBar = () => {
         alignItems={"stretch"}
         justifyContent={"space-between"}
       >
-        <Stack spacing={3} sx={{ padding: 3 }}>
+        <Stack height="100%" spacing={3} sx={{ p: 3 }}>
           <Topics />
           <Divider />
           <Conferences />
@@ -197,17 +197,16 @@ let LeftBar = () => {
 let RightBar = () => {
   let { isactive } = useSession();
 
-  let { id, name } = useSelector((state) => state.unpersisted.data.context);
-
+  let { id } = useSelector((state) => state.unpersisted.data.topic);
   let { data } = useSWR(
-    name === "TOPIC" ? `topic/get?id=${id}` : undefined,
+    id ? `topic/get?id=${id}&rtf=name,rules` : undefined,
     fetcher
   );
 
   return (
     <Box sx={{ width: "25%", border: "1px solid #E8E8E8", padding: 4 }}>
       {data ? (
-        <TopicDetails data={data} />
+        <TopicDetails details={data} />
       ) : (
         <Stack
           width="100%"
@@ -226,7 +225,13 @@ let RightBar = () => {
   );
 };
 
-let TopicDetails = ({ data }) => {
+let TopicDetails = ({ details = [] }) => {
+  let [data, setData] = useState({});
+
+  useEffect(() => {
+    details[0] && setData(details[0]);
+  }, [details]);
+
   return (
     <Stack spacing={4}>
       <Featured {...data} />
@@ -242,7 +247,7 @@ let Featured = ({ id, name, followers = 0, online = 0, conferences = [] }) => {
     <Stack spacing={4}>
       <Box
         sx={{
-          backgroundColor: '#f5f5f5', // Grey background
+          backgroundColor: "#f5f5f5", // Grey background
           borderRadius: 1, // Rounded corners
           padding: 2, // Padding around the content
         }}
@@ -317,7 +322,7 @@ let Featured = ({ id, name, followers = 0, online = 0, conferences = [] }) => {
             </Button>
           </Stack>
         </Stack>
-        <Divider sx={{ margin: '16px 0' }} />
+        <Divider sx={{ margin: "16px 0" }} />
         <Stack>
           <Typography fontWeight={600}>Tags:</Typography>
           <Stack direction="row" alignContent="center" spacing={1}>

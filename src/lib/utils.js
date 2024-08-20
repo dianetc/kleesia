@@ -18,6 +18,17 @@ export function isPayloadValid({ fields = [], payload }) {
   }
 }
 
+export let getRequestFilters = (context) => {
+  if (!context) return "";
+
+  let { name, id } = context ?? {};
+  if (!name?.match(/(recent|topic)/)) return "";
+
+  return `?${
+    name === "topic" ? `topic_id=${id}` : name === "recent" && `q=recent`
+  }`;
+};
+
 export function capitalize(val) {
   return `${val?.slice(0, 1)}${val?.slice(1, val.length).toLowerCase()}`;
 }

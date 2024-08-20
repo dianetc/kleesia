@@ -19,7 +19,7 @@ export default async function UPDATE(request, response) {
   try {
     let { id } = query;
 
-    await prisma.topic.update({
+    await prisma.post.update({
       where: { id },
       data: {
         updated_at: new Date(),
@@ -29,6 +29,7 @@ export default async function UPDATE(request, response) {
 
     return response.status(200).send({ msg: "Okay" });
   } catch (error) {
+    console.log(error);
     return response.status(500).send({ msg: messages?.FATAL });
   }
 }

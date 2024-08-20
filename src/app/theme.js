@@ -1,11 +1,9 @@
 "use client";
 
 import localFont from "next/font/local";
-import { createTheme } from "@mui/material/styles";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 const Satoshi = localFont({ src: "font/satoshi.ttf" });
-
-import { ThemeProvider } from "@emotion/react";
 
 const palette = {
   primary: {
@@ -22,13 +20,14 @@ const palette = {
   },
   background: {
     main: "#F6F6F6",
+    border: "#DEDEDE",
   },
 };
 
 const theme = createTheme({
   palette,
   typography: {
-    fontFamily: "'Satoshi', sans-serif",
+    fontFamily: "Satoshi, sans-serif",
     body2: {
       fontsize: "0.875rem",
       lineHeight: 1.43,
@@ -37,16 +36,30 @@ const theme = createTheme({
   },
   components: {
     MuiCssBaseline: {
-      styleOverrides: `
-        @font-face {
-          font-family: 'Satoshi', sans-serif;
-          src: local('Satoshi) url(${Satoshi}) format('ttf');
-        }
-      `,
+      styleOverrides: `@font-face { font-family: 'Satoshi', sans-serif; url(${Satoshi}) format('ttf');}`,
+    },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          boxShadow: "none",
+          border: `1px solid ${palette.background.border}`,
+        },
+      },
     },
     MuiAccordion: {
-      defaultProps: {
-        disableElevation: true,
+      styleOverrides: {
+        root: {
+          boxShadow: "none",
+          border: `1px solid ${palette.background.border}`,
+          transformOrigin: "top",
+        },
+      },
+    },
+    MuiDivider: {
+      styleOverrides: {
+        "&:before": {
+          border: "none",
+        },
       },
     },
     MuiButton: {
@@ -61,7 +74,7 @@ const theme = createTheme({
         },
         fixed: {
           color: palette.secondary.main,
-          border: `1px solid ${palette.background.main}`,
+          border: `1px solid ${palette.background.border}`,
         },
         outlined: {
           color: palette.secondary.main,

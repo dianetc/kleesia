@@ -33,7 +33,9 @@ let Page = () => {
 
 const Header = () => {
   let dispatch = useDispatch();
-  let { context, topic } = useSelector((state) => state.unpersisted.data);
+  let { context, topic, conference } = useSelector(
+    (state) => state.unpersisted.data
+  );
 
   let mapping = {
     trending: "Trending",
@@ -64,7 +66,11 @@ const Header = () => {
         <Typography variant="h4">
           {mapping[topic?.id ? "topic" : context?.name || "trending"]}
         </Typography>
-        <ContentFilter />
+        {!conference?.id && !topic?.id && context.name === "" ? (
+          <ContentFilter />
+        ) : (
+          ""
+        )}
       </Stack>
     </Stack>
   );
@@ -112,7 +118,7 @@ const Content = () => {
         : "post/get"
     }`;
 
-  let { data, mutate } = useSWR(sort_filters(), fetcher, {
+  let { data } = useSWR(sort_filters(), fetcher, {
     revalidateIfStale: true,
     revalidateOnFocus: true,
   });

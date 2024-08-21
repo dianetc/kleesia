@@ -14,7 +14,7 @@ export default async function GET(request, response) {
 
   options.select = {
     id: true,
-    name: true,
+    title: true,
   };
 
   if (query?.q === "recent") {

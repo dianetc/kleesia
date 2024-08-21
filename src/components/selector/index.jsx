@@ -64,7 +64,7 @@ let Selector = ({ id = "", icon, list = [], label = "", children }) => {
                     size={20}
                     color={`#${index * 3}${index * 7}${index * 8}`}
                   />
-                  <Typography variant="p">{child?.name}</Typography>
+                  <Typography variant="p">{child?.title}</Typography>
                 </Stack>
               );
             })}

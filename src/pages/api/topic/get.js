@@ -33,7 +33,6 @@ export default async function GET(request, response) {
     let topics = await prisma.topic.findMany(options);
     return response.status(200).send(topics);
   } catch (error) {
-    console.log(error);
     return response.status(500).send({ msg: messages?.FATAL });
   }
 }

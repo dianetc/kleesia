@@ -35,7 +35,7 @@ export let useSession = () => {
 
   useEffect(() => {
     validateToken();
-  }, [user]);
+  }, []);
 
   return { isactive };
 };

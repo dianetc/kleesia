@@ -21,9 +21,9 @@ export default async function GET(request, response) {
     user: { select: { name: true } },
   };
 
-  if (query?.q === "recent") {
-    let user = await getUserRole(headers);
+  let user = await getUserRole(headers);
 
+  if (query?.q === "recent") {
     if (!user) return response.status(500).send({ msg: messages.UNAUTHORIZED });
 
     let { topic_list, user_list } = getFollowIDs(user);
@@ -40,7 +40,38 @@ export default async function GET(request, response) {
 
   try {
     let posts = await prisma.post.findMany(options);
-    return response.status(200).send(posts);
+
+    let cache = posts?.map(async (post) => {
+      let isvoted = await prisma.user_Vote_Post.findUnique({
+        where: {
+          post_id: post?.id,
+        },
+        select: {
+          id: true,
+          direction: true,
+        },
+      });
+
+      let comments = await prisma.comments.count({
+        where: {
+          context: "post",
+          context_id: post?.id,
+        },
+      });
+
+      console.log(isvoted, comments);
+
+      return {
+        ...post,
+        voted: isvoted?.id ? true : false,
+        direction: isvoted?.direction || "",
+        comments,
+      };
+    });
+
+    let data = await Promise.all(cache);
+
+    return response.status(200).send(data);
   } catch (error) {
     console.log(error);
     return response.status(500).send({ msg: messages?.FATAL });

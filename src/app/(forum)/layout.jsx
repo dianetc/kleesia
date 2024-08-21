@@ -31,6 +31,7 @@ import { IoAdd as PlusIcon } from "react-icons/io5";
 import { IoIosSearch as SearchIcon } from "react-icons/io";
 import { FaPlusSquare as SquarePlusIcon } from "react-icons/fa";
 import { FaArrowRight as RightArrowIcon } from "react-icons/fa6";
+import { setContext } from "@/store/slices/data";
 
 let Layout = ({ children }) => {
   return (
@@ -48,6 +49,13 @@ let Layout = ({ children }) => {
 
 let Navigation = () => {
   let { isactive } = useSession();
+  let [search, setSearch] = useState({});
+  let dispatch = useDispatch();
+
+  function handleSearch(e) {
+    let { id, value } = e.target;
+    setSearch({ ...search, [id]: value });
+  }
 
   let SessionActions = () => {
     const router = useRouter();
@@ -116,6 +124,13 @@ let Navigation = () => {
             border: "none",
             background: (theme) => theme.palette.background.main,
           }}
+          id="value"
+          onKeyDown={(e) => {
+            e.key === "Enter"
+              ? dispatch(setContext({ type: "search", value: search?.value }))
+              : "";
+          }}
+          onChange={handleSearch}
           autoFocus={false}
           placeholder="Search Topic or Paper.."
           endAdornment={
@@ -199,7 +214,7 @@ let RightBar = () => {
 
   let { id } = useSelector((state) => state.unpersisted.data.topic);
   let { data } = useSWR(
-    id ? `topic/get?id=${id}&rtf=name,rules` : undefined,
+    id ? `topic/get?id=${id}&rtf=title,rules` : undefined,
     fetcher
   );
 
@@ -241,7 +256,7 @@ let TopicDetails = ({ details = [] }) => {
   );
 };
 
-let Featured = ({ id, name, followers = 0, online = 0, conferences = [] }) => {
+let Featured = ({ id, title, followers = 0, online = 0, conferences = [] }) => {
   let { isactive } = useSession();
   let dispatch = useDispatch();
 
@@ -256,7 +271,7 @@ let Featured = ({ id, name, followers = 0, online = 0, conferences = [] }) => {
       >
         <Stack spacing={2}>
           <Typography variant="h6" fontWeight={600}>
-            {name}
+            {title}
           </Typography>
           <Stack spacing={1}>
             <Stack
@@ -366,16 +381,21 @@ let Rules = ({ list = [] }) => {
       <Typography variant="h5" fontWeight={500} color="text.secondary">
         Our Rules
       </Typography>
-      {list?.map((rule, index) => {
-        return (
-          <Rule key={index}>
-            <Rule.Name>
-              {index + 1}. {rule?.name}
-            </Rule.Name>
-            <Rule.Details>{rule?.details}</Rule.Details>
-          </Rule>
-        );
-      })}
+      <Stack
+        sx={{ height: "100%", maxHeight: "30em", overflowY: "scroll" }}
+        spacing={2}
+      >
+        {list?.map((rule, index) => {
+          return (
+            <Rule key={index}>
+              <Rule.Name>
+                {index + 1}. {rule?.name}
+              </Rule.Name>
+              <Rule.Details>{rule?.details}</Rule.Details>
+            </Rule>
+          );
+        })}
+      </Stack>
     </Stack>
   );
 };

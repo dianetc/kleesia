@@ -10,7 +10,7 @@ export default async function CREATE(request, response) {
     return response.status(405).send({ msg: messages.METHOD_NOT_ALLOWED });
 
   let validity = isPayloadValid({
-    fields: ["name", "hex"],
+    fields: ["title", "hex"],
     payload: body,
   });
 

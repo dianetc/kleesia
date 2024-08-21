@@ -10,7 +10,7 @@ export default async function CREATE(request, response) {
   if (method !== "POST")
     return response.status(405).send({ msg: messages.METHOD_NOT_ALLOWED });
 
-  let status = isPayloadValid(["name", "rules"]);
+  let status = isPayloadValid(["title", "rules"]);
 
   if (typeof status === "string")
     return response.status(500).send({ msg: status });
@@ -21,7 +21,7 @@ export default async function CREATE(request, response) {
     return response.status(500).send({ msg: "User is not authorized" });
 
   let existing = await prisma.topic.findMany({
-    where: { name: { contains: body?.name } },
+    where: { title: { contains: body?.name } },
   });
 
   if (existing?.length > 0)
@@ -31,6 +31,7 @@ export default async function CREATE(request, response) {
     await prisma.topic.create({ data: { ...body, user_id } });
     return response.status(200).send({ msg: `Topic ${body?.name} is created` });
   } catch (error) {
+    console.log(error);
     return response.status(500).send({ msg: messages.FATAL });
   }
 }

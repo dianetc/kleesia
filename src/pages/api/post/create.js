@@ -42,14 +42,14 @@ export default async function CREATE(request, response) {
 // I know, the name is abit cliché..
 async function findSertConferences(list, user_id) {
   let existing = await prisma.conference.findMany({
-    where: { name: { in: list } },
-    select: { id: true, name: true },
+    where: { title: { in: list } },
+    select: { id: true, title: true },
   });
 
   let not_found = list
-    ?.filter((name) => !existing?.map((exist) => exist?.name).includes(name))
-    .map((name) => {
-      return { name, user_id };
+    ?.filter((title) => !existing?.map((exist) => exist?.title).includes(title))
+    .map((title) => {
+      return { title, user_id };
     });
 
   await prisma.conference.createMany({
@@ -57,7 +57,7 @@ async function findSertConferences(list, user_id) {
   });
 
   let created = await prisma.conference.findMany({
-    where: { name: { in: not_found?.map((obj) => obj?.name) } },
+    where: { title: { in: not_found?.map((obj) => obj?.title) } },
     select: { id: true },
   });
 

@@ -87,13 +87,13 @@ let CreateTopic = () => {
 
   function addRule() {
     setRules((prev) => [...prev, rule]);
-    setRule({});
+    setRule({ name: "", details: "" });
   }
 
   async function submit(e) {
     e.preventDefault();
 
-    let data = { name: topic, rules };
+    let data = { title: topic, rules };
 
     try {
       await request.post("topic/create", data);
@@ -142,7 +142,12 @@ let CreateTopic = () => {
             {rules.map((rule) => {
               return (
                 <Grid key={rule?.name} item>
-                  <Chip label={trimming(rule?.name, 20)} />
+                  <Chip
+                    label={trimming(rule?.name, 20)}
+                    onDelete={() => {
+                      setRules(rules.filter((rl) => rl?.name !== rule?.name));
+                    }}
+                  />
                 </Grid>
               );
             })}

@@ -123,6 +123,8 @@ model User_Vote_Post {
   created_at DateTime  @default(now())
   updated_at DateTime?
 
+  direction String?
+
   post    Post?   @relation(fields: [post_id], references: [id])
   post_id String?
 
@@ -136,7 +138,7 @@ model Topic {
   created_at DateTime  @default(now())
   updated_at DateTime?
 
-  name  String? @unique
+  title String? @unique
   rules Json[]
 
   // Relations
@@ -151,7 +153,7 @@ model Conference {
   created_at DateTime  @default(now())
   updated_at DateTime?
 
-  name String? @unique
+  title String? @unique
 
   // 
   user    User?   @relation(fields: [user_id], references: [id])

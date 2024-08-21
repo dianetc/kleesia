@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
+  search: { value: "" },
   post: { id: "" },
   topic: { id: "" },
   conference: { id: "" },

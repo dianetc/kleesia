@@ -40,6 +40,7 @@ const Header = () => {
     conference: "Trending",
     topic: "Recent Post",
     recent: "Recent Activity",
+    search: "search",
   };
 
   return (
@@ -94,22 +95,24 @@ const ContentFilter = () => {
 };
 
 const Content = () => {
-  let { context, topic, conference } = useSelector(
+  let { context, topic, conference, search } = useSelector(
     (state) => state.unpersisted.data
   );
 
   let sort_filters = () =>
-    `?${
+    `${
       topic?.id
-        ? `topic_id=${topic?.id}`
+        ? `post/get?topic_id=${topic?.id}`
         : conference?.id
-        ? `conferences[]=${conference?.id}`
+        ? `post/get?conferences[]=${conference?.id}`
         : context?.name === "recent"
-        ? "q=recent"
-        : ""
+        ? "post/get?q=recent"
+        : search?.value
+        ? `search?q=${search?.value}`
+        : "post/get"
     }`;
 
-  let { data } = useSWR(`post/get${sort_filters()}`, fetcher, {
+  let { data } = useSWR(sort_filters(), fetcher, {
     revalidateIfStale: true,
     revalidateOnFocus: true,
   });
@@ -118,13 +121,7 @@ const Content = () => {
     <Stack spacing={3}>
       {data?.map((post, index) => {
         return (
-          <Post
-            key={index}
-            id={post?.id}
-            votes={post?.votes}
-            comments={post?.comments}
-            conferences={post?.conferences}
-          >
+          <Post key={index} {...post}>
             <Post.Title>{post?.title}</Post.Title>
             <Post.User {...post?.user} />
             <Post.Description id={post?.title}>{post?.body}</Post.Description>

@@ -32,7 +32,15 @@ import {
   CardActions,
 } from "@mui/material";
 
-let Post = ({ id, children, comments = 0, votes = 0, conferences = [] }) => {
+let Post = ({
+  id,
+  children,
+  comments,
+  votes,
+  voted,
+  direction,
+  conferences = [],
+}) => {
   let { isactive } = useSession();
   let [viewComments, setViewComments] = useState(false);
 
@@ -64,7 +72,12 @@ let Post = ({ id, children, comments = 0, votes = 0, conferences = [] }) => {
             justifyContent="space-between"
           >
             <Stack direction="row" spacing={4}>
-              <Votes id={id} count={votes} />
+              <Votes
+                id={id}
+                count={votes}
+                isvoted={voted}
+                direction={direction}
+              />
               <Comment
                 id={id}
                 count={comments}
@@ -122,21 +135,25 @@ let Comments = ({ id, count = 0 }) => {
   );
 };
 
-let Votes = ({ id, count }) => {
+let Votes = ({ id, count, isvoted, direction }) => {
   let { isactive } = useSession();
-  let [votes, setVote] = useState(count);
+  let [votes, setVote] = useState({ count, direction, isvoted });
 
-  async function upvote() {
+  async function castVote(orientation) {
+    if (!isactive && votes?.isvoted) return;
+
     try {
-      await request.put(`post/update?id=${id}`, { votes });
+      let vote = orientation === "up" ? count + 1 : count - 1;
+      await request.put(`post/update?id=${id}`, {
+        votes: vote,
+        direction: orientation,
+      });
+      setVote({ count: vote, direction: orientation, isvoted });
+      return;
     } catch (error) {
-      console.log(error);
+      return;
     }
   }
-
-  useEffect(() => {
-    upvote();
-  }, [votes]);
 
   return (
     <Stack
@@ -153,16 +170,22 @@ let Votes = ({ id, count }) => {
       <IconButton disabled={!isactive}>
         <ArrowUp
           size={16}
-          className="hover:text-green-500"
-          onClick={() => (isactive ? setVote(votes + 1) : false)}
+          className={
+            votes?.direction === "up"
+              ? "text-green-500"
+              : "hover:text-green-500"
+          }
+          onClick={() => castVote("up")}
         />
       </IconButton>
-      <Typography>{votes}</Typography>
+      <Typography>{votes?.count}</Typography>
       <IconButton disabled={!isactive}>
         <ArrowDown
           size={16}
-          className="hover:text-red-500"
-          onClick={() => (isactive ? setVote(votes - 1) : false)}
+          className={
+            votes?.direction === "down" ? "text-red-500" : "hover:text-red-500"
+          }
+          onClick={() => castVote("down")}
         />
       </IconButton>
     </Stack>

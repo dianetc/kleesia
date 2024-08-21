@@ -2,7 +2,11 @@ export function getParams(query) {
   let options = { where: {}, select: {} };
 
   Object?.entries(query)?.forEach(([key, value]) => {
-    if (!key.match(/(q|rtf)/)) options.where[key] = value;
+    if (!key.match(/(q|rtf)/)) {
+      key.match(/\[\]/)
+        ? (options.where[key.replace("[]", "")] = { has: value })
+        : (options.where[key] = value);
+    }
   });
 
   let return_fields = query.rtf ?? "";

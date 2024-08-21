@@ -14,18 +14,23 @@ import { createFollow } from "@/lib/features/follows";
 
 // Icon
 import { IoAdd as PlusIcon } from "react-icons/io5";
+import { BiSolidUpArrow as ArrowUp } from "react-icons/bi";
+import { BiSolidDownArrow as ArrowDown } from "react-icons/bi";
 
 // Material
-import Link from "@mui/material/Link";
-import Card from "@mui/material/Card";
-import Chip from "@mui/material/Chip";
-import Stack from "@mui/material/Stack";
-import Button from "@mui/material/Button";
-import Divider from "@mui/material/Divider";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
-import CardContent from "@mui/material/CardContent";
-import CardActions from "@mui/material/CardActions";
+import {
+  Link,
+  Card,
+  Chip,
+  Stack,
+  Button,
+  Divider,
+  IconButton,
+  TextField,
+  Typography,
+  CardContent,
+  CardActions,
+} from "@mui/material";
 
 let Post = ({ id, children, comments = 0, votes = 0, conferences = [] }) => {
   let { isactive } = useSession();
@@ -118,57 +123,48 @@ let Comments = ({ id, count = 0 }) => {
 };
 
 let Votes = ({ id, count }) => {
-  let [votes, setVotes] = useState(0);
+  let { isactive } = useSession();
+  let [votes, setVote] = useState(count);
 
   async function upvote() {
     try {
       await request.put(`post/update?id=${id}`, { votes });
-      Notify({ status: "success", content: "Voted" });
     } catch (error) {
-      let msg = error?.response?.data?.msg ?? error?.message;
-      Notify({ status: "error", content: msg });
+      console.log(error);
     }
   }
 
   useEffect(() => {
-    setVotes(count);
-  }, []);
-
-  useEffect(() => {
-    console.log("New Vote: ", votes);
     upvote();
   }, [votes]);
 
   return (
     <Stack
-      direction={"row"}
       spacing={2}
+      direction={"row"}
       alignItems={"center"}
       sx={{
-        border: "1px solid #bebebe",
+        padding: "4px 8px",
+        border: "1px solid",
         borderRadius: "6px",
-        padding: "8px 14px",
+        borderColor: (theme) => theme.palette.background.slate,
       }}
     >
-      <Image
-        src={"/icons/arrow-up.svg"}
-        onClick={() => {
-          setVotes(votes + 1);
-        }}
-        width={26}
-        height={26}
-        alt="upvote"
-      />
+      <IconButton disabled={!isactive}>
+        <ArrowUp
+          size={16}
+          className="hover:text-green-500"
+          onClick={() => (isactive ? setVote(votes + 1) : false)}
+        />
+      </IconButton>
       <Typography>{votes}</Typography>
-      <Image
-        src={"/icons/arrow-down.svg"}
-        onClick={() => {
-          setVotes(votes - 1);
-        }}
-        width={26}
-        height={26}
-        alt="downvote"
-      />
+      <IconButton disabled={!isactive}>
+        <ArrowDown
+          size={16}
+          className="hover:text-red-500"
+          onClick={() => (isactive ? setVote(votes - 1) : false)}
+        />
+      </IconButton>
     </Stack>
   );
 };
@@ -177,22 +173,27 @@ let Comment = ({ toggle, count }) => {
   let { isactive } = useSession();
 
   return (
-    <Button
-      variant="outline"
-      sx={{ border: "1px solid #bebebe" }}
-      onClick={toggle}
-      disabled={!isactive}
+    <Stack
+      spacing={2}
+      direction={"row"}
+      alignItems={"center"}
+      sx={{
+        padding: "4px 14px",
+        border: "1px solid",
+        borderRadius: "6px",
+        borderColor: (theme) => theme.palette.background.slate,
+      }}
     >
-      <Stack direction={"row"} spacing={2} alignItems={"center"}>
+      <IconButton onClick={toggle} disabled={!isactive} size="small">
         <Image
           src={"/icons/comment.svg"}
           width={26}
           height={26}
           alt="Comment"
         />
-        <Typography>{count}</Typography>
-      </Stack>
-    </Button>
+      </IconButton>
+      <Typography>{count}</Typography>
+    </Stack>
   );
 };
 

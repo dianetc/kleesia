@@ -14,6 +14,8 @@ export let useSession = () => {
   let { user } = useSelector((state) => state.persisted);
 
   async function validateToken() {
+    if (isactive) return;
+
     if (!cookie) {
       setActive(false);
       return;

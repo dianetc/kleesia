@@ -226,6 +226,7 @@ let RightBar = () => {
 };
 
 let TopicDetails = ({ details = [] }) => {
+  let { isactive } = useSession();
   let [data, setData] = useState({});
 
   useEffect(() => {
@@ -241,6 +242,7 @@ let TopicDetails = ({ details = [] }) => {
 };
 
 let Featured = ({ id, name, followers = 0, online = 0, conferences = [] }) => {
+  let { isactive } = useSession();
   let dispatch = useDispatch();
 
   return (
@@ -288,7 +290,7 @@ let Featured = ({ id, name, followers = 0, online = 0, conferences = [] }) => {
             justifyContent="center"
             spacing={2}
           >
-            <Button fullWidth variant="outlined">
+            <Button fullWidth variant="outlined" disabled={!isactive}>
               <Stack
                 direction="row"
                 spacing={2}
@@ -309,7 +311,7 @@ let Featured = ({ id, name, followers = 0, online = 0, conferences = [] }) => {
                 <SquarePlusIcon size={16} />
               </Stack>
             </Button>
-            <Button fullWidth variant="contained">
+            <Button fullWidth variant="contained" disabled={!isactive}>
               <Stack
                 direction="row"
                 spacing={2}

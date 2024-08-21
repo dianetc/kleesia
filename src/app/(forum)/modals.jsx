@@ -5,7 +5,7 @@ import { toggle } from "@/store/slices/ui";
 
 import request from "@/lib/request";
 
-import { Notify, trimming } from "@/lib/utils";
+import { allowed_arxiv_links, Notify, trimming } from "@/lib/utils";
 
 import OutlinedInput from "@mui/material/OutlinedInput";
 
@@ -22,6 +22,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import { MuiChipsInput } from "mui-chips-input";
+import { useSession } from "@/lib/hooks/auth";
 
 let Modals = () => {
   let dispatch = useDispatch();
@@ -67,6 +68,8 @@ let Modals = () => {
 };
 
 let CreateTopic = () => {
+  let { isactive } = useSession();
+
   let [topic, setTopic] = useState("");
   let [rule, setRule] = useState({ name: "", details: "" });
   let [rules, setRules] = useState([]);
@@ -179,7 +182,12 @@ let CreateTopic = () => {
       </Stack>
 
       <Stack direction="row" justifyContent="end">
-        <Button variant="contained" size="large" onClick={submit}>
+        <Button
+          variant="contained"
+          size="large"
+          onClick={submit}
+          disabled={!isactive}
+        >
           <Typography variant="p" fontWeight={500}>
             Create topic
           </Typography>
@@ -190,7 +198,11 @@ let CreateTopic = () => {
 };
 
 let CreatePost = () => {
+  let { isactive } = useSession();
+  //
   let [post, setPost] = useState({});
+  let [error, setError] = useState(false);
+  //
   let [co_authors, setAuthors] = useState([]);
   let [conferences, setConferences] = useState([]);
 
@@ -198,8 +210,13 @@ let CreatePost = () => {
 
   function handleChange(e) {
     let { id, value } = e.target;
+    id === "arxiv_link" && validateArxiv(value);
     setPost({ ...post, [id]: value });
   }
+
+  let validateArxiv = (link) => {
+    setError(link?.length > 0 && !link.match(allowed_arxiv_links));
+  };
 
   function handleConferences(value) {
     setConferences(value);
@@ -223,6 +240,12 @@ let CreatePost = () => {
   async function submit(e) {
     e.preventDefault();
 
+    if (error)
+      return Notify({
+        status: "error",
+        content: "Please check your Arxiv link",
+      });
+
     let data = { ...post, co_authors, conferences, topic_id };
 
     try {
@@ -240,69 +263,82 @@ let CreatePost = () => {
   };
 
   return (
-    <Stack spacing={3}>
-      <Stack direction="row" justifyContent="space-between" alignItems="center">
-        <Typography variant="h5" fontWeight={500}>
-          Create a new post
-        </Typography>
-        <IconButton onClick={handleClose}>
-          <CloseIcon />
-        </IconButton>
-      </Stack>
-      <Stack spacing={1}>
-        <Typography variant="label">Title *</Typography>
-        <OutlinedInput
-          id="title"
-          onChange={handleChange}
-          size="small"
-          placeholder="Enter post title"
-        />
-      </Stack>
-      <Stack spacing={1}>
-        <Typography variant="label">Summary *</Typography>
-        <TextField
-          id="body"
-          onChange={handleChange}
-          placeholder="Enter post summary"
-          minRows={6}
-          multiline
-        />
-      </Stack>
-      <Stack spacing={1}>
-        <Typography variant="label">Arxiv Abstract Link *</Typography>
-        <OutlinedInput
-          id="arxix_link"
-          onChange={handleChange}
-          size="small"
-          placeholder="Enter abstract link, e.g, arxiv.org/abs/<id>"
-        />
-      </Stack>
-      <Stack spacing={1}>
-        <Typography variant="label">Conference{"(s)"}</Typography>
-        <MuiChipsInput
-          size="small"
-          value={conferences}
-          onChange={handleConferences}
-        />
-      </Stack>
-      <Stack spacing={1}>
-        <Typography variant="label">Co-author{"(s)"}</Typography>
-        <MuiChipsInput
-          size="small"
-          value={co_authors}
-          onInputChange={handleAuthors}
-          // onChange={handleAuthors}
-        />
-      </Stack>
-
-      <Stack direction="row" justifyContent="end">
-        <Button variant="contained" size="large" onClick={submit}>
-          <Typography variant="p" fontWeight={500}>
-            Publish Post
+    <form onSubmit={submit}>
+      <Stack spacing={3}>
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <Typography variant="h5" fontWeight={500}>
+            Create a new post
           </Typography>
-        </Button>
+          <IconButton onClick={handleClose}>
+            <CloseIcon />
+          </IconButton>
+        </Stack>
+        <Stack spacing={1}>
+          <Typography variant="label">Title *</Typography>
+          <OutlinedInput
+            id="title"
+            onChange={handleChange}
+            size="small"
+            required
+            placeholder="Enter post title"
+          />
+        </Stack>
+        <Stack spacing={1}>
+          <Typography variant="label">Summary *</Typography>
+          <TextField
+            id="body"
+            onChange={handleChange}
+            placeholder="Enter post summary"
+            minRows={6}
+            required
+            multiline
+          />
+        </Stack>
+        <Stack spacing={1}>
+          <Typography variant="label">Arxiv Abstract Link *</Typography>
+          <OutlinedInput
+            id="arxiv_link"
+            onChange={handleChange}
+            size="small"
+            error={error}
+            required
+            placeholder="Enter abstract link, e.g, arxiv.org/abs/<id>"
+          />
+        </Stack>
+        <Stack spacing={1}>
+          <Typography variant="label">Conference{"(s)"}</Typography>
+          <MuiChipsInput
+            size="small"
+            value={conferences}
+            onChange={handleConferences}
+          />
+        </Stack>
+        <Stack spacing={1}>
+          <Typography variant="label">Co-author{"(s)"}</Typography>
+          <MuiChipsInput
+            size="small"
+            value={co_authors}
+            onInputChange={handleAuthors}
+            // onChange={handleAuthors}
+          />
+        </Stack>
+
+        <Stack direction="row" justifyContent="end">
+          <Button
+            variant="contained"
+            size="large"
+            type="submit"
+            disabled={!isactive}
+          >
+            Publish Post
+          </Button>
+        </Stack>
       </Stack>
-    </Stack>
+    </form>
   );
 };
 

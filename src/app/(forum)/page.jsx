@@ -94,18 +94,25 @@ const ContentFilter = () => {
 };
 
 const Content = () => {
-  let { context, topic } = useSelector((state) => state.unpersisted.data);
+  let { context, topic, conference } = useSelector(
+    (state) => state.unpersisted.data
+  );
 
   let sort_filters = () =>
     `?${
       topic?.id
         ? `topic_id=${topic?.id}`
+        : conference?.id
+        ? `conferences[]=${conference?.id}`
         : context?.name === "recent"
         ? "q=recent"
         : ""
     }`;
 
-  let { data } = useSWR(`post/get${sort_filters()}`, fetcher);
+  let { data } = useSWR(`post/get${sort_filters()}`, fetcher, {
+    revalidateIfStale: true,
+    revalidateOnFocus: true,
+  });
 
   return (
     <Stack spacing={3}>

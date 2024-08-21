@@ -2,6 +2,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export const allowed_emails = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[eE][dD][uU]$/;
+export const allowed_arxiv_links = /https:\/\/arxiv\.org\/abs\/\d{4}\.\d{5}/;
 
 export function isPayloadValid({ fields = [], payload }) {
   for (var i = 0; i < fields.length; i++) {

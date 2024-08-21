@@ -21,6 +21,7 @@ const palette = {
   background: {
     main: "#F6F6F6",
     border: "#DEDEDE",
+    slate: "#BEBEBE",
   },
 };
 

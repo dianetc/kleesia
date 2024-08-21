@@ -23,15 +23,16 @@ model User {
   email String @unique
 
   // Relations
-  account    Account?
+  account         Account?
   // 
-  logs       Logs[]
-  post       Post[]
-  follows    Follows[]
-  recovery   Recovery[]
-  comments   Comments[]
-  conference Conference[]
-  Topic      Topic[]
+  logs            Logs[]
+  post            Post[]
+  follows         Follows[]
+  recovery        Recovery[]
+  comments        Comments[]
+  conference      Conference[]
+  topic           Topic[]
+  user_votes_post User_Vote_Post[]
 }
 
 model Account {
@@ -100,7 +101,7 @@ model Post {
 
   title      String  @unique
   body       String?
-  arxix_link String? @unique
+  arxiv_link String? @unique
   votes      Int?    @default(0)
 
   // 
@@ -108,11 +109,26 @@ model Post {
   conferences String[]
 
   // Relations
+  user           User?            @relation(fields: [user_id], references: [id])
+  user_id        String?
+  // 
+  Topic          Topic?           @relation(fields: [topic_id], references: [id])
+  topic_id       String?
+  // 
+  User_Vote_Post User_Vote_Post[]
+}
+
+model User_Vote_Post {
+  id         String    @id @default(uuid())
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  post    Post?   @relation(fields: [post_id], references: [id])
+  post_id String?
+
+  // Relations
   user    User?   @relation(fields: [user_id], references: [id])
   user_id String?
-
-  Topic    Topic?  @relation(fields: [topic_id], references: [id])
-  topic_id String?
 }
 
 model Topic {

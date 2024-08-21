@@ -112,7 +112,7 @@ const Content = () => {
         : "post/get"
     }`;
 
-  let { data } = useSWR(sort_filters(), fetcher, {
+  let { data, mutate } = useSWR(sort_filters(), fetcher, {
     revalidateIfStale: true,
     revalidateOnFocus: true,
   });
@@ -123,8 +123,10 @@ const Content = () => {
         return (
           <Post key={index} {...post}>
             <Post.Title>{post?.title}</Post.Title>
-            <Post.User {...post?.user} />
-            <Post.Description id={post?.title}>{post?.body}</Post.Description>
+            {post?.user && <Post.User {...post?.user} />}
+            {post?.body && (
+              <Post.Description id={post?.id}>{post?.body}</Post.Description>
+            )}
           </Post>
         );
       })}

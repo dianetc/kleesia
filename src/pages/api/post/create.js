@@ -26,6 +26,15 @@ export default async function CREATE(request, response) {
   if (existing?.length > 0)
     return response.status(500).send({ msg: "This post already exists" });
 
+  let arxiv_link = await prisma.post.findMany({
+    where: { arxiv_link: body?.arxiv_link },
+  });
+
+  if (arxiv_link?.length > 0)
+    return response
+      .status(500)
+      .send({ msg: "This arxiv link has already been used" });
+
   let conferences = await findSertConferences(body?.conferences, user_id);
   body.conferences = conferences;
 

@@ -41,47 +41,7 @@ export default async function GET(request, response) {
 
   try {
     let posts = await prisma.post.findMany(options);
-
-    let cache = posts?.map(async (post) => {
-      let isvoted = await prisma.user_Vote_Post.findUnique({
-        where: {
-          post_id: post?.id,
-        },
-        select: {
-          id: true,
-          direction: true,
-        },
-      });
-
-      let comments = await prisma.comments.count({
-        where: {
-          context: "post",
-          context_id: post?.id,
-        },
-      });
-
-      let conferences_ids = await prisma.conference.findMany({
-        where: {
-          id: { in: post?.conferences },
-        },
-        select: {
-          title: true,
-        },
-      });
-
-      let conferences = conferences_ids?.map((conference) => conference?.title);
-
-      return {
-        ...post,
-        voted: isvoted?.id ? true : false,
-        direction: isvoted?.direction || "",
-        conferences,
-        comments,
-      };
-    });
-
-    let data = await Promise.all(cache);
-
+    let data = await getPostDetails(posts);
     return response.status(200).send(data);
   } catch (error) {
     console.log(error);
@@ -107,4 +67,48 @@ async function getFollowIDs(user) {
   user_list.push(user?.id);
 
   return { topic_list, user_list };
+}
+
+export async function getPostDetails(posts) {
+  let cache = posts?.map(async (post) => {
+    let isvoted = await prisma.user_Vote_Post.findFirst({
+      where: {
+        post_id: post?.id,
+      },
+      select: {
+        id: true,
+        direction: true,
+      },
+    });
+
+    let comments = await prisma.comments.count({
+      where: {
+        context: "post",
+        context_id: post?.id,
+      },
+    });
+
+    let conferences_ids = await prisma.conference.findMany({
+      where: {
+        id: { in: post?.conferences },
+      },
+      select: {
+        title: true,
+      },
+    });
+
+    let conferences = conferences_ids?.map((conference) => conference?.title);
+
+    return {
+      ...post,
+      voted: isvoted?.id ? true : false,
+      direction: isvoted?.direction || "",
+      conferences,
+      comments,
+    };
+  });
+
+  let data = await Promise.all(cache);
+
+  return data;
 }

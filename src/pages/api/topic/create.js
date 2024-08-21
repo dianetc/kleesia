@@ -21,7 +21,7 @@ export default async function CREATE(request, response) {
     return response.status(500).send({ msg: "User is not authorized" });
 
   let existing = await prisma.topic.findMany({
-    where: { title: { contains: body?.name } },
+    where: { title: { contains: body?.title } },
   });
 
   if (existing?.length > 0)

@@ -31,6 +31,7 @@ import {
   CardContent,
   CardActions,
 } from "@mui/material";
+import { useSWRConfig } from "swr";
 
 let Post = ({
   id,
@@ -137,6 +138,7 @@ let Comments = ({ id, count = 0 }) => {
 };
 
 let Votes = ({ id, count, isvoted, direction }) => {
+  let { mutate } = useSWRConfig();
   let { isactive } = useSession();
   let [votes, setVote] = useState({ count, direction, isvoted });
 
@@ -149,6 +151,7 @@ let Votes = ({ id, count, isvoted, direction }) => {
         votes: vote,
         direction: orientation,
       });
+      mutate("/post/get");
       setVote({ count: vote, direction: orientation, isvoted });
       return;
     } catch (error) {

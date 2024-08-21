@@ -5,6 +5,7 @@ import { toggle } from "@/store/slices/ui";
 
 import request from "@/lib/request";
 
+import { useSWRConfig } from "swr";
 import { allowed_arxiv_links, Notify, trimming } from "@/lib/utils";
 
 import OutlinedInput from "@mui/material/OutlinedInput";
@@ -69,10 +70,15 @@ let Modals = () => {
 
 let CreateTopic = () => {
   let { isactive } = useSession();
+  let { mutate } = useSWRConfig();
 
   let [topic, setTopic] = useState("");
   let [rule, setRule] = useState({ name: "", details: "" });
   let [rules, setRules] = useState([]);
+
+  let { name } = useSelector((state) => state.unpersisted.data.context);
+
+  let get_filter = () => (name === "recent" ? "?q=recent" : "");
 
   function handleChange(e) {
     let { id, value } = e.target;
@@ -102,6 +108,7 @@ let CreateTopic = () => {
       setTopic("");
       setRule({ name: "", details: "" });
       setRules([]);
+      mutate(`topic/get${get_filter()}`);
     } catch (error) {
       let msg = error?.response?.data?.msg ?? error?.message;
       Notify({ status: "error", content: msg });
@@ -203,6 +210,7 @@ let CreateTopic = () => {
 };
 
 let CreatePost = () => {
+  let { mutate } = useSWRConfig();
   let { isactive } = useSession();
   //
   let [post, setPost] = useState({});
@@ -212,6 +220,23 @@ let CreatePost = () => {
   let [conferences, setConferences] = useState([]);
 
   let { id: topic_id } = useSelector((state) => state.unpersisted.data.topic);
+
+  let { context, topic, conference, search } = useSelector(
+    (state) => state.unpersisted.data
+  );
+
+  let sort_filters = () =>
+    `${
+      topic?.id
+        ? `post/get?topic_id=${topic?.id}`
+        : conference?.id
+        ? `post/get?conferences[]=${conference?.id}`
+        : context?.name === "recent"
+        ? "post/get?q=recent"
+        : search?.value
+        ? `search?q=${search?.value}`
+        : "post/get"
+    }`;
 
   function handleChange(e) {
     let { id, value } = e.target;
@@ -256,7 +281,7 @@ let CreatePost = () => {
     try {
       await request.post("post/create", data);
       Notify({ status: "success", content: `Post ${post?.title} created` });
-      //
+      mutate(sort_filters());
     } catch (error) {
       let msg = error?.response?.data?.msg ?? error?.message;
       Notify({ status: "error", content: msg });

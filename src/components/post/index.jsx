@@ -69,6 +69,7 @@ let Post = ({
           <Stack
             sx={{ width: "100%" }}
             direction="row"
+            alignItems="center"
             justifyContent="space-between"
           >
             <Stack direction="row" spacing={4}>

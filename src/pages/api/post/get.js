@@ -18,6 +18,7 @@ export default async function GET(request, response) {
     title: true,
     body: true,
     votes: true,
+    conferences: true,
     user: { select: { name: true } },
   };
 
@@ -59,12 +60,22 @@ export default async function GET(request, response) {
         },
       });
 
-      console.log(isvoted, comments);
+      let conferences_ids = await prisma.conference.findMany({
+        where: {
+          id: { in: post?.conferences },
+        },
+        select: {
+          title: true,
+        },
+      });
+
+      let conferences = conferences_ids?.map((conference) => conference?.title);
 
       return {
         ...post,
         voted: isvoted?.id ? true : false,
         direction: isvoted?.direction || "",
+        conferences,
         comments,
       };
     });

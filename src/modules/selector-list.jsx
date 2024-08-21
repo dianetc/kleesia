@@ -70,7 +70,10 @@ export let Topics = () => {
 };
 
 export let Conferences = () => {
-  let { data } = useSWR("conference/all", fetcher);
+  let { name } = useSelector((state) => state.unpersisted.data.context);
+  let get_filter = () => (name === "recent" ? "?q=recent" : "");
+
+  let { data } = useSWR(`conference/get${get_filter()}`, fetcher);
 
   return (
     <Selector

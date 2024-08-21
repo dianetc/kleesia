@@ -14,11 +14,7 @@ export default async function GET(request, response) {
 
   options.select = {
     id: true,
-    created_at: true,
-    title: true,
-    body: true,
-    votes: true,
-    user: { select: { name: true } },
+    name: true,
   };
 
   if (query?.q === "recent") {
@@ -26,11 +22,11 @@ export default async function GET(request, response) {
 
     if (!user) return response.status(500).send({ msg: messages.UNAUTHORIZED });
 
-    let { topic_list, user_list } = getFollowIDs(user);
+    let { conference_list } = getFollowIDs(user);
 
     options.where = {
       ...options.where,
-      OR: [{ user_id: { in: user_list } }, { topic_id: { in: topic_list } }],
+      OR: [{ user_id: user?.id }, { id: { in: conference_list } }],
     };
   }
 
@@ -39,8 +35,8 @@ export default async function GET(request, response) {
   };
 
   try {
-    let posts = await prisma.post.findMany(options);
-    return response.status(200).send(posts);
+    let conference = await prisma.conference.findMany(options);
+    return response.status(200).send(conference);
   } catch (error) {
     return response.status(500).send({ msg: messages?.FATAL });
   }
@@ -48,20 +44,12 @@ export default async function GET(request, response) {
 
 async function getFollowIDs(user) {
   // Fetch followed channels
-  let topics = await prisma.follows.findMany({
-    where: { user_id: user?.id, context: "topic" },
+  let conference = await prisma.follows.findMany({
+    where: { user_id: user?.id, context: "conference" },
     select: { context_id: true },
   });
 
-  let topic_list = topics.map((topic_id) => topic_id?.context_id);
+  let conference_list = conference.map((conference) => conference?.context_id);
 
-  let users = await prisma.follows.findMany({
-    where: { user_id: user?.id, context: "user" },
-    select: { context_id: true },
-  });
-
-  let user_list = users.map((user) => user?.context_id);
-  user_list.push(user?.id);
-
-  return { topic_list, user_list };
+  return { conference_list };
 }

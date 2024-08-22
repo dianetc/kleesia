@@ -31,7 +31,6 @@ import { IoAdd as PlusIcon } from "react-icons/io5";
 import { IoIosSearch as SearchIcon } from "react-icons/io";
 import { FaPlusSquare as SquarePlusIcon } from "react-icons/fa";
 import { FaArrowRight as RightArrowIcon } from "react-icons/fa6";
-import { setContext } from "@/store/slices/data";
 
 let Layout = ({ children }) => {
   return (
@@ -127,7 +126,7 @@ let Navigation = () => {
           id="value"
           onKeyDown={(e) => {
             e.key === "Enter"
-              ? dispatch(setContext({ type: "search", value: search?.value }))
+              ? dispatch(setDetails({ context: "search", id: search?.value }))
               : "";
           }}
           onChange={handleSearch}
@@ -138,6 +137,7 @@ let Navigation = () => {
               <SearchIcon size={20} />
             </InputAdornment>
           }
+          disabled={!isactive}
         />
       </Stack>
       <Stack
@@ -212,9 +212,10 @@ let LeftBar = () => {
 let RightBar = () => {
   let { isactive } = useSession();
 
-  let { id } = useSelector((state) => state.unpersisted.data.topic);
+  let { context, id } = useSelector((state) => state.unpersisted.data.details);
+
   let { data } = useSWR(
-    id ? `topic/get?id=${id}&rtf=title,rules` : undefined,
+    context === "topic" ? `topic/get?id=${id}&rtf=title,rules` : undefined,
     fetcher
   );
 

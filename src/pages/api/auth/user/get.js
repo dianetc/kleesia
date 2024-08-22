@@ -1,7 +1,6 @@
 import prisma from "@/lib/prisma";
-import { isPayloadValid } from "@/lib/utils";
-import { messages } from "@/lib/request/responses";
 import { getParams } from "../../lib";
+import { messages } from "@/lib/request/responses";
 
 export default async function GET(request, response) {
   let { method, query } = request ?? {};
@@ -13,7 +12,6 @@ export default async function GET(request, response) {
 
   try {
     let user = await prisma.user.findMany(options);
-
     return response.status(200).send(user);
   } catch (error) {
     return response.status(500).send({ msg: messages?.FATAL });

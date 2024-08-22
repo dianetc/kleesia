@@ -219,24 +219,22 @@ let CreatePost = () => {
   let [co_authors, setAuthors] = useState([]);
   let [conferences, setConferences] = useState([]);
 
-  let { id: topic_id } = useSelector((state) => state.unpersisted.data.topic);
+  let { id, context } = useSelector((state) => state.unpersisted.data.details);
 
-  let { context, topic, conference, search } = useSelector(
-    (state) => state.unpersisted.data
-  );
-
-  let sort_filters = () =>
-    `${
-      topic?.id
-        ? `post/get?topic_id=${topic?.id}`
-        : conference?.id
-        ? `post/get?conferences[]=${conference?.id}`
-        : context?.name === "recent"
-        ? "post/get?q=recent"
-        : search?.value
-        ? `search?q=${search?.value}`
-        : "post/get"
-    }`;
+  let URL = () => {
+    switch (context) {
+      case "topic":
+        return `post/get?topic_id=${id}`;
+      case "conference":
+        return `post/get?conferences[]=${id}`;
+      case "recent":
+        return "post/get?q=recent";
+      case "search":
+        return `search?q=${id}`;
+      default:
+        return "post/get";
+    }
+  };
 
   function handleChange(e) {
     let { id, value } = e.target;
@@ -254,17 +252,23 @@ let CreatePost = () => {
 
   const getUsername = async (name) => {
     try {
-      let response = await request.get(`auth/user/get?q=name=${name}&rtf=name`);
-      console.log(response?.data);
+      let response = await request.get(
+        `auth/user/get?name*=${name}&rtf=id,name`
+      );
+      return response?.data[0];
     } catch (error) {
       console.log(error);
     }
   };
 
-  function handleAuthors(value) {
-    console.log(value);
-    // let name = getUsername(value);
-    // setAuthors(value);
+  async function handleAuthors(value) {
+    let user = await getUsername(value);
+    user?.name
+      ? setAuthors((prev) => [
+          ...prev.filter((prv) => prv?.name !== user?.name),
+          user,
+        ])
+      : Notify({ status: "error", content: "User does not exist" });
   }
 
   async function submit(e) {
@@ -276,12 +280,12 @@ let CreatePost = () => {
         content: "Please check your Arxiv link",
       });
 
-    let data = { ...post, co_authors, conferences, topic_id };
+    let data = { ...post, co_authors, conferences, topic_id: id };
 
     try {
       await request.post("post/create", data);
       Notify({ status: "success", content: `Post ${post?.title} created` });
-      mutate(sort_filters());
+      mutate(URL());
     } catch (error) {
       let msg = error?.response?.data?.msg ?? error?.message;
       Notify({ status: "error", content: msg });
@@ -351,9 +355,8 @@ let CreatePost = () => {
           <Typography variant="label">Co-author{"(s)"}</Typography>
           <MuiChipsInput
             size="small"
-            value={co_authors}
-            onInputChange={handleAuthors}
-            // onChange={handleAuthors}
+            value={co_authors?.map((author) => author?.name)}
+            onChange={handleAuthors}
           />
         </Stack>
 

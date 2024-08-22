@@ -38,6 +38,8 @@ export default async function CREATE(request, response) {
   let conferences = await findSertConferences(body?.conferences, user_id);
   body.conferences = conferences;
 
+  body.co_authors = body.co_authors?.map((author) => author?.id);
+
   try {
     await prisma.post.create({ data: { ...body, user_id } });
 

@@ -2,9 +2,13 @@ export function getParams(query) {
   let options = { where: {}, select: {} };
 
   Object?.entries(query)?.forEach(([key, value]) => {
+    console.log(key, value);
+
     if (!key.match(/(q|rtf)/)) {
       key.match(/\[\]/)
         ? (options.where[key.replace("[]", "")] = { has: value })
+        : key.match(/\*/)
+        ? (options.where[key.replace("*", "")] = { contains: value })
         : (options.where[key] = value);
     }
   });

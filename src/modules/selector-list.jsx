@@ -20,9 +20,9 @@ import { fetcher } from "@/lib/request";
 export let Topics = () => {
   let { isactive } = useSession();
   let dispatch = useDispatch();
-  let { name } = useSelector((state) => state.unpersisted.data.context);
+  let { context } = useSelector((state) => state.unpersisted.data.details);
 
-  let get_filter = () => (name === "recent" ? "?q=recent" : "");
+  let get_filter = () => (context === "recent" ? "?q=recent" : "");
 
   let { data } = useSWR(`topic/get${get_filter()}`, fetcher, {
     revalidateOnFocus: true,
@@ -70,8 +70,8 @@ export let Topics = () => {
 };
 
 export let Conferences = () => {
-  let { name } = useSelector((state) => state.unpersisted.data.context);
-  let get_filter = () => (name === "recent" ? "?q=recent" : "");
+  let { context } = useSelector((state) => state.unpersisted.data.details);
+  let get_filter = () => (context === "recent" ? "?q=recent" : "");
 
   let { data } = useSWR(`conference/get${get_filter()}`, fetcher);
 

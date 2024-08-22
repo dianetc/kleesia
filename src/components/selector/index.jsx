@@ -1,6 +1,8 @@
 "use client";
 
 import { useDispatch } from "react-redux";
+import { setDetails } from "@/store/slices/data";
+
 import { useSession } from "@/lib/hooks/auth";
 
 import Stack from "@mui/material/Stack";
@@ -18,7 +20,6 @@ import {
   AccordionDetails,
   AccordionActions,
 } from "@mui/material";
-import { setContext } from "@/store/slices/data";
 
 let Selector = ({ id = "", icon, list = [], label = "", children }) => {
   let { isactive } = useSession();
@@ -44,7 +45,7 @@ let Selector = ({ id = "", icon, list = [], label = "", children }) => {
           sx={{
             paddingX: 1.3,
             height: "100%",
-            maxHeight: "14em",
+            maxHeight: "10em",
             overflowY: "scroll",
           }}
         >
@@ -55,7 +56,7 @@ let Selector = ({ id = "", icon, list = [], label = "", children }) => {
                   direction="row"
                   key={child.id}
                   onClick={() => {
-                    dispatch(setContext({ type: id, id: child?.id }));
+                    dispatch(setDetails({ context: id, id: child?.id }));
                   }}
                   spacing={2}
                   sx={{ cursor: "pointer" }}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useDispatch, useSelector } from "react-redux";
-import { setContext, resetContext } from "@/store/slices/data";
+import { setDetails, resetDetails } from "@/store/slices/data";
 
 import Post from "@/components/post";
 import { useSession } from "@/lib/hooks/auth";
@@ -20,6 +20,7 @@ import {
 //
 import useSWR from "swr";
 import { fetcher } from "@/lib/request";
+import { useEffect } from "react";
 
 let Page = () => {
   return (
@@ -33,44 +34,33 @@ let Page = () => {
 
 const Header = () => {
   let dispatch = useDispatch();
-  let { context, topic, conference } = useSelector(
-    (state) => state.unpersisted.data
-  );
+  let { context } = useSelector((state) => state.unpersisted.data.details);
 
   let mapping = {
     trending: "Trending",
-    conference: "Trending",
-    topic: "Recent Post",
+    conference: "Recent Posts",
+    topic: "Recent Posts",
     recent: "Recent Activity",
     search: "search",
   };
 
   return (
     <Stack spacing={4}>
-      {context?.name || topic?.id ? (
+      {context !== "trending" && (
         <Typography
           variant="text"
           fontWeight={600}
           sx={{ width: "10%", cursor: "pointer", color: "#1976d2" }}
           onClick={() => {
-            dispatch(resetContext());
+            dispatch(resetDetails());
           }}
         >
           Go back
         </Typography>
-      ) : (
-        ""
       )}
-
       <Stack direction="row" alignItems="center" justifyContent="space-between">
-        <Typography variant="h4">
-          {mapping[topic?.id ? "topic" : context?.name || "trending"]}
-        </Typography>
-        {!conference?.id && !topic?.id && context.name === "" ? (
-          <ContentFilter />
-        ) : (
-          ""
-        )}
+        <Typography variant="h4">{mapping[context]}</Typography>
+        {context === "trending" && <ContentFilter />}
       </Stack>
     </Stack>
   );
@@ -80,11 +70,11 @@ const ContentFilter = () => {
   let { isactive } = useSession();
   let dispatch = useDispatch();
 
+  let { details } = useSelector((state) => state.unpersisted.data);
+
   let handleChange = (e) => {
     let { value } = e.target;
-    let name = value !== "trending" ? value : "";
-    dispatch(setContext({ type: "context", name }));
-    dispatch(setContext({ type: "topic", id: "" }));
+    dispatch(setDetails({ ...details, context: value }));
   };
 
   return isactive ? (
@@ -101,24 +91,24 @@ const ContentFilter = () => {
 };
 
 const Content = () => {
-  let { context, topic, conference, search } = useSelector(
-    (state) => state.unpersisted.data
-  );
+  let { id, context } = useSelector((state) => state.unpersisted.data.details);
 
-  let sort_filters = () =>
-    `${
-      topic?.id
-        ? `post/get?topic_id=${topic?.id}`
-        : conference?.id
-        ? `post/get?conferences[]=${conference?.id}`
-        : context?.name === "recent"
-        ? "post/get?q=recent"
-        : search?.value
-        ? `search?q=${search?.value}`
-        : "post/get"
-    }`;
+  let URL = () => {
+    switch (context) {
+      case "topic":
+        return `post/get?topic_id=${id}`;
+      case "conference":
+        return `post/get?conferences[]=${id}`;
+      case "recent":
+        return "post/get?q=recent";
+      case "search":
+        return `search?q=${id}`;
+      default:
+        return "post/get";
+    }
+  };
 
-  let { data } = useSWR(sort_filters(), fetcher, {
+  let { data } = useSWR(URL(), fetcher, {
     revalidateIfStale: true,
     revalidateOnFocus: true,
   });

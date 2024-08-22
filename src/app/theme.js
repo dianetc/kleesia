@@ -23,6 +23,12 @@ const palette = {
     border: "#DEDEDE",
     slate: "#BEBEBE",
   },
+  chip: [
+    "rgba(40, 216, 30, .2)",
+    "rgba(216, 119, 30, .2)",
+    "rgba(30, 77, 216, .2)",
+    "rgba(31, 200, 223, .2)",
+  ],
 };
 
 const theme = createTheme({

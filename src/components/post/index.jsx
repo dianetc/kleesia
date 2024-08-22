@@ -49,7 +49,13 @@ let Post = ({
     return (
       <Stack direction="row" alignContent="center" spacing={1}>
         {list.map((conference, index) => {
-          return <Chip key={index} label={conference} />;
+          return (
+            <Chip
+              key={index}
+              label={conference}
+              sx={{ background: (theme) => theme.palette.chip[index] }}
+            />
+          );
         })}
       </Stack>
     );

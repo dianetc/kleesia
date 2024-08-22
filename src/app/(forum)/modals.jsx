@@ -76,7 +76,7 @@ let CreateTopic = () => {
   let [rule, setRule] = useState({ name: "", details: "" });
   let [rules, setRules] = useState([]);
 
-  let { name } = useSelector((state) => state.unpersisted.data.context);
+  let { name } = useSelector((state) => state.unpersisted.data.details.context);
 
   let get_filter = () => (name === "recent" ? "?q=recent" : "");
 

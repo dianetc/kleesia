@@ -70,8 +70,6 @@ let Comment = ({ id, topic, user, body = "", votes = 0 }) => {
             context === "post"
               ? setReply(!reply)
               : dispatch(setDetails({ context: "post", id, topic }));
-
-            console.log(context, id, topic);
           }}
           count={1}
         />

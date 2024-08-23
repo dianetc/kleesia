@@ -3,13 +3,13 @@
 import Link from "next/link";
 
 import { useState, useEffect } from "react";
+import { useSWRConfig } from "swr";
 
 import { toggle } from "@/store/slices/ui";
 import { setDetails } from "@/store/slices/data";
 import { useDispatch, useSelector } from "react-redux";
 
 import { trimming } from "@/lib/utils";
-import { useSession } from "@/lib/hooks/auth";
 import { createFollow } from "@/lib/features/follows";
 
 // Icon
@@ -33,7 +33,7 @@ import { Comments, Trigger } from "./comments";
 
 let Post = ({
   id,
-  topic,
+  topic_id,
   children,
   comments,
   votes,
@@ -41,7 +41,7 @@ let Post = ({
   direction,
   conferences = [],
 }) => {
-  let { isactive } = useSession();
+  let { active: isactive } = useSelector((state) => state.persisted.user);
   let [viewComments, setViewComments] = useState(false);
 
   let dispatch = useDispatch();
@@ -100,7 +100,12 @@ let Post = ({
                 count={comments}
                 toggle={() => {
                   dispatch(
-                    setDetails({ context: "post", id, topic, isComment: true })
+                    setDetails({
+                      context: "post",
+                      id,
+                      topic: topic_id,
+                      isComment: true,
+                    })
                   );
                   setViewComments(!viewComments);
                 }}
@@ -113,7 +118,7 @@ let Post = ({
       {isactive && viewComments && (
         <Comments
           post={id}
-          topic={topic}
+          topic={topic_id}
           onClose={() => {
             setViewComments(!viewComments);
           }}
@@ -124,7 +129,7 @@ let Post = ({
   );
 };
 
-let Title = ({ id, topic, children }) => {
+let Title = ({ id, topic_id, children }) => {
   let dispatch = useDispatch();
 
   return (
@@ -133,7 +138,7 @@ let Title = ({ id, topic, children }) => {
       fontWeight={500}
       sx={{ cursor: "pointer" }}
       onClick={() => {
-        dispatch(setDetails({ context: "post", id, topic }));
+        dispatch(setDetails({ context: "post", id, topic: topic_id }));
       }}
     >
       {children}
@@ -142,7 +147,9 @@ let Title = ({ id, topic, children }) => {
 };
 
 let User = ({ id, name, followed, created_at }) => {
-  let { isactive } = useSession();
+  let { active: isactive } = useSelector((state) => state.persisted.user);
+
+  let { mutate } = useSWRConfig();
 
   let { name: store_user_name } = useSelector(
     (state) => state?.persisted?.user
@@ -195,19 +202,24 @@ let Description = ({ id, co_authors, children }) => {
   }, []);
 
   return (
-    <Stack spacing={3}>
+    <Stack spacing={4}>
       <Typography variant="p">
         {active && store_id === id ? children : trimming(children, 500)}
       </Typography>
-      {active &&
-        store_id === id &&
-        co_authors?.map((co_author, index) => {
-          return (
-            <Typography key={index} fontWeight={200}>
-              {co_author}
-            </Typography>
-          );
-        })}
+
+      {active && store_id === id && (
+        <Stack direction="row" spacing={1}>
+          <Typography>Co-Author{"(s)"}:</Typography>
+          {co_authors?.map((co_author, index) => {
+            return (
+              <Typography key={index} fontWeight={200}>
+                {co_author}
+              </Typography>
+            );
+          })}
+        </Stack>
+      )}
+
       <Typography
         sx={{ cursor: "pointer" }}
         color="text.secondary"

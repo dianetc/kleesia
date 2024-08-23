@@ -5,7 +5,7 @@ import { getCookie } from "cookies-next";
 
 const request = axios.create({
   baseURL: "/api/",
-  timeout: 3000,
+  timeout: 5000,
 });
 
 function checkAuthorization(init) {

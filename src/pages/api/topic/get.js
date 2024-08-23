@@ -16,7 +16,7 @@ export default async function GET(request, response) {
   if (query?.q === "recent") {
     if (!user) return response.status(500).send({ msg: messages.UNAUTHORIZED });
 
-    let { topic_list } = getFollowIDs(user);
+    let { topic_list } = await getFollowIDs(user);
 
     options.where = {
       ...options.where,

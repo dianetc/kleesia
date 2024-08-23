@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { setDetails, resetDetails } from "@/store/slices/data";
 
 import Post from "@/components/post";
-import { useSession } from "@/lib/hooks/auth";
 
 import {
   Button,
@@ -20,7 +19,6 @@ import {
 //
 import useSWR from "swr";
 import { fetcher } from "@/lib/request";
-import { useEffect } from "react";
 
 let Page = () => {
   return (
@@ -68,7 +66,7 @@ const Header = () => {
 };
 
 const ContentFilter = () => {
-  let { isactive } = useSession();
+  let { active: isactive } = useSelector((state) => state.persisted.user);
   let dispatch = useDispatch();
 
   let { details } = useSelector((state) => state.unpersisted.data);
@@ -121,7 +119,7 @@ const Content = () => {
       {data?.map((post, index) => {
         return (
           <Post key={index} {...post}>
-            <Post.Title id={post?.id} topic={post?.topic_id}>
+            <Post.Title id={post?.id} topic_id={post?.topic_id}>
               {post?.title}
             </Post.Title>
             {post?.user && (

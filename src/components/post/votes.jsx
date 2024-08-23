@@ -2,7 +2,7 @@ import { useSWRConfig } from "swr";
 import { useEffect, useState } from "react";
 
 import request from "@/lib/request";
-import { useSession } from "@/lib/hooks/auth";
+import { useSelector } from "react-redux";
 
 // Icon
 import { BiSolidUpArrow as ArrowUp } from "react-icons/bi";
@@ -12,7 +12,7 @@ import { Stack, IconButton, Typography } from "@mui/material";
 
 let Votes = ({ id, context = "post", count, isvoted, direction }) => {
   let { mutate } = useSWRConfig();
-  let { isactive } = useSession();
+  let { active: isactive } = useSelector((state) => state.persisted.user);
   let [votes, setVote] = useState({ count, direction, isvoted });
 
   async function castVote(orientation) {

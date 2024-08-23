@@ -22,7 +22,9 @@ export default async function GET(request, response) {
 
     if (!user) return response.status(500).send({ msg: messages.UNAUTHORIZED });
 
-    let { conference_list } = getFollowIDs(user);
+    let { conference_list } = await getFollowIDs(user);
+
+    console.log(conference_list);
 
     options.where = {
       ...options.where,

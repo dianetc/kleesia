@@ -11,20 +11,22 @@ import request, { fetcher } from "@/lib/request";
 import { createFollow } from "@/lib/features/follows";
 
 import { toggle } from "@/store/slices/ui";
+import { setDetails } from "@/store/slices/data";
 import { logout } from "@/store/slices/persisted";
 import { useDispatch, useSelector } from "react-redux";
 
 import Modals from "./modals";
 import { Topics, Conferences } from "@/modules/selector-list";
 
-import Stack from "@mui/material/Stack";
-import Divider from "@mui/material/Divider";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import InputAdornment from "@mui/material/InputAdornment";
-
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
+import {
+  Box,
+  Stack,
+  Button,
+  Divider,
+  Typography,
+  OutlinedInput,
+  InputAdornment,
+} from "@mui/material";
 
 // Icons
 import { IoAdd as PlusIcon } from "react-icons/io5";
@@ -32,9 +34,12 @@ import { FaCheck as TickIcon } from "react-icons/fa6";
 import { IoIosSearch as SearchIcon } from "react-icons/io";
 import { FaPlusSquare as SquarePlusIcon } from "react-icons/fa";
 import { FaArrowRight as RightArrowIcon } from "react-icons/fa6";
-import { setDetails } from "@/store/slices/data";
 
 let Layout = ({ children }) => {
+  useEffect(() => {
+    useSession();
+  }, []);
+
   return (
     <main>
       <Navigation />
@@ -49,7 +54,7 @@ let Layout = ({ children }) => {
 };
 
 let Navigation = () => {
-  let { isactive } = useSession();
+  let { active: isactive } = useSelector((state) => state.persisted.user);
   let [search, setSearch] = useState({});
   let dispatch = useDispatch();
 
@@ -176,7 +181,7 @@ let Content = ({ children }) => {
 
 let LeftBar = () => {
   let dispatch = useDispatch();
-  let { isactive } = useSession();
+  let { active: isactive } = useSelector((state) => state.persisted.user);
 
   return (
     <Box sx={{ width: "25%", border: "1px solid #E8E8E8" }}>
@@ -218,7 +223,7 @@ let LeftBar = () => {
 };
 
 let RightBar = () => {
-  let { isactive } = useSession();
+  let { active: isactive } = useSelector((state) => state.persisted.user);
 
   let { context, id, topic } = useSelector(
     (state) => state.unpersisted.data.details
@@ -262,7 +267,7 @@ let RightBar = () => {
 };
 
 let TopicDetails = ({ details = [] }) => {
-  let { isactive } = useSession();
+  let { active: isactive } = useSelector((state) => state.persisted.user);
   let [data, setData] = useState({});
 
   useEffect(() => {
@@ -285,7 +290,7 @@ let Featured = ({
   followers = 0,
   conferences = [],
 }) => {
-  let { isactive } = useSession();
+  let { active: isactive } = useSelector((state) => state.persisted.user);
   let dispatch = useDispatch();
 
   let { name: store_user_name } = useSelector(

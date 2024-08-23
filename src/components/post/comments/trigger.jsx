@@ -1,11 +1,11 @@
 import Image from "next/image";
 
-import { useSession } from "@/lib/hooks/auth";
+import { useSelector } from "react-redux";
 
 import { IconButton, Stack, Typography } from "@mui/material";
 
 let Trigger = ({ toggle, count }) => {
-  let { isactive } = useSession();
+  let { active: isactive } = useSelector((state) => state.persisted.user);
 
   return (
     <Stack

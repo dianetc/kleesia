@@ -1,31 +1,29 @@
-import { deleteCookie, hasCookie } from "cookies-next";
-
-import { useSelector } from "react-redux";
-import { useState, useEffect } from "react";
-
 import request from "../request";
 
+import { deleteCookie, hasCookie } from "cookies-next";
+
 import { store } from "@/store";
-import { destroy } from "@/store/slices/persisted";
+import { destroy, saveSession } from "@/store/slices/persisted";
 
 export let useSession = () => {
-  let [isactive, setActive] = useState(false);
-
-  let cookie = hasCookie("ABywFrtD");
-  let { user } = useSelector((state) => state.persisted);
-
   async function validateToken() {
-    if (isactive) return;
+    let state = store.getState();
+    let { user } = state.persisted;
+
+    if (user?.active) return;
+
+    let cookie = hasCookie("ABywFrtD");
 
     if (!cookie) {
-      setActive(false);
+      setStatus(user, false);
       return;
     }
 
     try {
       await request.get("auth/verify");
-      setActive(true);
+      setStatus(user, true);
     } catch (error) {
+      setStatus(user, false);
       // store.dispatch(destroy());
       // deleteCookie("ABywFrtD");
       // deleteCookie("qBJpvRne");
@@ -34,9 +32,9 @@ export let useSession = () => {
     return;
   }
 
-  useEffect(() => {
-    validateToken();
-  }, [user?.email]);
+  validateToken();
+};
 
-  return { isactive };
+let setStatus = (user, status) => {
+  store.dispatch(saveSession({ ...user, active: status }));
 };

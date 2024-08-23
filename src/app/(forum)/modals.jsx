@@ -23,7 +23,6 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import { MuiChipsInput } from "mui-chips-input";
-import { useSession } from "@/lib/hooks/auth";
 
 let Modals = () => {
   let dispatch = useDispatch();
@@ -69,7 +68,7 @@ let Modals = () => {
 };
 
 let CreateTopic = () => {
-  let { isactive } = useSession();
+  let { active: isactive } = useSelector((state) => state.persisted.user);
   let { mutate } = useSWRConfig();
 
   let [topic, setTopic] = useState("");
@@ -211,7 +210,7 @@ let CreateTopic = () => {
 
 let CreatePost = () => {
   let { mutate } = useSWRConfig();
-  let { isactive } = useSession();
+  let { active: isactive } = useSelector((state) => state.persisted.user);
   //
   let [post, setPost] = useState({});
   let [error, setError] = useState(false);

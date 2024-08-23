@@ -3,7 +3,7 @@
 import { useDispatch } from "react-redux";
 import { setDetails } from "@/store/slices/data";
 
-import { useSession } from "@/lib/hooks/auth";
+import { useSelector } from "react-redux";
 
 import Stack from "@mui/material/Stack";
 import Divider from "@mui/material/Divider";
@@ -22,7 +22,7 @@ import {
 } from "@mui/material";
 
 let Selector = ({ id = "", icon, list = [], label = "", children }) => {
-  let { isactive } = useSession();
+  let { active: isactive } = useSelector((state) => state.persisted.user);
   let dispatch = useDispatch();
 
   return (

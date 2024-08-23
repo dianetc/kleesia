@@ -5,8 +5,6 @@ import { toggle } from "@/store/slices/ui";
 
 import Selector from "@/components/selector";
 
-import { useSession } from "@/lib/hooks/auth";
-
 // Materials
 import { Button, Typography } from "@mui/material";
 
@@ -18,7 +16,7 @@ import useSWR from "swr";
 import { fetcher } from "@/lib/request";
 
 export let Topics = () => {
-  let { isactive } = useSession();
+  let { active: isactive } = useSelector((state) => state.persisted.user);
   let dispatch = useDispatch();
   let { context } = useSelector((state) => state.unpersisted.data.details);
 

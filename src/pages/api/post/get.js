@@ -23,6 +23,7 @@ export default async function GET(request, response) {
     conferences: true,
     user: { select: { id: true, name: true } },
     topic_id: true,
+    co_authors: true,
   };
 
   var filter = "many";
@@ -39,7 +40,7 @@ export default async function GET(request, response) {
   if (query?.q === "recent") {
     if (!user) return response.status(500).send({ msg: messages.UNAUTHORIZED });
 
-    let { topic_list, user_list } = getFollowIDs(user);
+    let { topic_list, user_list } = await getFollowIDs(user);
 
     options.where = {
       ...options.where,
@@ -76,7 +77,6 @@ async function getFollowIDs(user) {
   });
 
   let user_list = users.map((user) => user?.context_id);
-  user_list.push(user?.id);
 
   return { topic_list, user_list };
 }

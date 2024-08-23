@@ -5,8 +5,6 @@ import { hasCookie } from "cookies-next";
 
 let initialState = {
   user: {},
-  settings: {},
-  account: {},
 };
 
 let persisted = createSlice({

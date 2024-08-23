@@ -6,12 +6,17 @@ import Comment from "./comment";
 
 // Material
 import { Stack, Typography, Card, CardContent } from "@mui/material";
+import { useEffect } from "react";
 
-let Comments = ({ onClose, post, count }) => {
+let Comments = ({ onClose, topic, post, count }) => {
   let { data: comments } = useSWR(
     `comment/get?context=post&context_id=${post}&rtf=body,votes,user`,
     fetcher
   );
+
+  useEffect(() => {
+    console.log(topic);
+  }, [topic]);
 
   return (
     <Stack spacing={4}>
@@ -22,7 +27,7 @@ let Comments = ({ onClose, post, count }) => {
         <CardContent>
           <Stack spacing={4}>
             {comments?.map((comment, index) => {
-              return <Comment key={index} {...comment} />;
+              return <Comment key={index} topic={topic} {...comment} />;
             })}
           </Stack>
         </CardContent>

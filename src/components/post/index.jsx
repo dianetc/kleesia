@@ -3,15 +3,16 @@
 import { useState } from "react";
 
 import { toggle } from "@/store/slices/ui";
+import { setDetails } from "@/store/slices/data";
 import { useDispatch, useSelector } from "react-redux";
 
-import { useSession } from "@/lib/hooks/auth";
 import { trimming } from "@/lib/utils";
+import { useSession } from "@/lib/hooks/auth";
 import { createFollow } from "@/lib/features/follows";
 
 // Icon
-import { FaCheck as TickIcon } from "react-icons/fa6";
 import { IoAdd as PlusIcon } from "react-icons/io5";
+import { FaCheck as TickIcon } from "react-icons/fa6";
 
 // Material
 import {
@@ -39,6 +40,7 @@ let Post = ({
   conferences = [],
 }) => {
   let { isactive } = useSession();
+  let dispatch = useDispatch();
   let [viewComments, setViewComments] = useState(false);
 
   let Conferences = ({ list = [] }) => {
@@ -85,7 +87,9 @@ let Post = ({
               <Trigger
                 id={id}
                 count={comments}
-                toggle={() => setViewComments(!viewComments)}
+                toggle={() => {
+                  setViewComments(!viewComments);
+                }}
               />
             </Stack>
             <Conferences list={conferences} />
@@ -97,20 +101,31 @@ let Post = ({
   );
 };
 
-let Title = ({ children }) => {
+let Title = ({ id, children }) => {
+  let dispatch = useDispatch();
+
   return (
-    <Typography variant="h5" fontWeight={500}>
+    <Typography
+      variant="h5"
+      fontWeight={500}
+      sx={{ cursor: "pointer" }}
+      onClick={() => {
+        dispatch(setDetails({ context: "post", id }));
+      }}
+    >
       {children}
     </Typography>
   );
 };
 
-let User = ({ id, name, followed, date }) => {
+let User = ({ id, name, followed, created_at }) => {
   let { isactive } = useSession();
 
   let { name: store_user_name } = useSelector(
     (state) => state?.persisted?.user
   );
+
+  let date = created_at?.split("T")[0]?.replace(/-/g, ".");
 
   return (
     <Stack direction="row" justifyContent="space-between">

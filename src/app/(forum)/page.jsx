@@ -42,6 +42,7 @@ const Header = () => {
     topic: "Recent Posts",
     recent: "Recent Activity",
     search: "search",
+    post: "Post",
   };
 
   return (
@@ -95,6 +96,8 @@ const Content = () => {
 
   let URL = () => {
     switch (context) {
+      case "post":
+        return `post/get?id=${id}`;
       case "topic":
         return `post/get?topic_id=${id}`;
       case "conference":
@@ -118,8 +121,10 @@ const Content = () => {
       {data?.map((post, index) => {
         return (
           <Post key={index} {...post}>
-            <Post.Title>{post?.title}</Post.Title>
-            {post?.user && <Post.User {...post?.user} />}
+            <Post.Title id={post?.id}>{post?.title}</Post.Title>
+            {post?.user && (
+              <Post.User created_at={post?.created_at} {...post?.user} />
+            )}
             {post?.body && (
               <Post.Description id={post?.id}>{post?.body}</Post.Description>
             )}

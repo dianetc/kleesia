@@ -10,6 +10,8 @@ export default async function GET(request, response) {
   if (method !== "GET")
     return response.status(400).send({ msg: messages?.BAD_REQUEST });
 
+  let user = await getUserRole(headers);
+
   let options = getParams(query);
 
   options.select = {
@@ -20,9 +22,19 @@ export default async function GET(request, response) {
     votes: true,
     conferences: true,
     user: { select: { id: true, name: true } },
+    topic_id: true,
   };
 
-  let user = await getUserRole(headers);
+  var filter = "many";
+
+  if (query?.id) {
+    options.select = {
+      ...options.select,
+      arxiv_link: true,
+    };
+
+    filter = "unique";
+  }
 
   if (query?.q === "recent") {
     if (!user) return response.status(500).send({ msg: messages.UNAUTHORIZED });
@@ -41,7 +53,7 @@ export default async function GET(request, response) {
 
   try {
     let posts = await prisma.post.findMany(options);
-    let data = await getPostDetails(user, posts);
+    let data = await getPostDetails(filter, user, posts);
     return response.status(200).send(data);
   } catch (error) {
     console.log(error);
@@ -69,7 +81,7 @@ async function getFollowIDs(user) {
   return { topic_list, user_list };
 }
 
-export async function getPostDetails(user, posts) {
+export async function getPostDetails(filter, user, posts) {
   let cache = posts?.map(async (post) => {
     let isvoted = await prisma.user_Vote_Post.findFirst({
       where: {
@@ -102,15 +114,27 @@ export async function getPostDetails(user, posts) {
       select: { context_id: true },
     });
 
-    let followed = follows[0]?.context_id ? true : false;
+    let followed = follows?.length > 0 && follows[0]?.context_id ? true : false;
 
     let conferences = conferences_ids?.map((conference) => conference?.title);
+
+    let co_authors = [];
+
+    if (filter === "unique") {
+      let co_author_ids = await prisma.user.findMany({
+        where: { id: { in: post?.co_authors } },
+        select: { name: true },
+      });
+
+      co_authors = co_author_ids?.map((author) => author?.name);
+    }
 
     return {
       ...post,
       user: { ...post?.user, followed },
       voted: isvoted?.id ? true : false,
       direction: isvoted?.direction || "",
+      co_authors,
       conferences,
       comments,
     };

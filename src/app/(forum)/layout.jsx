@@ -220,12 +220,24 @@ let LeftBar = () => {
 let RightBar = () => {
   let { isactive } = useSession();
 
-  let { context, id } = useSelector((state) => state.unpersisted.data.details);
-
-  let { data } = useSWR(
-    context === "topic" ? `topic/get?id=${id}&rtf=id,title,rules` : undefined,
-    fetcher
+  let { context, id, topic } = useSelector(
+    (state) => state.unpersisted.data.details
   );
+
+  function URL() {
+    let _url = (id) => `topic/get?id=${id}&rtf=id,title,rules`;
+
+    switch (context) {
+      case "topic":
+        return _url(id);
+      case "post":
+        return _url(topic);
+      default:
+        return undefined;
+    }
+  }
+
+  let { data } = useSWR(URL(), fetcher);
 
   return (
     <Box sx={{ width: "25%", border: "1px solid #E8E8E8", padding: 4 }}>

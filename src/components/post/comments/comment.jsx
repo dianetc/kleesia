@@ -4,6 +4,8 @@ import useSWR from "swr";
 import { fetcher } from "@/lib/request";
 
 import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setDetails } from "@/store/slices/data";
 
 import Form from "./form";
 import Reply from "./reply";
@@ -17,14 +19,16 @@ import { FaMinus as MinusIcon } from "react-icons/fa6";
 // Material
 import { Typography, Stack, Divider, Button } from "@mui/material";
 
-let Comment = ({ id, user, body = "", votes = 0 }) => {
+let Comment = ({ id, topic, user, body = "", votes = 0 }) => {
   let [reply, setReply] = useState(false);
   let [collapse, setCollapse] = useState(false);
 
-  let context = "reply";
+  let dispatch = useDispatch();
+
+  let { context } = useSelector((state) => state.unpersisted.data.details);
 
   let { data: replies } = useSWR(
-    `comment/get?context=${context}&context_id=${id}&rtf=body,votes,user`,
+    `comment/get?context=reply&context_id=${id}&rtf=body,votes,user`,
     fetcher
   );
 
@@ -63,14 +67,18 @@ let Comment = ({ id, user, body = "", votes = 0 }) => {
         </Button>
         <Trigger
           toggle={() => {
-            setReply(!reply);
+            context === "post"
+              ? setReply(!reply)
+              : dispatch(setDetails({ context: "post", id, topic }));
+
+            console.log(context, id, topic);
           }}
           count={1}
         />
         <Votes id={id} context="comment" count={votes} />
       </Stack>
 
-      {reply && <Form context={context} context_id={id} />}
+      {reply && <Form context={"reply"} context_id={id} />}
 
       <Stack
         spacing={4}

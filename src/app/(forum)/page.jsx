@@ -121,12 +121,17 @@ const Content = () => {
       {data?.map((post, index) => {
         return (
           <Post key={index} {...post}>
-            <Post.Title id={post?.id}>{post?.title}</Post.Title>
+            <Post.Title id={post?.id} topic={post?.topic_id}>
+              {post?.title}
+            </Post.Title>
             {post?.user && (
               <Post.User created_at={post?.created_at} {...post?.user} />
             )}
+            {post?.arxiv_link && <Post.Arxiv link={post?.arxiv_link} />}
             {post?.body && (
-              <Post.Description id={post?.id}>{post?.body}</Post.Description>
+              <Post.Description id={post?.id} co_authors={post?.co_authors}>
+                {post?.body}
+              </Post.Description>
             )}
           </Post>
         );

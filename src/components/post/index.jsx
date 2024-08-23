@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import Link from "next/link";
+
+import { useState, useEffect } from "react";
 
 import { toggle } from "@/store/slices/ui";
 import { setDetails } from "@/store/slices/data";
@@ -16,7 +18,6 @@ import { FaCheck as TickIcon } from "react-icons/fa6";
 
 // Material
 import {
-  Link,
   Card,
   Chip,
   Stack,
@@ -32,6 +33,7 @@ import { Comments, Trigger } from "./comments";
 
 let Post = ({
   id,
+  topic,
   children,
   comments,
   votes,
@@ -40,8 +42,13 @@ let Post = ({
   conferences = [],
 }) => {
   let { isactive } = useSession();
-  let dispatch = useDispatch();
   let [viewComments, setViewComments] = useState(false);
+
+  let dispatch = useDispatch();
+
+  let { context, isComment } = useSelector(
+    (state) => state.unpersisted.data.details
+  );
 
   let Conferences = ({ list = [] }) => {
     return (
@@ -58,6 +65,10 @@ let Post = ({
       </Stack>
     );
   };
+
+  useEffect(() => {
+    setViewComments(context === "post" && isComment);
+  }, [context]);
 
   return (
     <Stack direction="column" spacing={4}>
@@ -88,6 +99,9 @@ let Post = ({
                 id={id}
                 count={comments}
                 toggle={() => {
+                  dispatch(
+                    setDetails({ context: "post", id, topic, isComment: true })
+                  );
                   setViewComments(!viewComments);
                 }}
               />
@@ -96,12 +110,21 @@ let Post = ({
           </Stack>
         </CardActions>
       </Card>
-      {isactive && viewComments && <Comments post={id} count={comments} />}
+      {isactive && viewComments && (
+        <Comments
+          post={id}
+          topic={topic}
+          onClose={() => {
+            setViewComments(!viewComments);
+          }}
+          count={comments}
+        />
+      )}
     </Stack>
   );
 };
 
-let Title = ({ id, children }) => {
+let Title = ({ id, topic, children }) => {
   let dispatch = useDispatch();
 
   return (
@@ -110,7 +133,7 @@ let Title = ({ id, children }) => {
       fontWeight={500}
       sx={{ cursor: "pointer" }}
       onClick={() => {
-        dispatch(setDetails({ context: "post", id }));
+        dispatch(setDetails({ context: "post", id, topic }));
       }}
     >
       {children}
@@ -130,8 +153,9 @@ let User = ({ id, name, followed, created_at }) => {
   return (
     <Stack direction="row" justifyContent="space-between">
       <Stack direction="row" alignItems="center" spacing={3}>
-        <Typography fontWeight={100}>{name}</Typography>
-        {isactive && name === store_user_name && (
+        <Typography fontWeight={600}>{name}</Typography>
+
+        {isactive && name !== store_user_name && (
           <Button
             variant={followed ? "outlined" : "contained"}
             size="small"
@@ -155,19 +179,36 @@ let User = ({ id, name, followed, created_at }) => {
   );
 };
 
-let Description = ({ id, children }) => {
+let ArxivLink = ({ link = "..." }) => {
+  return <Link href={link}>{link}</Link>;
+};
+
+let Description = ({ id, co_authors, children }) => {
   let dispatch = useDispatch();
 
   let { id: store_id, active } = useSelector(
     (state) => state?.unpersisted?.ui?.post?.readMore
   );
 
+  useEffect(() => {
+    dispatch(toggle({ type: "READMORE", id: id, active: true }));
+  }, []);
+
   return (
-    <Stack spacing={1}>
+    <Stack spacing={3}>
       <Typography variant="p">
         {active && store_id === id ? children : trimming(children, 500)}
       </Typography>
-      <Link
+      {active &&
+        store_id === id &&
+        co_authors?.map((co_author, index) => {
+          return (
+            <Typography key={index} fontWeight={200}>
+              {co_author}
+            </Typography>
+          );
+        })}
+      <Typography
         sx={{ cursor: "pointer" }}
         color="text.secondary"
         fontWeight="bold"
@@ -176,13 +217,14 @@ let Description = ({ id, children }) => {
         }}
       >
         Read {active && store_id === id ? "Less" : "More"}
-      </Link>
+      </Typography>
     </Stack>
   );
 };
 
 Post.Title = Title;
 Post.User = User;
+Post.Arxiv = ArxivLink;
 Post.Description = Description;
 
 export default Post;

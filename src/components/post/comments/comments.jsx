@@ -7,7 +7,7 @@ import Comment from "./comment";
 // Material
 import { Stack, Typography, Card, CardContent } from "@mui/material";
 
-let Comments = ({ post, count }) => {
+let Comments = ({ onClose, post, count }) => {
   let { data: comments } = useSWR(
     `comment/get?context=post&context_id=${post}&rtf=body,votes,user`,
     fetcher
@@ -17,7 +17,7 @@ let Comments = ({ post, count }) => {
     <Stack spacing={4}>
       <Typography variant="h5">Comments {`(${count})`}</Typography>
       <Card>
-        <Form context_id={post} />
+        <Form context_id={post} cancel={onClose} />
         {/* Replies */}
         <CardContent>
           <Stack spacing={4}>

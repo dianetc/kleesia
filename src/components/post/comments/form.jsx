@@ -8,7 +8,7 @@ import { useSWRConfig } from "swr";
 // Material
 import { CardContent, CardActions, Button, TextField } from "@mui/material";
 
-let Form = ({ context = "post", context_id }) => {
+let Form = ({ cancel, context = "post", context_id }) => {
   let [body, setComment] = useState("");
 
   let { mutate } = useSWRConfig();
@@ -47,6 +47,7 @@ let Form = ({ context = "post", context_id }) => {
         <Button
           variant="outlined"
           onClick={() => {
+            cancel();
             setComment("");
           }}
         >

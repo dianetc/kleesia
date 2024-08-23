@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 
 import request from "../request";
+
 import { store } from "@/store";
 import { destroy } from "@/store/slices/persisted";
 
@@ -35,7 +36,7 @@ export let useSession = () => {
 
   useEffect(() => {
     validateToken();
-  }, []);
+  }, [user?.email]);
 
   return { isactive };
 };

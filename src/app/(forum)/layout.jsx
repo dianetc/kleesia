@@ -1,6 +1,6 @@
 "use client";
 
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 import { useEffect, useState } from "react";
 
 import Image from "next/image";
@@ -28,6 +28,7 @@ import Typography from "@mui/material/Typography";
 
 // Icons
 import { IoAdd as PlusIcon } from "react-icons/io5";
+import { FaCheck as TickIcon } from "react-icons/fa6";
 import { IoIosSearch as SearchIcon } from "react-icons/io";
 import { FaPlusSquare as SquarePlusIcon } from "react-icons/fa";
 import { FaArrowRight as RightArrowIcon } from "react-icons/fa6";
@@ -215,7 +216,7 @@ let RightBar = () => {
   let { context, id } = useSelector((state) => state.unpersisted.data.details);
 
   let { data } = useSWR(
-    context === "topic" ? `topic/get?id=${id}&rtf=title,rules` : undefined,
+    context === "topic" ? `topic/get?id=${id}&rtf=id,title,rules` : undefined,
     fetcher
   );
 
@@ -257,9 +258,22 @@ let TopicDetails = ({ details = [] }) => {
   );
 };
 
-let Featured = ({ id, title, followers = 0, online = 0, conferences = [] }) => {
+let Featured = ({
+  id,
+  title,
+  followed,
+  online = 0,
+  followers = 0,
+  conferences = [],
+}) => {
   let { isactive } = useSession();
   let dispatch = useDispatch();
+
+  let { name: store_user_name } = useSelector(
+    (state) => state?.persisted?.user
+  );
+
+  let { mutate } = useSWRConfig();
 
   return (
     <Stack spacing={4}>
@@ -306,7 +320,12 @@ let Featured = ({ id, title, followers = 0, online = 0, conferences = [] }) => {
             justifyContent="center"
             spacing={2}
           >
-            <Button fullWidth variant="outlined" disabled={!isactive}>
+            <Button
+              fullWidth
+              size="small"
+              variant="outlined"
+              disabled={!isactive}
+            >
               <Stack
                 direction="row"
                 spacing={2}
@@ -327,17 +346,25 @@ let Featured = ({ id, title, followers = 0, online = 0, conferences = [] }) => {
                 <SquarePlusIcon size={16} />
               </Stack>
             </Button>
-            <Button fullWidth variant="contained" disabled={!isactive}>
-              <Stack
-                direction="row"
-                spacing={2}
-                alignItems="center"
-                justifyContent="center"
+            {isactive && (
+              <Button
+                variant={followed ? "outlined" : "contained"}
+                fullWidth
+                size="small"
+                disabled={!isactive}
+                onClick={() => {
+                  !followed && createFollow({ context: "topic", contx: id });
+                  mutate(`topic/get?id=${id}&rtf=id,title,rules`);
+                }}
               >
-                <Typography>Follow</Typography>
-                <PlusIcon size={20} />
-              </Stack>
-            </Button>
+                <Stack direction="row" spacing={2} alignItems="center">
+                  <Typography variant="small">
+                    {followed ? "Followed" : "Follow"}
+                  </Typography>
+                  {followed ? <TickIcon size={13} /> : <PlusIcon size={20} />}
+                </Stack>
+              </Button>
+            )}
           </Stack>
         </Stack>
         <Divider sx={{ margin: "16px 0" }} />

@@ -66,6 +66,15 @@ export default async function SIGNIN(request, response) {
   let params = { req: request, res: response, maxAge: expiry };
 
   if (status === "active") {
+    await prisma.user.update({
+      where: {
+        id: user?.id,
+      },
+      data: {
+        status: "online",
+      },
+    });
+
     delete user?.id;
     delete user?.account;
 
@@ -92,6 +101,15 @@ export default async function SIGNIN(request, response) {
 
     setCookie("ABywFrtD", nw_token, params);
     setCookie("qBJpvRne", nw_refresh_tk, params);
+
+    await prisma.user.update({
+      where: {
+        id: user?.id,
+      },
+      data: {
+        status: "online",
+      },
+    });
 
     delete user?.id;
     delete user?.account;

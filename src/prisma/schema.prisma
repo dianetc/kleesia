@@ -18,21 +18,23 @@ model User {
   created_at DateTime  @default(now())
   updated_at DateTime?
 
-  name  String
-  role  Role?  @default(user)
-  email String @unique
+  name   String
+  role   Role?   @default(user)
+  email  String  @unique
+  status String? @default("offline")
 
   // Relations
-  account         Account?
+  account           Account?
   // 
-  logs            Logs[]
-  post            Post[]
-  follows         Follows[]
-  recovery        Recovery[]
-  comments        Comments[]
-  conference      Conference[]
-  topic           Topic[]
-  user_votes_post User_Vote_Post[]
+  logs              Logs[]
+  post              Post[]
+  follows           Follows[]
+  recovery          Recovery[]
+  comments          Comments[]
+  conference        Conference[]
+  topic             Topic[]
+  user_votes_post   User_Vote_Post[]
+  User_Vote_Comment User_Vote_Comment[]
 }
 
 model Account {
@@ -133,6 +135,21 @@ model User_Vote_Post {
   user_id String?
 }
 
+model User_Vote_Comment {
+  id         String    @id @default(uuid())
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  direction String?
+
+  comment    Comments? @relation(fields: [comment_id], references: [id])
+  comment_id String?
+
+  // Relations
+  user    User?   @relation(fields: [user_id], references: [id])
+  user_id String?
+}
+
 model Topic {
   id         String    @id @default(uuid())
   created_at DateTime  @default(now())
@@ -166,7 +183,7 @@ model Comments {
   updated_at DateTime?
 
   body  String?
-  votes Boolean[]
+  votes Int?    @default(0)
 
   context    String?
   context_id String?
@@ -174,6 +191,8 @@ model Comments {
   // 
   user    User?   @relation(fields: [user_id], references: [id])
   user_id String?
+
+  User_Vote_Comment User_Vote_Comment[]
 }
 
 model Follows {

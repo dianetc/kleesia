@@ -1,7 +1,8 @@
 import prisma from "@/lib/prisma";
 import { validateToken } from "./verify";
-import { messages } from "@/lib/request/responses";
 import { deleteCookie } from "cookies-next";
+import { messages } from "@/lib/request/responses";
+import { getUserRole } from "./user/details";
 
 export default async function LOGOUT(request, response) {
   let { method, headers } = request;
@@ -15,6 +16,8 @@ export default async function LOGOUT(request, response) {
   let { authorization } = headers;
 
   let token = authorization?.split(" ")[1];
+
+  let user = await getUserRole(headers);
 
   let status = await validateToken(token);
 
@@ -37,6 +40,15 @@ export default async function LOGOUT(request, response) {
 
     deleteCookie("ABywFrtD", params);
     deleteCookie("qBJpvRne", params);
+
+    await prisma.user.update({
+      where: {
+        id: user?.id,
+      },
+      data: {
+        status: "offline",
+      },
+    });
 
     return response.status(200).send({ msg: "Bye" });
   } catch (error) {

@@ -25,8 +25,7 @@ export async function getUserRole(headers) {
       },
     });
 
-    let { id, role } = data?.account?.user ?? {};
-    return { id, role };
+    return data?.account?.user;
   } catch (error) {
     return false;
   }

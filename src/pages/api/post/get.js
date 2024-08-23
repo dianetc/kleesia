@@ -19,7 +19,7 @@ export default async function GET(request, response) {
     body: true,
     votes: true,
     conferences: true,
-    user: { select: { name: true } },
+    user: { select: { id: true, name: true } },
   };
 
   let user = await getUserRole(headers);
@@ -41,7 +41,7 @@ export default async function GET(request, response) {
 
   try {
     let posts = await prisma.post.findMany(options);
-    let data = await getPostDetails(posts);
+    let data = await getPostDetails(user, posts);
     return response.status(200).send(data);
   } catch (error) {
     console.log(error);
@@ -69,7 +69,7 @@ async function getFollowIDs(user) {
   return { topic_list, user_list };
 }
 
-export async function getPostDetails(posts) {
+export async function getPostDetails(user, posts) {
   let cache = posts?.map(async (post) => {
     let isvoted = await prisma.user_Vote_Post.findFirst({
       where: {
@@ -97,10 +97,18 @@ export async function getPostDetails(posts) {
       },
     });
 
+    let follows = await prisma.follows.findMany({
+      where: { user_id: user?.id, context: "user", context_id: post?.user_id },
+      select: { context_id: true },
+    });
+
+    let followed = follows[0]?.context_id ? true : false;
+
     let conferences = conferences_ids?.map((conference) => conference?.title);
 
     return {
       ...post,
+      user: { ...post?.user, followed },
       voted: isvoted?.id ? true : false,
       direction: isvoted?.direction || "",
       conferences,

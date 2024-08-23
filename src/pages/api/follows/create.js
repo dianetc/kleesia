@@ -26,9 +26,9 @@ export default async function CREATE(request, response) {
 
   data.user_id = user?.id;
 
-  let exists = await prisma.follows.findUnique({ where: data });
+  let exists = await prisma.follows.findMany({ where: data });
 
-  if (exists)
+  if (exists.length > 0)
     return response
       .status(500)
       .send({ msg: `You have already followed this ${data?.context}` });

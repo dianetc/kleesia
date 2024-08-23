@@ -22,7 +22,7 @@ export let Topics = () => {
 
   let get_filter = () => (context === "recent" ? "?q=recent" : "");
 
-  let { data } = useSWR(`topic/get${get_filter()}`, fetcher, {
+  let { data } = useSWR("topic/get", fetcher, {
     revalidateOnFocus: true,
     revalidateIfStale: true,
   });
@@ -71,7 +71,7 @@ export let Conferences = () => {
   let { context } = useSelector((state) => state.unpersisted.data.details);
   let get_filter = () => (context === "recent" ? "?q=recent" : "");
 
-  let { data } = useSWR(`conference/get${get_filter()}`, fetcher);
+  let { data } = useSWR("conference/get", fetcher);
 
   return (
     <Selector

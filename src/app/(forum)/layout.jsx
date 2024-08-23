@@ -32,6 +32,7 @@ import { FaCheck as TickIcon } from "react-icons/fa6";
 import { IoIosSearch as SearchIcon } from "react-icons/io";
 import { FaPlusSquare as SquarePlusIcon } from "react-icons/fa";
 import { FaArrowRight as RightArrowIcon } from "react-icons/fa6";
+import { setDetails } from "@/store/slices/data";
 
 let Layout = ({ children }) => {
   return (
@@ -91,7 +92,13 @@ let Navigation = () => {
       );
     } else {
       return (
-        <Button size="large" variant="outlined">
+        <Button
+          size="large"
+          variant="outlined"
+          onClick={() => {
+            dispatch(setDetails({ context: "profile", id: "" }));
+          }}
+        >
           <Stack direction="row" spacing={3} alignItems="center">
             <Typography>My Profile</Typography>
             <RightArrowIcon size={20} />

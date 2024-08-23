@@ -26,15 +26,11 @@ export default async function GET(request, response) {
     co_authors: true,
   };
 
-  var filter = "many";
-
   if (query?.id) {
     options.select = {
       ...options.select,
       arxiv_link: true,
     };
-
-    filter = "unique";
   }
 
   if (query?.q === "recent") {
@@ -54,7 +50,7 @@ export default async function GET(request, response) {
 
   try {
     let posts = await prisma.post.findMany(options);
-    let data = await getPostDetails(filter, user, posts);
+    let data = await getPostDetails(user, posts);
     return response.status(200).send(data);
   } catch (error) {
     console.log(error);
@@ -77,11 +73,12 @@ async function getFollowIDs(user) {
   });
 
   let user_list = users.map((user) => user?.context_id);
+  user_list.push(user?.id);
 
   return { topic_list, user_list };
 }
 
-export async function getPostDetails(filter, user, posts) {
+export async function getPostDetails(user, posts) {
   let cache = posts?.map(async (post) => {
     let isvoted = await prisma.user_Vote_Post.findFirst({
       where: {
@@ -120,14 +117,12 @@ export async function getPostDetails(filter, user, posts) {
 
     let co_authors = [];
 
-    if (filter === "unique") {
-      let co_author_ids = await prisma.user.findMany({
-        where: { id: { in: post?.co_authors } },
-        select: { name: true },
-      });
+    let co_author_ids = await prisma.user.findMany({
+      where: { id: { in: post?.co_authors } },
+      select: { name: true },
+    });
 
-      co_authors = co_author_ids?.map((author) => author?.name);
-    }
+    co_authors = co_author_ids?.map((author) => author?.name);
 
     return {
       ...post,

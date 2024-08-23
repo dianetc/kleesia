@@ -207,7 +207,7 @@ let Description = ({ id, co_authors, children }) => {
         {active && store_id === id ? children : trimming(children, 500)}
       </Typography>
 
-      {active && store_id === id && (
+      {active && store_id === id && co_authors?.length > 0 && (
         <Stack direction="row" spacing={1}>
           <Typography>Co-Author{"(s)"}:</Typography>
           {co_authors?.map((co_author, index) => {

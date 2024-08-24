@@ -45,6 +45,7 @@
    ```plaintext
    DATABASE_URL="postgresql://[HOST]:[PASSWORD]@[HOST]:[PORT]/[DATABASE]?schema=public"
    ```
+   Note: You will need to generate a private key (PRIVATE_KEY) to add to your .env file. 
 
 4. **Setup Prisma Client**:
 
@@ -71,6 +72,25 @@
    bun prisma studio
    ```
    The plaform will be available on `http://localhost:5555`
+
+### Tips and Tricks
+
+1. **To reset the database**:
+
+   ```bash
+   bun prisma migrate reset
+   ```
+   
+2. **To add a dependency**:
+
+   ```bash
+   bun add <library>
+   ```
+3. **To check the status of your migration**
+
+   ```bash
+   bun prisma migrate status
+   ```
 
 ## Documentations
 

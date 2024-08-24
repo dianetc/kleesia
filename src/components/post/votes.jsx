@@ -12,11 +12,15 @@ import { Stack, IconButton, Typography } from "@mui/material";
 
 let Votes = ({ id, context = "post", count, isvoted, direction }) => {
   let { mutate } = useSWRConfig();
+  let { context: store_context } = useSelector(
+    (state) => state.unpersisted.data.details
+  );
+
   let { active: isactive } = useSelector((state) => state.persisted.user);
   let [votes, setVote] = useState({ count, direction, isvoted });
 
   async function castVote(orientation) {
-    if (!isactive && votes?.isvoted) return;
+    if (!isactive && votes?.isvoted && store_context === "profile") return;
 
     try {
       let vote = orientation === "up" ? count + 1 : count - 1;
@@ -50,7 +54,9 @@ let Votes = ({ id, context = "post", count, isvoted, direction }) => {
           className={
             votes?.direction === "up"
               ? "text-green-500"
-              : "hover:text-green-500"
+              : store_context !== "profile"
+              ? "hover:text-green-500"
+              : ""
           }
           onClick={() => castVote("up")}
         />
@@ -60,7 +66,11 @@ let Votes = ({ id, context = "post", count, isvoted, direction }) => {
         <ArrowDown
           size={16}
           className={
-            votes?.direction === "down" ? "text-red-500" : "hover:text-red-500"
+            votes?.direction === "down"
+              ? "text-red-500"
+              : store_context !== "profile"
+              ? "hover:text-red-500"
+              : ""
           }
           onClick={() => castVote("down")}
         />

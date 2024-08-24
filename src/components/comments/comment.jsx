@@ -69,7 +69,9 @@ let Comment = ({ id, topic, user, body = "", votes = 0 }) => {
           toggle={() => {
             context === "post"
               ? setReply(!reply)
-              : dispatch(setDetails({ context: "post", id, topic }));
+              : context !== "profile"
+              ? dispatch(setDetails({ context: "post", id, topic }))
+              : false;
           }}
           count={1}
         />

@@ -13,7 +13,7 @@ export default async function GET(request, response) {
 
   let user = await getUserRole(headers);
 
-  if (query?.q === "recent") {
+  if (query?.q?.match(/(recent|profile)/)) {
     if (!user) return response.status(500).send({ msg: messages.UNAUTHORIZED });
 
     let { topic_list } = await getFollowIDs(user);
@@ -21,11 +21,6 @@ export default async function GET(request, response) {
     options.where = {
       ...options.where,
       OR: [{ user_id: user?.id }, { id: { in: topic_list } }],
-    };
-  } else if (query.q === "profile") {
-    options.where = {
-      ...options.where,
-      user_id: user?.id,
     };
   }
 

@@ -14,17 +14,19 @@ export default async function GET(request, response) {
 
   let options = getParams(query);
 
+  options.where = {
+    ...options.where,
+    id: user?.id,
+  };
+
   if (query?.q === "followers") {
     let { user_list } = await getFollowIDs(user);
+
+    delete options.where["id"];
 
     options.where = {
       ...options.where,
       OR: [{ id: { in: user_list } }],
-    };
-  } else if (query?.q === "details") {
-    options.where = {
-      ...options.where,
-      id: user?.id,
     };
   }
 

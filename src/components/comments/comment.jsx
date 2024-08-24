@@ -9,7 +9,7 @@ import { setDetails } from "@/store/slices/data";
 
 import Form from "./form";
 import Reply from "./reply";
-import Votes from "../votes";
+import Votes from "../post/votes";
 import Trigger from "./trigger";
 
 // Icon

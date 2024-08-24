@@ -42,6 +42,11 @@ export default async function GET(request, response) {
       ...options.where,
       OR: [{ user_id: { in: user_list } }, { topic_id: { in: topic_list } }],
     };
+  } else if (query.q === "profile") {
+    options.where = {
+      ...options.where,
+      user_id: user?.id,
+    };
   }
 
   options.orderBy = {

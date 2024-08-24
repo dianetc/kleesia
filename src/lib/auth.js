@@ -1,11 +1,11 @@
-import request from "../request";
+import request from "./request";
 
 import { deleteCookie, hasCookie } from "cookies-next";
 
 import { store } from "@/store";
 import { destroy, saveSession } from "@/store/slices/persisted";
 
-export let useSession = () => {
+export let verifySession = () => {
   async function validateToken() {
     let state = store.getState();
     let { user } = state.persisted;

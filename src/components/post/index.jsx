@@ -29,7 +29,7 @@ import {
 } from "@mui/material";
 
 import Votes from "./votes";
-import { Comments, Trigger } from "./comments";
+import { Comments, Trigger } from "../comments";
 
 let Post = ({
   id,
@@ -68,7 +68,7 @@ let Post = ({
 
   useEffect(() => {
     setViewComments(context === "post" && isComment);
-  }, [context]);
+  }, [context, isComment]);
 
   return (
     <Stack direction="column" spacing={4}>

@@ -18,11 +18,11 @@ model User {
   created_at DateTime  @default(now())
   updated_at DateTime?
 
-  name   String
-  role   Role?   @default(user)
-  email  String  @unique
-  status String? @default("offline")
-
+  name              String
+  role              Role?               @default(user)
+  email             String              @unique
+  status            String?             @default("offline")
+  bio               String?             @default("Tell us about yourself..")
   // Relations
   account           Account?
   // 

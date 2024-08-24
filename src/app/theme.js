@@ -19,6 +19,7 @@ const palette = {
     contrastText: "#FEC200",
   },
   background: {
+    white: "#FFFFFF",
     main: "#F6F6F6",
     border: "#DEDEDE",
     slate: "#BEBEBE",

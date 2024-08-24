@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-import { useSession } from "@/lib/hooks/auth";
+import { verifySession } from "@/lib/auth";
 import request, { fetcher } from "@/lib/request";
 import { createFollow } from "@/lib/features/follows";
 
@@ -20,6 +20,7 @@ import { Topics, Conferences } from "@/modules/selector-list";
 
 import {
   Box,
+  Chip,
   Stack,
   Button,
   Divider,
@@ -37,7 +38,7 @@ import { FaArrowRight as RightArrowIcon } from "react-icons/fa6";
 
 let Layout = ({ children }) => {
   useEffect(() => {
-    useSession();
+    verifySession();
   }, []);
 
   return (
@@ -54,9 +55,12 @@ let Layout = ({ children }) => {
 };
 
 let Navigation = () => {
-  let { active: isactive } = useSelector((state) => state.persisted.user);
-  let [search, setSearch] = useState({});
   let dispatch = useDispatch();
+  let [search, setSearch] = useState({});
+
+  let { active: isactive } = useSelector((state) => state.persisted.user);
+
+  let { context } = useSelector((state) => state.unpersisted.data.details);
 
   function handleSearch(e) {
     let { id, value } = e.target;
@@ -101,11 +105,17 @@ let Navigation = () => {
           size="large"
           variant="outlined"
           onClick={() => {
-            dispatch(setDetails({ context: "profile", id: "" }));
+            dispatch(
+              setDetails({
+                context: context === "profile" ? "trending" : "profile",
+              })
+            );
           }}
         >
           <Stack direction="row" spacing={3} alignItems="center">
-            <Typography>My Profile</Typography>
+            <Typography>
+              {context === "profile" ? "Back Home" : "My Profile"}
+            </Typography>
             <RightArrowIcon size={20} />
           </Stack>
         </Button>
@@ -223,7 +233,88 @@ let LeftBar = () => {
 };
 
 let RightBar = () => {
-  let { active: isactive } = useSelector((state) => state.persisted.user);
+  let { context } = useSelector((state) => state.unpersisted.data.details);
+
+  return (
+    <Box sx={{ width: "25%", border: "1px solid #E8E8E8", padding: 4 }}>
+      {context === "profile" ? <ProfileDetails /> : <TopicDetails />}
+    </Box>
+  );
+};
+
+let ProfileDetails = () => {
+  return (
+    <Stack spacing={2}>
+      <Typography variant="h5">Your Profile:</Typography>
+      <Box
+        fullWidth
+        sx={{
+          padding: 3,
+          border: 1,
+          borderRadius: 1,
+          borderColor: "divider",
+          backgroundColor: (theme) => theme?.palette?.background?.main,
+        }}
+      >
+        <Stack
+          direction="row"
+          alignItems="start"
+          sx={{ marginBottom: 6 }}
+          justifyContent="space-between"
+        >
+          <Image
+            src="https://placehold.co/100"
+            className="rounded-full"
+            width={100}
+            height={100}
+            alt="User avatar"
+          />
+          <Button variant="outlined" size="small">
+            Edit
+          </Button>
+        </Stack>
+        <Stack spacing={1}>
+          <Stack sx={{ marginY: 3 }}>
+            <Typography variant="h6" fontWeight={600}>
+              Username
+            </Typography>
+            <Typography variant="small" fontWeight={200}>
+              @username
+            </Typography>
+          </Stack>
+
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <Typography variant="small" fontWeight={200}>
+              Posts:
+            </Typography>
+            <Typography variant="small" fontWeight={200}>
+              0
+            </Typography>
+          </Stack>
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <Typography variant="small" fontWeight={200}>
+              Comments:
+            </Typography>
+            <Typography variant="small" fontWeight={200}>
+              0
+            </Typography>
+          </Stack>
+        </Stack>
+      </Box>
+    </Stack>
+  );
+};
+
+let TopicDetails = () => {
+  let { active } = useSelector((state) => state.persisted.user);
 
   let { context, id, topic } = useSelector(
     (state) => state.unpersisted.data.details
@@ -244,40 +335,29 @@ let RightBar = () => {
 
   let { data } = useSWR(URL(), fetcher);
 
-  return (
-    <Box sx={{ width: "25%", border: "1px solid #E8E8E8", padding: 4 }}>
-      {data ? (
-        <TopicDetails details={data} />
-      ) : (
-        <Stack
-          width="100%"
-          height="100%"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <Typography variant="p">
-            {isactive
-              ? "Enter a Topics channel to view pertinent posts. "
-              : "Login in to like, comment on, or share papers. "}
-          </Typography>
-        </Stack>
-      )}
-    </Box>
-  );
-};
-
-let TopicDetails = ({ details = [] }) => {
-  let { active: isactive } = useSelector((state) => state.persisted.user);
-  let [data, setData] = useState({});
+  let [details, setDetails] = useState(undefined);
 
   useEffect(() => {
-    details[0] && setData(details[0]);
-  }, [details]);
+    data && setDetails(data[0]);
+  }, [data]);
 
-  return (
+  return details ? (
     <Stack spacing={4}>
-      <Featured {...data} />
-      <Rules list={data?.rules} />
+      <Featured {...details} />
+      <Rules list={details?.rules} />
+    </Stack>
+  ) : (
+    <Stack
+      width="100%"
+      height="100%"
+      alignItems="center"
+      justifyContent="center"
+    >
+      <Typography variant="p">
+        {active
+          ? "Enter a Topics channel to view pertinent posts. "
+          : "Login in to like, comment on, or share papers. "}
+      </Typography>
     </Stack>
   );
 };

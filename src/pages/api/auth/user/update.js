@@ -1,36 +1,28 @@
 import prisma from "@/lib/prisma";
+import { getUserRole } from "./details";
 import { messages } from "@/lib/request/responses";
 
 export default async function UPDATE(request, response) {
-  let { method, query } = request ?? {};
+  let { method, headers, body } = request ?? {};
 
   if (method != "PUT")
     return response.status(405).send({ msg: messages?.METHOD_NOT_ALLOWED });
 
-  if (!query?.q || !query?.i || !query?.v)
-    return response.status(400).send({ msg: "Missing required params" });
-
-  let { q, i, v } = query;
-
-  if (!i.match(/(name)/))
-    return response.status(500).send({ msg: "Not allowed" });
+  let user = await getUserRole(headers);
+  if (!user) return response.status(500).send({ msg: messages.UNAUTHORIZED });
 
   try {
-    let user = await prisma.user.update({
-      where: {
-        id: q,
-      },
-      data: {
-        updated_at: new Date(),
-        [i]: v,
-      },
-      select: {
-        email: true,
-      },
+    let updated = await prisma.user.update({
+      where: { id: user?.id },
+      data: { updated_at: new Date(), ...body },
+      select: { email: true },
     });
 
-    return response.status(200).send({ msg: `${user?.email}'s ${i} updated` });
+    return response
+      .status(200)
+      .send({ msg: `${updated?.email}'s profile is updated` });
   } catch (error) {
+    console.log(error);
     return response.status(500).send({ msg: messages?.FATAL });
   }
 }

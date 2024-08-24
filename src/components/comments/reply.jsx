@@ -3,7 +3,7 @@ import Image from "next/image";
 import { useState } from "react";
 
 import Form from "./form";
-import Votes from "../votes";
+import Votes from "../post/votes";
 import Trigger from "./trigger";
 
 // Icon

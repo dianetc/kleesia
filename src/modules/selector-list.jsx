@@ -16,13 +16,13 @@ import useSWR from "swr";
 import { fetcher } from "@/lib/request";
 
 export let Topics = () => {
-  let { active: isactive } = useSelector((state) => state.persisted.user);
   let dispatch = useDispatch();
+  let { active: isactive } = useSelector((state) => state.persisted.user);
   let { context } = useSelector((state) => state.unpersisted.data.details);
 
-  let get_filter = () => (context === "recent" ? "?q=recent" : "");
+  let URL = () => (context === "profile" ? "topic/get?q=profile" : "topic/get");
 
-  let { data } = useSWR("topic/get", fetcher, {
+  let { data } = useSWR(URL(), fetcher, {
     revalidateOnFocus: true,
     revalidateIfStale: true,
   });

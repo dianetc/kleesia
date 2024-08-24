@@ -8,9 +8,11 @@ import Trigger from "./trigger";
 
 // Icon
 import { Typography, Stack, Divider } from "@mui/material";
+import { useSelector } from "react-redux";
 
 let Reply = ({ id, user, body = "", votes = 0 }) => {
   let [reply, setReply] = useState(false);
+  let { context } = useSelector((state) => state.unpersisted.data.details);
 
   return (
     <Stack
@@ -46,7 +48,7 @@ let Reply = ({ id, user, body = "", votes = 0 }) => {
       <Stack direction="row" spacing={2}>
         <Trigger
           toggle={() => {
-            setReply(!reply);
+            context !== "profile" ? setReply(!reply) : "hidden";
           }}
           count={1}
         />

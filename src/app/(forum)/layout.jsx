@@ -105,11 +105,13 @@ let Navigation = () => {
           size="large"
           variant="outlined"
           onClick={() => {
+            // * Comment to disable access if the context is not complete
             dispatch(
               setDetails({
                 context: context === "profile" ? "trending" : "profile",
               })
             );
+            // * //
           }}
         >
           <Stack direction="row" spacing={3} alignItems="center">

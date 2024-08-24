@@ -120,14 +120,10 @@ export async function getPostDetails(user, posts) {
 
     let conferences = conferences_ids?.map((conference) => conference?.title);
 
-    let co_authors = [];
-
-    let co_author_ids = await prisma.user.findMany({
+    let co_authors = await prisma.user.findMany({
       where: { id: { in: post?.co_authors } },
-      select: { name: true },
+      select: { id: true, name: true },
     });
-
-    co_authors = co_author_ids?.map((author) => author?.name);
 
     return {
       ...post,

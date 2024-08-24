@@ -91,3 +91,28 @@ export let Conferences = () => {
     ></Selector>
   );
 };
+
+export let Followers = () => {
+  let { context } = useSelector((state) => state.unpersisted.data.details);
+
+  let URL = () =>
+    context === "profile" ? "auth/user/get?q=followers&rtf=name" : "";
+
+  let { data } = useSWR(URL(), fetcher);
+
+  return (
+    <Selector
+      id="profile"
+      icon={
+        <Image
+          src={"/icons/conferences.svg"}
+          width={30}
+          height={30}
+          alt={"topic icon"}
+        />
+      }
+      list={data}
+      label="Following"
+    ></Selector>
+  );
+};

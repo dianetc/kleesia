@@ -173,6 +173,7 @@ let Comments = () => {
       {comments?.map((comment, index) => {
         return (
           <Box
+            key={index}
             sx={{
               padding: 3,
               border: 1,

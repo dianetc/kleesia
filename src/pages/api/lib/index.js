@@ -14,9 +14,14 @@ export function getParams(query) {
   let return_fields = query.rtf ?? "";
 
   if (return_fields)
-    return_fields
-      ?.split(",")
-      ?.forEach((field) => (options.select[field] = true));
+    return_fields?.split(",")?.forEach((rtf) => {
+      let field = rtf.match(/=/) ? rtf.split("=") : rtf;
+      if (typeof field === "object" && field?.length > 0) {
+        options.select[field[0]] = { select: { [field[1]]: true } };
+      } else {
+        options.select[field] = true;
+      }
+    });
 
   return checkParams(options) ? options : {};
 }

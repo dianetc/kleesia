@@ -51,7 +51,7 @@ export default async function CREATE(request, response) {
 }
 
 // I know, the name is abit cliché..
-async function findSertConferences(list, user_id) {
+export async function findSertConferences(list, user_id) {
   let existing = await prisma.conference.findMany({
     where: { title: { in: list } },
     select: { id: true, title: true },

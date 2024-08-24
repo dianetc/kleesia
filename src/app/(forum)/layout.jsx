@@ -16,7 +16,7 @@ import { logout } from "@/store/slices/persisted";
 import { useDispatch, useSelector } from "react-redux";
 
 import Modals from "./modals";
-import { Topics, Conferences } from "@/modules/selector-list";
+import { Topics, Conferences, Followers } from "@/modules/selector-list";
 
 import {
   Box,
@@ -24,6 +24,7 @@ import {
   Stack,
   Button,
   Divider,
+  IconButton,
   Typography,
   OutlinedInput,
   InputAdornment,
@@ -31,6 +32,7 @@ import {
 
 // Icons
 import { IoAdd as PlusIcon } from "react-icons/io5";
+import { BiEditAlt as EditIcon } from "react-icons/bi";
 import { FaCheck as TickIcon } from "react-icons/fa6";
 import { IoIosSearch as SearchIcon } from "react-icons/io";
 import { FaPlusSquare as SquarePlusIcon } from "react-icons/fa";
@@ -194,6 +196,7 @@ let Content = ({ children }) => {
 let LeftBar = () => {
   let dispatch = useDispatch();
   let { active: isactive } = useSelector((state) => state.persisted.user);
+  let { context } = useSelector((state) => state.unpersisted.data.details);
 
   return (
     <Box sx={{ width: "25%", border: "1px solid #E8E8E8" }}>
@@ -206,7 +209,7 @@ let LeftBar = () => {
         <Stack height="100%" spacing={3} sx={{ p: 3 }}>
           <Topics />
           <Divider />
-          <Conferences />
+          {context === "profile" ? <Followers /> : <Conferences />}
         </Stack>
 
         {isactive && (
@@ -245,6 +248,8 @@ let RightBar = () => {
 };
 
 let ProfileDetails = () => {
+  let { data } = useSWR("auth/user/get?q=details", fetcher);
+
   return (
     <Stack spacing={2}>
       <Typography variant="h5">Your Profile:</Typography>
@@ -278,10 +283,10 @@ let ProfileDetails = () => {
         <Stack spacing={1}>
           <Stack sx={{ marginY: 3 }}>
             <Typography variant="h6" fontWeight={600}>
-              Username
+              {data?.name}
             </Typography>
             <Typography variant="small" fontWeight={200}>
-              @username
+              {data?.email}
             </Typography>
           </Stack>
 
@@ -294,7 +299,7 @@ let ProfileDetails = () => {
               Posts:
             </Typography>
             <Typography variant="small" fontWeight={200}>
-              0
+              {data?.posts}
             </Typography>
           </Stack>
           <Stack
@@ -306,7 +311,7 @@ let ProfileDetails = () => {
               Comments:
             </Typography>
             <Typography variant="small" fontWeight={200}>
-              0
+              {data?.comments}
             </Typography>
           </Stack>
         </Stack>
@@ -323,7 +328,7 @@ let TopicDetails = () => {
   );
 
   function URL() {
-    let _url = (id) => `topic/get?id=${id}&rtf=id,title,rules`;
+    let _url = (id) => `topic/get?id=${id}&rtf=id,title,rules,user=name`;
 
     switch (context) {
       case "topic":
@@ -365,7 +370,7 @@ let TopicDetails = () => {
 };
 
 let Featured = ({
-  id,
+  user,
   title,
   followed,
   online = 0,
@@ -374,12 +379,16 @@ let Featured = ({
 }) => {
   let { active: isactive } = useSelector((state) => state.persisted.user);
   let dispatch = useDispatch();
-
-  let { name: store_user_name } = useSelector(
-    (state) => state?.persisted?.user
-  );
-
   let { mutate } = useSWRConfig();
+
+  let [editable, setEditable] = useState(false);
+
+  let { name } = useSelector((state) => state.persisted.user);
+  let { context, id } = useSelector((state) => state.unpersisted.data.details);
+
+  useEffect(() => {
+    setEditable(id && context === "topic" && name === user?.name);
+  }, [context, id, name, user?.name]);
 
   return (
     <Stack spacing={4}>
@@ -391,9 +400,31 @@ let Featured = ({
         }}
       >
         <Stack spacing={2}>
-          <Typography variant="h6" fontWeight={600}>
-            {title}
-          </Typography>
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <Typography variant="h6" fontWeight={600}>
+              {title}
+            </Typography>
+            {editable && (
+              <IconButton
+                onClick={() => {
+                  dispatch(
+                    toggle({
+                      type: "MODAL",
+                      active: true,
+                      id: "edit_topic",
+                      size: "medium",
+                    })
+                  );
+                }}
+              >
+                <EditIcon />
+              </IconButton>
+            )}
+          </Stack>
           <Stack spacing={1}>
             <Stack
               direction="row"

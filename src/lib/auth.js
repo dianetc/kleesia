@@ -23,10 +23,9 @@ export let verifySession = () => {
       await request.get("auth/verify");
       setStatus(user, true);
     } catch (error) {
-      setStatus(user, false);
-      // store.dispatch(destroy());
-      // deleteCookie("ABywFrtD");
-      // deleteCookie("qBJpvRne");
+      store.dispatch(destroy());
+      deleteCookie("ABywFrtD");
+      deleteCookie("qBJpvRne");
     }
 
     return;

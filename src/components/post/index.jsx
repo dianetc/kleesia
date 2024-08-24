@@ -15,6 +15,7 @@ import { createFollow } from "@/lib/features/follows";
 // Icon
 import { IoAdd as PlusIcon } from "react-icons/io5";
 import { FaCheck as TickIcon } from "react-icons/fa6";
+import { BiEditAlt as EditIcon } from "react-icons/bi";
 
 // Material
 import {
@@ -26,6 +27,7 @@ import {
   Typography,
   CardContent,
   CardActions,
+  IconButton,
 } from "@mui/material";
 
 import Votes from "./votes";
@@ -129,20 +131,47 @@ let Post = ({
   );
 };
 
-let Title = ({ id, topic_id, children }) => {
+let Title = ({ id, user, topic_id, children }) => {
   let dispatch = useDispatch();
 
+  let [editable, setEditable] = useState(false);
+
+  let { name } = useSelector((state) => state.persisted.user);
+  let { context } = useSelector((state) => state.unpersisted.data.details);
+
+  useEffect(() => {
+    setEditable(user === name && context === "post");
+  }, [name, context, user]);
+
   return (
-    <Typography
-      variant="h5"
-      fontWeight={500}
-      sx={{ cursor: "pointer" }}
-      onClick={() => {
-        dispatch(setDetails({ context: "post", id, topic: topic_id }));
-      }}
-    >
-      {children}
-    </Typography>
+    <Stack direction="row" justifyContent="space-between" alignItems="center">
+      <Typography
+        variant="h5"
+        fontWeight={500}
+        sx={{ cursor: "pointer" }}
+        onClick={() => {
+          dispatch(setDetails({ context: "post", id, topic: topic_id }));
+        }}
+      >
+        {children}
+      </Typography>
+      {editable && (
+        <IconButton
+          onClick={() => {
+            dispatch(
+              toggle({
+                type: "MODAL",
+                active: true,
+                id: "edit_post",
+                size: "medium",
+              })
+            );
+          }}
+        >
+          <EditIcon />
+        </IconButton>
+      )}
+    </Stack>
   );
 };
 
@@ -213,7 +242,7 @@ let Description = ({ id, co_authors, children }) => {
           {co_authors?.map((co_author, index) => {
             return (
               <Typography key={index} fontWeight={200}>
-                {co_author}
+                {co_author?.name}
               </Typography>
             );
           })}

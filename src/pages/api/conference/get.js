@@ -10,6 +10,8 @@ export default async function GET(request, response) {
   if (method !== "GET")
     return response.status(400).send({ msg: messages?.BAD_REQUEST });
 
+  let user = await getUserRole(headers);
+
   let options = getParams(query);
 
   options.select = {
@@ -18,17 +20,18 @@ export default async function GET(request, response) {
   };
 
   if (query?.q === "recent") {
-    let user = await getUserRole(headers);
-
     if (!user) return response.status(500).send({ msg: messages.UNAUTHORIZED });
 
     let { conference_list } = await getFollowIDs(user);
 
-    console.log(conference_list);
-
     options.where = {
       ...options.where,
       OR: [{ user_id: user?.id }, { id: { in: conference_list } }],
+    };
+  } else if (query?.q === "profile") {
+    options.where = {
+      ...options.where,
+      user_id: user?.id,
     };
   }
 

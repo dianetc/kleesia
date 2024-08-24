@@ -69,9 +69,11 @@ export let Topics = () => {
 
 export let Conferences = () => {
   let { context } = useSelector((state) => state.unpersisted.data.details);
-  let get_filter = () => (context === "recent" ? "?q=recent" : "");
 
-  let { data } = useSWR("conference/get", fetcher);
+  let URL = () =>
+    context === "profile" ? "conference/get?q=profile" : "conference/get";
+
+  let { data } = useSWR(URL(), fetcher);
 
   return (
     <Selector

@@ -68,7 +68,7 @@ let Bio = () => {
   return (
     <Stack spacing={2}>
       <Stack direction="row" justifyContent="space-between" alignItems="center">
-        <Typography variant="h4">About Me</Typography>
+        <Typography variant="h4">About me</Typography>
         <Button
           onClick={() => {
             setEdit(!edit);
@@ -147,8 +147,8 @@ let Tabs = () => {
           }}
         >
           <TabList onChange={handleChange} aria-label="Profile Tabs">
-            <Tab label="Posts" value="posts" />
-            <Tab label="Comments" value="comments" />
+            <Tab label="Posts" value="posts" sx={{ textTransform: 'none' }} />
+            <Tab label="Comments" value="comments" sx={{ textTransform: 'none' }} />
           </TabList>
         </Box>
         <TabPanel value="posts" sx={{ p: 0 }}>

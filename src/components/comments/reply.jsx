@@ -25,7 +25,7 @@ let Reply = ({ id, user, body = "", votes = 0 }) => {
     >
       <Stack direction="row" alignItems="center" spacing={1}>
         <Image
-          src={"https://placehold.co/50"}
+          src={"/icons/kBULB-01.svg"}
           className="rounded-full"
           width={50}
           height={50}

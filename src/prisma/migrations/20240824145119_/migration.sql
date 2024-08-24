@@ -1,10 +1,16 @@
+-- CreateEnum
+CREATE TYPE "Role" AS ENUM ('moderator', 'user');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),
     "name" TEXT NOT NULL,
+    "role" "Role" DEFAULT 'user',
     "email" TEXT NOT NULL,
+    "status" TEXT DEFAULT 'offline',
+    "bio" TEXT DEFAULT 'Tell us about yourself..',
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -67,23 +73,50 @@ CREATE TABLE "Post" (
     "updated_at" TIMESTAMP(3),
     "title" TEXT NOT NULL,
     "body" TEXT,
-    "votes" BOOLEAN[],
+    "arxiv_link" TEXT,
+    "votes" INTEGER DEFAULT 0,
+    "co_authors" TEXT[],
+    "conferences" TEXT[],
     "user_id" TEXT,
-    "channel_id" TEXT,
+    "topic_id" TEXT,
 
     CONSTRAINT "Post_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "Channel" (
+CREATE TABLE "User_Vote_Post" (
     "id" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),
-    "name" TEXT,
-    "rules" TEXT,
+    "direction" TEXT,
+    "post_id" TEXT,
     "user_id" TEXT,
 
-    CONSTRAINT "Channel_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "User_Vote_Post_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "User_Vote_Comment" (
+    "id" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3),
+    "direction" TEXT,
+    "comment_id" TEXT,
+    "user_id" TEXT,
+
+    CONSTRAINT "User_Vote_Comment_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Topic" (
+    "id" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3),
+    "title" TEXT,
+    "rules" JSONB[],
+    "user_id" TEXT,
+
+    CONSTRAINT "Topic_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -91,21 +124,10 @@ CREATE TABLE "Conference" (
     "id" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),
-    "name" TEXT,
+    "title" TEXT,
     "user_id" TEXT,
 
     CONSTRAINT "Conference_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "Conference_Post" (
-    "id" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3),
-    "conference_id" TEXT,
-    "post_id" TEXT,
-
-    CONSTRAINT "Conference_Post_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -114,7 +136,7 @@ CREATE TABLE "Comments" (
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),
     "body" TEXT,
-    "votes" BOOLEAN[],
+    "votes" INTEGER DEFAULT 0,
     "context" TEXT,
     "context_id" TEXT,
     "user_id" TEXT,
@@ -147,10 +169,16 @@ CREATE UNIQUE INDEX "Session_token_key" ON "Session"("token");
 CREATE UNIQUE INDEX "Recovery_token_key" ON "Recovery"("token");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Conference_name_key" ON "Conference"("name");
+CREATE UNIQUE INDEX "Post_title_key" ON "Post"("title");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Follows_context_id_key" ON "Follows"("context_id");
+CREATE UNIQUE INDEX "Post_arxiv_link_key" ON "Post"("arxiv_link");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Topic_title_key" ON "Topic"("title");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Conference_title_key" ON "Conference"("title");
 
 -- AddForeignKey
 ALTER TABLE "Account" ADD CONSTRAINT "Account_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -168,19 +196,25 @@ ALTER TABLE "Logs" ADD CONSTRAINT "Logs_user_id_fkey" FOREIGN KEY ("user_id") RE
 ALTER TABLE "Post" ADD CONSTRAINT "Post_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Post" ADD CONSTRAINT "Post_channel_id_fkey" FOREIGN KEY ("channel_id") REFERENCES "Channel"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Post" ADD CONSTRAINT "Post_topic_id_fkey" FOREIGN KEY ("topic_id") REFERENCES "Topic"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Channel" ADD CONSTRAINT "Channel_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "User_Vote_Post" ADD CONSTRAINT "User_Vote_Post_post_id_fkey" FOREIGN KEY ("post_id") REFERENCES "Post"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "User_Vote_Post" ADD CONSTRAINT "User_Vote_Post_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "User_Vote_Comment" ADD CONSTRAINT "User_Vote_Comment_comment_id_fkey" FOREIGN KEY ("comment_id") REFERENCES "Comments"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "User_Vote_Comment" ADD CONSTRAINT "User_Vote_Comment_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Topic" ADD CONSTRAINT "Topic_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Conference" ADD CONSTRAINT "Conference_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Conference_Post" ADD CONSTRAINT "Conference_Post_conference_id_fkey" FOREIGN KEY ("conference_id") REFERENCES "Conference"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Conference_Post" ADD CONSTRAINT "Conference_Post_post_id_fkey" FOREIGN KEY ("post_id") REFERENCES "Post"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Comments" ADD CONSTRAINT "Comments_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;

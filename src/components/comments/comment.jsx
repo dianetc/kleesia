@@ -19,6 +19,7 @@ import { FaMinus as MinusIcon } from "react-icons/fa6";
 // Material
 import { Typography, Stack, Divider, Button } from "@mui/material";
 
+
 let Comment = ({ id, topic, user, body = "", votes = 0 }) => {
   let [reply, setReply] = useState(false);
   let [collapse, setCollapse] = useState(false);
@@ -36,7 +37,7 @@ let Comment = ({ id, topic, user, body = "", votes = 0 }) => {
     <Stack spacing={3}>
       <Stack direction="row" alignItems="center" spacing={1}>
         <Image
-          src={"https://placehold.co/50"}
+          src={"/icons/kBULB-01.svg"}
           className="rounded-full"
           width={50}
           height={50}
@@ -44,9 +45,6 @@ let Comment = ({ id, topic, user, body = "", votes = 0 }) => {
         />
         <Typography fontWeight={600} variant="h6">
           @{user?.name}
-        </Typography>
-        <Typography fontWeight={200} variant="h6">
-          {user?.lastUpdated} ago
         </Typography>
       </Stack>
 

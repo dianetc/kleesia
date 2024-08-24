@@ -11,8 +11,10 @@ import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 
 // Icons
+//import { BsSquareFill as BoxIcon } from "react-icons/bs";
 import { RiCheckboxBlankFill as BoxIcon } from "react-icons/ri";
 import { VscTriangleDown as DownArrowIcon } from "react-icons/vsc";
+
 
 import {
   Accordion,
@@ -63,7 +65,7 @@ let Selector = ({ id = "", icon, list = [], label = "", children }) => {
                 >
                   <BoxIcon
                     size={20}
-                    color={`#${index * 3}${index * 7}${index * 8}`}
+                    color="#A9A9A9"//{`#${index * 3}${index * 7}${index * 8}`}
                   />
                   <Typography variant="p">{child?.title}</Typography>
                 </Stack>

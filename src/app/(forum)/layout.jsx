@@ -251,8 +251,6 @@ let ProfileDetails = () => {
   let { data } = useSWR("auth/user/get?q=details", fetcher);
 
   return (
-    <Stack spacing={2}>
-      <Typography variant="h5">Your Profile:</Typography>
       <Box
         fullWidth
         sx={{
@@ -263,24 +261,7 @@ let ProfileDetails = () => {
           backgroundColor: (theme) => theme?.palette?.background?.main,
         }}
       >
-        <Stack
-          direction="row"
-          alignItems="start"
-          sx={{ marginBottom: 6 }}
-          justifyContent="space-between"
-        >
-          <Image
-            src="https://placehold.co/100"
-            className="rounded-full"
-            width={100}
-            height={100}
-            alt="User avatar"
-          />
-          <Button variant="outlined" size="small">
-            Edit
-          </Button>
-        </Stack>
-        <Stack spacing={1}>
+      <Stack spacing={1}>
           <Stack sx={{ marginY: 3 }}>
             <Typography variant="h6" fontWeight={600}>
               {data?.name}
@@ -295,7 +276,7 @@ let ProfileDetails = () => {
             alignItems="center"
             justifyContent="space-between"
           >
-            <Typography variant="small" fontWeight={200}>
+            <Typography fontWeight={200} variant="p" color="text.secondary">
               Posts:
             </Typography>
             <Typography variant="small" fontWeight={200}>
@@ -307,7 +288,7 @@ let ProfileDetails = () => {
             alignItems="center"
             justifyContent="space-between"
           >
-            <Typography variant="small" fontWeight={200}>
+            <Typography fontWeight={200} variant="p" color="text.secondary" >
               Comments:
             </Typography>
             <Typography variant="small" fontWeight={200}>
@@ -316,7 +297,6 @@ let ProfileDetails = () => {
           </Stack>
         </Stack>
       </Box>
-    </Stack>
   );
 };
 

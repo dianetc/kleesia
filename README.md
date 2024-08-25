@@ -74,19 +74,22 @@
    The plaform will be available on `http://localhost:5555`
 
 ### Tips and Tricks
+0. **Use a browser you dont normally use**:
+   At a certain point you may have to clear your cache. It'll be better not to have to do this
+   using your day-to-day browser because then you'll be logged out of everything. 
 
-1. **To reset the database**:
+2. **To reset the database**:
 
    ```bash
    bun prisma migrate reset
    ```
    
-2. **To add a dependency**:
+3. **To add a dependency**:
 
    ```bash
    bun add <library>
    ```
-3. **To check the status of your migration**
+4. **To check the status of your migration**
 
    ```bash
    bun prisma migrate status

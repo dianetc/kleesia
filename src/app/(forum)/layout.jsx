@@ -65,7 +65,11 @@ let Navigation = () => {
   let { context } = useSelector((state) => state.unpersisted.data.details);
 
   function handleSearch(e) {
-    setSearch(e.target.value);
+    let { value } = e.target;
+
+    value?.length > 0
+      ? setSearch(value)
+      : dispatch(setDetails({ context: "trending", id: "" }));
   }
 
   let SessionActions = () => {

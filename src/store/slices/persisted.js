@@ -39,8 +39,9 @@ export function logout(request) {
         dispatch({ type: "LOGOUT" });
       })
       .catch((error) => {
-        let { msg } = error?.response?.data;
-        Notify({ status: "error", content: msg ?? error?.message });
+        let { msg } = error?.response?.data ?? error?.message;
+        Notify({ status: "error", content: msg });
+        dispatch({ type: "LOGOUT" });
       });
   };
 }

@@ -83,7 +83,9 @@ async function getFollowIDs(user) {
   return { topic_list, user_list };
 }
 
-export async function getPostDetails(user, posts) {
+export async function getPostDetails(user, posts = []) {
+  if (posts?.length === 0) return;
+
   let cache = posts?.map(async (post) => {
     let isvoted = await prisma.user_Vote_Post.findFirst({
       where: {

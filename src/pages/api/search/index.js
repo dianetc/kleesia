@@ -1,7 +1,8 @@
 import prisma from "@/lib/prisma";
 import { isPayloadValid } from "@/lib/utils";
-import { getPostDetails } from "../post/get";
 import { messages } from "@/lib/request/responses";
+
+import { getPostDetails } from "../post/get";
 import { getUserRole } from "../auth/user/details";
 
 export default async function GET(request, response) {
@@ -16,47 +17,41 @@ export default async function GET(request, response) {
     return response.status(500).send({ msg: status });
 
   let user = await getUserRole(headers);
-
   if (!user) return response.status(500).send({ msg: messages.UNAUTHORIZED });
 
   let { q } = query;
 
   try {
-    let topics = await prisma.topic.findMany({
-      where: {
-        title: {
-          contains: q,
-        },
-      },
-      select: {
-        id: true,
-        created_at: true,
-        title: true,
-      },
-    });
+    let options = {
+      where: { title: { search: q } },
+      select: { id: true, created_at: true, title: true },
+    };
 
-    let posts = await prisma.post.findMany({
-      where: {
-        title: {
-          contains: q,
-        },
-      },
-      select: {
-        id: true,
-        created_at: true,
-        title: true,
-        body: true,
-        votes: true,
-        conferences: true,
-        user: { select: { name: true } },
-      },
-    });
+    let topics = await prisma.topic.findMany(options);
 
-    let data = await getPostDetails(posts);
-    let results = topics.concat(data);
+    // * Un-comment the line below to include search with post body
+    // options.where = { OR: [options.where, { body: { contains: q } }] };
+    // *
 
-    return response.status(200).send(results);
+    options.select = {
+      ...options.select,
+      body: true,
+      votes: true,
+      conferences: true,
+      user: { select: { name: true } },
+    };
+
+    let posts = await prisma.post.findMany(options);
+    let post_details = await getPostDetails(user?.id, posts);
+
+    let data = [];
+
+    if (topics?.length > 0) topics?.forEach((topic) => data.push(topic));
+    if (post_details) post_details?.forEach((post) => data.push(post));
+
+    return response.status(200).send(data);
   } catch (error) {
+    console.log(error);
     return response.status(500).send({ msg: messages?.FATAL });
   }
 }

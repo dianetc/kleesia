@@ -14,7 +14,7 @@ export default async function GET(request, response) {
 
   let options = getParams(query);
 
-  if (!query?.q.match(/(followers|author)/))
+  if (!query?.q?.match(/(followers|author)/))
     options.where = { ...options.where, id: user?.id };
 
   if (query?.q === "followers") {

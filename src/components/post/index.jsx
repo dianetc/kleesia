@@ -111,7 +111,7 @@ let Post = ({
           </Stack>
         </CardActions>
       </Card>
-      {isactive && viewComments && (
+      {viewComments && (
         <Comments
           post={id}
           topic={topic_id}

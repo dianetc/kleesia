@@ -19,7 +19,6 @@ import { FaMinus as MinusIcon } from "react-icons/fa6";
 // Material
 import { Typography, Stack, Divider, Button } from "@mui/material";
 
-
 let Comment = ({ id, topic, user, body = "", votes = 0 }) => {
   let [reply, setReply] = useState(false);
   let [collapse, setCollapse] = useState(false);
@@ -71,7 +70,7 @@ let Comment = ({ id, topic, user, body = "", votes = 0 }) => {
               ? dispatch(setDetails({ context: "post", id, topic }))
               : false;
           }}
-          count={1}
+          count={replies?.length ?? 0}
         />
         <Votes id={id} context="comment" count={votes} />
       </Stack>

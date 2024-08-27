@@ -46,12 +46,12 @@ let Reply = ({ id, user, body = "", votes = 0 }) => {
       <Divider />
 
       <Stack direction="row" spacing={2}>
-        <Trigger
+        {/* <Trigger
           toggle={() => {
             context !== "profile" ? setReply(!reply) : "hidden";
           }}
           count={1}
-        />
+        /> */}
         <Votes id={id} context="comment" count={votes} />
       </Stack>
 

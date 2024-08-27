@@ -1,17 +1,19 @@
 import { useState } from "react";
 
-import request from "@/lib/request";
+import { useSelector, useDispatch } from "react-redux";
 
-import { Notify } from "@/lib/utils";
 import { useSWRConfig } from "swr";
+import request from "@/lib/request";
+import { Notify } from "@/lib/utils";
 
 // Material
 import { CardContent, CardActions, Button, TextField } from "@mui/material";
 
 let Form = ({ cancel, context = "post", context_id }) => {
+  let { mutate } = useSWRConfig();
   let [body, setComment] = useState("");
 
-  let { mutate } = useSWRConfig();
+  let { isactive } = useSelector((state) => state.persisted.user);
 
   async function submit(e) {
     e.preventDefault();
@@ -29,7 +31,7 @@ let Form = ({ cancel, context = "post", context_id }) => {
     setComment("");
   }
   return (
-    <form onSubmit={submit}>
+    <form onSubmit={submit} className={isactive ? "flex" : "hidden"}>
       <CardContent>
         <TextField
           sx={{ width: "100%", background: "#fff" }}

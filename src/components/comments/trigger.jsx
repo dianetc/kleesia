@@ -5,8 +5,6 @@ import { useSelector } from "react-redux";
 import { IconButton, Stack, Typography } from "@mui/material";
 
 let Trigger = ({ toggle, count }) => {
-  let { active: isactive } = useSelector((state) => state.persisted.user);
-
   return (
     <Stack
       spacing={2}
@@ -19,7 +17,7 @@ let Trigger = ({ toggle, count }) => {
         borderColor: (theme) => theme.palette.background.slate,
       }}
     >
-      <IconButton onClick={toggle} disabled={!isactive} size="small">
+      <IconButton onClick={toggle} size="small">
         <Image
           src={"/icons/comment.svg"}
           width={26}

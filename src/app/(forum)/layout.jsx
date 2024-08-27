@@ -251,52 +251,52 @@ let ProfileDetails = () => {
   let { data } = useSWR("auth/user/get?q=details", fetcher);
 
   return (
-      <Box
-        fullWidth
-        sx={{
-          padding: 3,
-          border: 1,
-          borderRadius: 1,
-          borderColor: "divider",
-          backgroundColor: (theme) => theme?.palette?.background?.main,
-        }}
-      >
+    <Box
+      fullWidth
+      sx={{
+        padding: 3,
+        border: 1,
+        borderRadius: 1,
+        borderColor: "divider",
+        backgroundColor: (theme) => theme?.palette?.background?.main,
+      }}
+    >
       <Stack spacing={1}>
-          <Stack sx={{ marginY: 3 }}>
-            <Typography variant="h6" fontWeight={600}>
-              {data?.name}
-            </Typography>
-            <Typography variant="small" fontWeight={200}>
-              {data?.email}
-            </Typography>
-          </Stack>
-
-          <Stack
-            direction="row"
-            alignItems="center"
-            justifyContent="space-between"
-          >
-            <Typography fontWeight={200} variant="p" color="text.secondary">
-              Posts:
-            </Typography>
-            <Typography variant="small" fontWeight={200}>
-              {data?.posts}
-            </Typography>
-          </Stack>
-          <Stack
-            direction="row"
-            alignItems="center"
-            justifyContent="space-between"
-          >
-            <Typography fontWeight={200} variant="p" color="text.secondary" >
-              Comments:
-            </Typography>
-            <Typography variant="small" fontWeight={200}>
-              {data?.comments}
-            </Typography>
-          </Stack>
+        <Stack sx={{ marginY: 3 }}>
+          <Typography variant="h6" fontWeight={600}>
+            {data?.name}
+          </Typography>
+          <Typography variant="small" fontWeight={200}>
+            {data?.email}
+          </Typography>
         </Stack>
-      </Box>
+
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <Typography fontWeight={200} variant="p" color="text.secondary">
+            Posts:
+          </Typography>
+          <Typography variant="small" fontWeight={200}>
+            {data?.posts}
+          </Typography>
+        </Stack>
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <Typography fontWeight={200} variant="p" color="text.secondary">
+            Comments:
+          </Typography>
+          <Typography variant="small" fontWeight={200}>
+            {data?.comments}
+          </Typography>
+        </Stack>
+      </Stack>
+    </Box>
   );
 };
 
@@ -359,7 +359,8 @@ let Featured = ({
 }) => {
   let { active: isactive } = useSelector((state) => state.persisted.user);
   let dispatch = useDispatch();
-  let { mutate } = useSWRConfig();
+  let [status, setStatus] = useState(followed);
+  // let { mutate } = useSWRConfig();
 
   let [editable, setEditable] = useState(false);
 
@@ -465,20 +466,24 @@ let Featured = ({
             </Button>
             {isactive && (
               <Button
-                variant={followed ? "outlined" : "contained"}
+                variant={status ? "outlined" : "contained"}
                 fullWidth
                 size="small"
                 disabled={!isactive}
-                onClick={() => {
-                  !followed && createFollow({ context: "topic", contx: id });
-                  mutate(`topic/get?id=${id}&rtf=id,title,rules`);
+                onClick={async () => {
+                  let follow = await createFollow({
+                    context: "topic",
+                    contx: id,
+                  });
+                  setStatus(follow);
+                  // mutate(`topic/get?id=${id}&rtf=id,title,rules`);
                 }}
               >
                 <Stack direction="row" spacing={2} alignItems="center">
                   <Typography variant="small">
-                    {followed ? "Followed" : "Follow"}
+                    {status ? "Unfollow" : "Follow"}
                   </Typography>
-                  {followed ? <TickIcon size={13} /> : <PlusIcon size={20} />}
+                  {status ? <TickIcon size={13} /> : <PlusIcon size={20} />}
                 </Stack>
               </Button>
             )}

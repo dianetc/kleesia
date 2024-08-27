@@ -1,6 +1,6 @@
 import prisma from "@/lib/prisma";
-import { payloadMap } from "@/lib/request/lib";
 import { isPayloadValid } from "@/lib/utils";
+import { payloadMap } from "@/lib/request/lib";
 import { messages } from "@/lib/request/responses";
 import { getUserRole } from "../auth/user/details";
 
@@ -21,24 +21,24 @@ export default async function CREATE(request, response) {
   let data = payloadMap(body);
 
   let user = await getUserRole(headers);
-
   if (!user) return response.status(500).send({ msg: messages.UNAUTHORIZED });
 
   data.user_id = user?.id;
 
-  let exists = await prisma.follows.findMany({ where: data });
+  let exists = await prisma.follows.findMany({
+    where: data,
+    select: { id: true },
+  });
 
-  if (exists.length > 0)
-    return response
-      .status(500)
-      .send({ msg: `You have already followed this ${data?.context}` });
+  if (exists.length > 0) {
+    let { id } = exists[0];
+    await prisma.follows.delete({ where: { id } });
+    return response.status(200).send({ followed: false });
+  }
 
   try {
     await prisma.follows.create({ data });
-
-    return response
-      .status(200)
-      .send({ msg: `You have followed ${data?.context}` });
+    return response.status(200).send({ followed: true });
   } catch (error) {
     return response.status(500).send({ msg: messages.FATAL });
   }

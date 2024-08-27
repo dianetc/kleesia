@@ -116,7 +116,7 @@ export async function getPostDetails(user, posts) {
       select: { context_id: true },
     });
 
-    let followed = follows?.length > 0 && follows[0]?.context_id ? true : false;
+    let followed = follows?.length > 0 && follows[0]?.context_id;
 
     let conferences = conferences_ids?.map((conference) => conference?.title);
 

@@ -13,7 +13,7 @@ let Form = ({ cancel, context = "post", context_id }) => {
   let { mutate } = useSWRConfig();
   let [body, setComment] = useState("");
 
-  let { isactive } = useSelector((state) => state.persisted.user);
+  let { active: isactive } = useSelector((state) => state.persisted.user);
 
   async function submit(e) {
     e.preventDefault();
@@ -30,8 +30,9 @@ let Form = ({ cancel, context = "post", context_id }) => {
 
     setComment("");
   }
+
   return (
-    <form onSubmit={submit} className={isactive ? "flex" : "hidden"}>
+    <form onSubmit={submit} className={isactive ? "block" : "hidden"}>
       <CardContent>
         <TextField
           sx={{ width: "100%", background: "#fff" }}
@@ -40,6 +41,7 @@ let Form = ({ cancel, context = "post", context_id }) => {
           }}
           value={body}
           multiline
+          minRows={3}
         />
       </CardContent>
       <CardActions sx={{ padding: 2 }}>

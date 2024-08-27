@@ -27,9 +27,6 @@ export default async function UPDATE(request, response) {
   if (body?.vote) {
     let check = await isVoted(id, user_id, body?.direction);
 
-    delete body?.vote;
-    delete body?.direction;
-
     options = { select: { votes: true } };
 
     if (check)

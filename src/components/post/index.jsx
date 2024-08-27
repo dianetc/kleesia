@@ -170,13 +170,19 @@ let Title = ({ id, user, topic_id, children }) => {
 };
 
 let User = ({ id, name, followed, created_at }) => {
-  let { active: isactive } = useSelector((state) => state.persisted.user);
-
   let { mutate } = useSWRConfig();
+
+  let { active: isactive } = useSelector((state) => state.persisted.user);
 
   let { name: store_user_name } = useSelector(
     (state) => state?.persisted?.user
   );
+
+  let { id: post_id, context } = useSelector(
+    (state) => state.unpersisted.data.details
+  );
+
+  let URL = () => (context === "post" ? `post/get?id=${post_id}` : "post/get");
 
   let date = created_at?.split("T")[0]?.replace(/-/g, ".");
 
@@ -190,14 +196,14 @@ let User = ({ id, name, followed, created_at }) => {
             variant={followed ? "outlined" : "contained"}
             size="small"
             disabled={!isactive}
-            onClick={() => {
-              !followed && createFollow({ context: "user", contx: id });
-              mutate("post/get");
+            onClick={async () => {
+              let follow = await createFollow({ context: "user", contx: id });
+              mutate(URL());
             }}
           >
             <Stack direction="row" spacing={2} alignItems="center">
               <Typography variant="small">
-                {followed ? "Followed" : "Follow"}
+                {followed ? "Unfollow" : "Follow"}
               </Typography>
               {followed ? <TickIcon size={13} /> : <PlusIcon size={20} />}
             </Stack>

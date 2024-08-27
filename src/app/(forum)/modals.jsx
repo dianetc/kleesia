@@ -45,6 +45,7 @@ let Modals = () => {
   };
 
   const style = {
+    padding: 2,
     position: "absolute",
     top: "50%",
     left: "50%",
@@ -58,6 +59,7 @@ let Modals = () => {
   return (
     <Modal
       open={active}
+      sx={{ overflowY: "scroll" }}
       onClose={() => {
         dispatch(toggle({ type: "MODAL", active: false, id: "", size: "" }));
       }}
@@ -503,6 +505,7 @@ let CreatePost = () => {
             onChange={handleChange}
             placeholder="Enter post summary"
             minRows={6}
+            maxRows={12}
             required
             multiline
           />

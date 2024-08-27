@@ -35,11 +35,10 @@ import { Comments, Trigger } from "../comments";
 
 let Post = ({
   id,
-  topic_id,
+  votes,
   children,
   comments,
-  votes,
-  voted,
+  topic_id,
   direction,
   conferences = [],
 }) => {
@@ -91,12 +90,7 @@ let Post = ({
             justifyContent="space-between"
           >
             <Stack direction="row" spacing={4}>
-              <Votes
-                id={id}
-                count={votes}
-                isvoted={voted}
-                direction={direction}
-              />
+              <Votes id={id} count={votes} direction={direction} />
               <Trigger
                 id={id}
                 count={comments}

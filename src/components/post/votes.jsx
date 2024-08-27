@@ -2,6 +2,7 @@ import { useSWRConfig } from "swr";
 import { useEffect, useState } from "react";
 
 import request from "@/lib/request";
+import { Notify } from "@/lib/utils";
 import { useSelector } from "react-redux";
 
 // Icon
@@ -10,28 +11,32 @@ import { BiSolidDownArrow as ArrowDown } from "react-icons/bi";
 // Material
 import { Stack, IconButton, Typography } from "@mui/material";
 
-let Votes = ({ id, context = "post", count, isvoted, direction }) => {
+let Votes = ({ id, context = "post", count, direction }) => {
   let { mutate } = useSWRConfig();
   let { context: store_context } = useSelector(
     (state) => state.unpersisted.data.details
   );
 
   let { active: isactive } = useSelector((state) => state.persisted.user);
-  let [votes, setVote] = useState({ count, direction, isvoted });
+  let [votes, setVote] = useState({ count, direction });
 
   async function castVote(orientation) {
-    if (!isactive && votes?.isvoted && store_context === "profile") return;
+    if (!isactive) return;
 
     try {
-      let vote = orientation === "up" ? count + 1 : count - 1;
-      await request.put(`${context}/update?id=${id}`, {
+      let vote = orientation === "up" ? votes?.count + 1 : votes?.count - 1;
+      let response = await request.put(`${context}/update?id=${id}`, {
+        vote: true,
         votes: vote,
         direction: orientation,
       });
-      mutate("/post/get");
-      setVote({ count: vote, direction: orientation, isvoted });
+
+      let { votes: nw_votes } = response?.data;
+      setVote({ count: nw_votes, direction: orientation });
       return;
     } catch (error) {
+      let msg = error?.response?.data?.msg ?? error?.message;
+      Notify({ status: "info", content: msg });
       return;
     }
   }

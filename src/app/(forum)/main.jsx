@@ -40,7 +40,7 @@ const Header = () => {
     conference: "Recent Posts",
     topic: "Recent Posts",
     recent: "Recent Activity",
-    search: "search",
+    search: "Search",
     post: "Post",
   };
 

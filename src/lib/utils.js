@@ -59,10 +59,27 @@ export function Notify({ status = "", content = "..." }) {
   status ? toast[status](content, config) : toast(content, config);
 }
 
+
 export function escapeSearchString(str) {
-  // Remove any special characters and split into words
-  const words = str.replace(/[^\w\s]/gi, '').split(/\s+/);
-  
-  // Join words with ' & ' for an AND search, or ' | ' for an OR search
-  return words.join(' & ');
+  if (!str) return '';
+
+  // Split the string into words, preserving quoted phrases
+  const words = str.match(/\w+|"[^"]+"/g) || [];
+
+  // Process each word or phrase
+  const processedWords = words.map(word => {
+    word = word.replace(/^"|"$/g, '');
+    
+    word = word.replace(/[&|!():/\\]/g, '\\$&');
+    
+    if (word.includes(' ')) {
+      word = `"${word}"`;
+    }
+    
+    return word;
+  });
+
+  // Join words with ' & ' for an AND search
+  return processedWords.join(' & ');
 }
+

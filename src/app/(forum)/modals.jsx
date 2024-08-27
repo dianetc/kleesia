@@ -372,7 +372,7 @@ let EditTopic = () => {
 
 let CreatePost = () => {
   let { mutate } = useSWRConfig();
-  let { active: isactive } = useSelector((state) => state.persisted.user);
+  let { active: isactive, name } = useSelector((state) => state.persisted.user);
   //
   let [post, setPost] = useState({});
   let [error, setError] = useState(false);
@@ -414,8 +414,9 @@ let CreatePost = () => {
   const getUsername = async (name) => {
     try {
       let response = await request.get(
-        `auth/user/get?name*=${name}&rtf=id,name`
+        `auth/user/get?q=author&name*=${name}&rtf=id,name`
       );
+
       return response?.data[0];
     } catch (error) {
       console.log(error);
@@ -589,7 +590,7 @@ let EditPost = () => {
   const getUsername = async (name) => {
     try {
       let response = await request.get(
-        `auth/user/get?name*=${name}&rtf=id,name`
+        `auth/user/get?q=author&name*=${name}&rtf=id,name`
       );
       return response?.data[0];
     } catch (error) {

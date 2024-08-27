@@ -14,15 +14,11 @@ export default async function GET(request, response) {
 
   let options = getParams(query);
 
-  options.where = {
-    ...options.where,
-    id: user?.id,
-  };
+  if (!query?.q.match(/(followers|author)/))
+    options.where = { ...options.where, id: user?.id };
 
   if (query?.q === "followers") {
     let { user_list } = await getFollowIDs(user);
-
-    delete options.where["id"];
 
     options.where = {
       ...options.where,
@@ -69,12 +65,15 @@ export default async function GET(request, response) {
 
 async function getFollowIDs(user) {
   // Fetch followed channels
-  let users = await prisma.follows.findMany({
-    where: { user_id: user?.id, context: "user" },
-    select: { context_id: true },
-  });
+  try {
+    let users = await prisma.follows.findMany({
+      where: { user_id: user?.id, context: "user" },
+      select: { context_id: true },
+    });
 
-  let user_list = users.map((user) => user?.context_id);
-
-  return { user_list };
+    let user_list = users.map((user) => user?.context_id);
+    return { user_list };
+  } catch (error) {
+    return { user_list: [] };
+  }
 }

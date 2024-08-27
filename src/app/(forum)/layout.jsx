@@ -58,15 +58,14 @@ let Layout = ({ children }) => {
 
 let Navigation = () => {
   let dispatch = useDispatch();
-  let [search, setSearch] = useState({});
+  let [search, setSearch] = useState("");
 
   let { active: isactive } = useSelector((state) => state.persisted.user);
 
   let { context } = useSelector((state) => state.unpersisted.data.details);
 
   function handleSearch(e) {
-    let { id, value } = e.target;
-    setSearch({ ...search, [id]: value });
+    setSearch(e.target.value);
   }
 
   let SessionActions = () => {
@@ -150,10 +149,9 @@ let Navigation = () => {
             border: "none",
             background: (theme) => theme.palette.background.main,
           }}
-          id="value"
           onKeyDown={(e) => {
             e.key === "Enter"
-              ? dispatch(setDetails({ context: "search", id: search?.value }))
+              ? dispatch(setDetails({ context: "search", id: search }))
               : "";
           }}
           onChange={handleSearch}
@@ -549,4 +547,5 @@ let Rules = ({ list = [] }) => {
     </Stack>
   );
 };
+
 export default Layout;

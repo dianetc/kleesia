@@ -58,3 +58,11 @@ export function Notify({ status = "", content = "..." }) {
 
   status ? toast[status](content, config) : toast(content, config);
 }
+
+export function escapeSearchString(str) {
+  // Remove any special characters and split into words
+  const words = str.replace(/[^\w\s]/gi, '').split(/\s+/);
+  
+  // Join words with ' & ' for an AND search, or ' | ' for an OR search
+  return words.join(' & ');
+}

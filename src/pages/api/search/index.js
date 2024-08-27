@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import { isPayloadValid } from "@/lib/utils";
+import { isPayloadValid, escapeSearchString} from "@/lib/utils";
 import { messages } from "@/lib/request/responses";
 
 import { getPostDetails } from "../post/get";
@@ -21,9 +21,16 @@ export default async function GET(request, response) {
 
   let { q } = query;
 
+  const formattedSearch = escapeSearchString(q);
+
   try {
     let options = {
-      where: { title: { search: q } },
+      where: {
+        title: {
+          search: formattedSearch,
+          mode: 'insensitive',
+        },
+      },
       select: { id: true, created_at: true, title: true },
     };
 

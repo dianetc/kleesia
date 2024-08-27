@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setDetails, resetDetails } from "@/store/slices/data";
 import { Notify } from "@/lib/utils";
+import { Skeleton } from '@mui/material';
 
 import Post from "@/components/post";
 import { Comment } from "@/components/comments";
@@ -193,10 +194,28 @@ let Comments = () => {
 const Posts = () => {
   let { id, context } = useSelector((state) => state.unpersisted.data.details);
 
-  let { data } = useSWR("post/get?q=profile", fetcher, {
+  let { data, error, isLoading } = useSWR("post/get?q=profile", fetcher, {
     revalidateIfStale: true,
     revalidateOnFocus: true,
   });
+
+  if (isLoading) {
+    return (
+      <Stack spacing={3}>
+        {[1, 2, 3].map((i) => (
+          <Skeleton key={i} variant="rectangular" height={200} />
+        ))}
+      </Stack>
+    );
+  }
+
+  if (error) {
+    return <Typography color="error">Error loading posts</Typography>;
+  }
+
+  if (!data || data.length === 0) {
+    return null;
+  }
 
   return (
     <Stack spacing={3}>

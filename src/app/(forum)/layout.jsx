@@ -160,7 +160,7 @@ let Navigation = () => {
           }}
           onChange={handleSearch}
           autoFocus={false}
-          placeholder="Search Topic or Paper.."
+          placeholder="Search by Post Title.."
           endAdornment={
             <InputAdornment position="end">
               <SearchIcon size={20} />

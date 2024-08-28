@@ -193,7 +193,6 @@ let Comments = () => {
           const post = await findPostForComment(comment.id);
           return { ...comment, post };
         }));
-        console.log('All comments with posts:', updatedComments);
         setCommentsWithPosts(updatedComments);
 
       };

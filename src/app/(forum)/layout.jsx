@@ -359,7 +359,7 @@ let Featured = ({
   followers = 0,
   conferences = [],
 }) => {
-  let { active: isactive } = useSelector((state) => state.persisted.user);
+  let { active: isactive, name: currentUserName } = useSelector((state) => state.persisted.user);
   let dispatch = useDispatch();
   let [status, setStatus] = useState(followed);
   // let { mutate } = useSWRConfig();
@@ -370,16 +370,18 @@ let Featured = ({
   let { context, id } = useSelector((state) => state.unpersisted.data.details);
 
   useEffect(() => {
-    setEditable(id && context === "topic" && name === user?.name);
-  }, [context, id, name, user?.name]);
+    setEditable(id && context === "topic" && currentUserName === user?.name);
+  }, [context, id, currentUserName, user?.name]);
+
+  const isTopicCreator = currentUserName === user?.name;
 
   return (
     <Stack spacing={4}>
       <Box
         sx={{
-          backgroundColor: "#f5f5f5", // Grey background
-          borderRadius: 1, // Rounded corners
-          padding: 2, // Padding around the content
+          backgroundColor: "#f5f5f5",
+          borderRadius: 1,
+          padding: 2,
         }}
       >
         <Stack spacing={2}>
@@ -445,40 +447,38 @@ let Featured = ({
               size="small"
               variant="outlined"
               disabled={!isactive}
+              onClick={() => {
+                dispatch(
+                  toggle({
+                    type: "MODAL",
+                    active: true,
+                    id: "create_post",
+                    size: "medium",
+                  })
+                );
+              }}
             >
               <Stack
                 direction="row"
                 spacing={2}
                 alignItems="center"
                 justifyContent="center"
-                onClick={() => {
-                  dispatch(
-                    toggle({
-                      type: "MODAL",
-                      active: true,
-                      id: "create_post",
-                      size: "medium",
-                    })
-                  );
-                }}
               >
                 <Typography>New Post</Typography>
                 <SquarePlusIcon size={16} />
               </Stack>
             </Button>
-            {isactive && (
+            {isactive && !isTopicCreator && (
               <Button
                 variant={status ? "outlined" : "contained"}
                 fullWidth
                 size="small"
-                disabled={!isactive}
                 onClick={async () => {
                   let follow = await createFollow({
                     context: "topic",
                     contx: id,
                   });
                   setStatus(follow);
-                  // mutate(`topic/get?id=${id}&rtf=id,title,rules`);
                 }}
               >
                 <Stack direction="row" spacing={2} alignItems="center">

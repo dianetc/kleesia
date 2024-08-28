@@ -195,6 +195,7 @@ let Comments = () => {
         }));
         console.log('All comments with posts:', updatedComments);
         setCommentsWithPosts(updatedComments);
+
       };
 
       fetchPostsForComments();
@@ -215,26 +216,26 @@ let Comments = () => {
           }}
         >
          {comment.post && (
-            <Box 
-              sx={{ 
-                display: 'flex', 
-                alignItems: 'center', 
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
                 mb: 2,
                 pb: 1,
                 borderBottom: '1px solid',
                 borderColor: 'divider',
               }}
             >
-             <Typography 
-                  variant="h7" 
+             <Typography
+                  variant="h7"
                   component="a"
-                  sx={{ 
+                  sx={{
                     color: '#424242',
                     textDecoration: 'none',
                     fontWeight: 'medium',
                   }}
                 >
-                  Associated Post: {comment.post.title}
+                  {comment.post.title}
                 </Typography>
             </Box>
           )}

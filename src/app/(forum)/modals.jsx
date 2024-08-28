@@ -10,7 +10,7 @@ import { allowed_arxiv_links, Notify, trimming } from "@/lib/utils";
 
 import OutlinedInput from "@mui/material/OutlinedInput";
 
-import { Box } from "@mui/material";
+import { FormControlLabel, Switch, Box } from "@mui/material";
 import Modal from "@mui/material/Modal";
 import { IoAdd as PlusIcon } from "react-icons/io5";
 import CloseIcon from "@mui/icons-material/Close";
@@ -23,6 +23,9 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import { MuiChipsInput } from "mui-chips-input";
+
+import LatexRenderer from "@/components/LatexRenderer";
+
 
 let Modals = () => {
   let dispatch = useDispatch();
@@ -375,6 +378,7 @@ let CreatePost = () => {
   let { active: isactive, name } = useSelector((state) => state.persisted.user);
   //
   let [post, setPost] = useState({});
+  let [preview, setPreview] = useState(false);
   let [error, setError] = useState(false);
   //
   let [co_authors, setAuthors] = useState([]);
@@ -511,6 +515,18 @@ let CreatePost = () => {
             multiline
           />
         </Stack>
+        <FormControlLabel
+          control={<Switch checked={preview} onChange={() => setPreview(!preview)} />}
+          label="Preview LaTeX"
+        />
+
+        {preview && (
+          <Box sx={{ border: '1px solid #ccc', padding: 2, borderRadius: 1 }}>
+            <LatexRenderer>
+              {post.body || ''}
+            </LatexRenderer>
+          </Box>
+        )}
         <Stack spacing={1}>
           <Typography variant="label">Arxiv Abstract Link *</Typography>
           <OutlinedInput
@@ -561,6 +577,7 @@ let EditPost = () => {
   let { active: isactive, name } = useSelector((state) => state.persisted.user);
   //
   let [post, setPost] = useState({});
+  let [preview, setPreview] = useState(false);
   let [error, setError] = useState(false);
   //
   let [co_authors, setAuthors] = useState([]);
@@ -709,6 +726,19 @@ let EditPost = () => {
             multiline
           />
         </Stack>
+
+        <FormControlLabel
+          control={<Switch checked={preview} onChange={() => setPreview(!preview)} />}
+          label="Preview LaTeX"
+        />
+
+        {preview && (
+          <Box sx={{ border: '1px solid #ccc', padding: 2, borderRadius: 1 }}>
+            <LatexRenderer>
+              { post.body || ''}
+            </LatexRenderer>
+          </Box>
+        )}
         <Stack spacing={1}>
           <Typography variant="label">Arxiv Abstract Link *</Typography>
           <OutlinedInput

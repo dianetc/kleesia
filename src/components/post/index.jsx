@@ -17,6 +17,10 @@ import { IoAdd as PlusIcon } from "react-icons/io5";
 import { FaCheck as TickIcon } from "react-icons/fa6";
 import { BiEditAlt as EditIcon } from "react-icons/bi";
 
+// latex
+import LatexRenderer from "@/components/LatexRenderer";
+
+
 // Material
 import {
   Card,
@@ -233,7 +237,9 @@ let Description = ({ id, co_authors, children }) => {
   return (
     <Stack spacing={4}>
       <Typography variant="p">
-        {active && store_id === id ? children : trimming(children, 500)}
+        <LatexRenderer>
+          {active && store_id === id ? children : trimming(children, 500)}
+        </LatexRenderer>
       </Typography>
 
       {active && store_id === id && co_authors?.length > 0 && (

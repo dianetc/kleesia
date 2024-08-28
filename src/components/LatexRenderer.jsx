@@ -17,7 +17,6 @@ const config = {
 };
 
 const LatexRenderer = ({ children }) => {
-  console.log('LatexRenderer content:', children);
   return (
     <MathJaxContext config={config}>
       <MathJax>{children}</MathJax>

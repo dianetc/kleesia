@@ -4,10 +4,12 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setDetails, resetDetails } from "@/store/slices/data";
 import { Notify } from "@/lib/utils";
-import { Skeleton } from '@mui/material';
+import { Skeleton} from '@mui/material';
+
 
 import Post from "@/components/post";
 import { Comment } from "@/components/comments";
+
 
 import {
   Box,
@@ -163,30 +165,82 @@ let Tabs = () => {
   );
 };
 
+const findPostForComment = async (commentId) => {
+  // Fetch all posts --> very hacky, in the future its better to change the comment api
+  const posts = await fetcher('post/get?q=all&rtf=id,comments');
+  for (let post of posts) {
+    if (post.comments) {
+      const postComments = await fetcher(`comment/get?context=post&context_id=${post.id}&rtf=id`);
+      if (postComments.some(comment => comment.id === commentId)) {
+          return post;
+      }
+    }
+  }
+};
+
+
 let Comments = () => {
+  const [commentsWithPosts, setCommentsWithPosts] = useState([]);
   let { data: comments } = useSWR(
-    `comment/get?q=profile&rtf=body,votes,user`,
+    `comment/get?q=profile&rtf= id,body,votes,user`,
     fetcher
   );
 
+  useEffect(() => {
+    if (comments) {
+      const fetchPostsForComments = async () => {
+        const updatedComments = await Promise.all(comments.map(async (comment) => {
+          const post = await findPostForComment(comment.id);
+          return { ...comment, post };
+        }));
+        console.log('All comments with posts:', updatedComments);
+        setCommentsWithPosts(updatedComments);
+      };
+
+      fetchPostsForComments();
+    }
+  }, [comments]);
+
   return (
     <Stack spacing={4}>
-      {comments?.map((comment, index) => {
-        return (
-          <Box
-            key={index}
-            sx={{
-              padding: 3,
-              border: 1,
-              borderRadius: 1,
-              borderColor: "divider",
-              backgroundColor: (theme) => theme.palette.background.white,
-            }}
-          >
-            <Comment key={index} {...comment} />
-          </Box>
-        );
-      })}
+      {commentsWithPosts.map((comment, index) => (
+        <Box
+          key={index}
+          sx={{
+            padding: 3,
+            border: 1,
+            borderRadius: 1,
+            borderColor: "divider",
+            backgroundColor: (theme) => theme.palette.background.white,
+          }}
+        >
+         {comment.post && (
+            <Box 
+              sx={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                mb: 2,
+                pb: 1,
+                borderBottom: '1px solid',
+                borderColor: 'divider',
+              }}
+            >
+             <Typography 
+                  variant="h7" 
+                  component="a"
+                  sx={{ 
+                    color: '#424242',
+                    textDecoration: 'none',
+                    fontWeight: 'medium',
+                  }}
+                >
+                  Associated Post: {comment.post.title}
+                </Typography>
+            </Box>
+          )}
+          <Comment {...comment} />
+        </Box>
+      ))}
     </Stack>
   );
 };

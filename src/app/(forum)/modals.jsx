@@ -23,6 +23,8 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import { MuiChipsInput } from "mui-chips-input";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
 
 import LatexRenderer from "@/components/LatexRenderer";
 
@@ -374,32 +376,40 @@ let EditTopic = () => {
 };
 
 let CreatePost = () => {
-  let { mutate } = useSWRConfig();
-  let { active: isactive, name } = useSelector((state) => state.persisted.user);
-  //
-  let [post, setPost] = useState({});
-  let [preview, setPreview] = useState(false);
-  let [error, setError] = useState(false);
-  //
-  let [co_authors, setAuthors] = useState([]);
-  let [conferences, setConferences] = useState([]);
+  const dispatch = useDispatch();
+  const { mutate } = useSWRConfig();
+  const { active: isactive, name } = useSelector((state) => state.persisted.user);
 
-  let { id, context } = useSelector((state) => state.unpersisted.data.details);
+  const { id, context } = useSelector((state) => state.unpersisted.data.details);
+  console.log('context', context);
+  console.log('id', id);
 
-  let URL = () => {
-    switch (context) {
-      case "topic":
-        return `post/get?topic_id=${id}`;
-      case "conference":
-        return `post/get?conferences[]=${id}`;
-      case "recent":
-        return "post/get?q=recent";
-      case "search":
-        return `search?q=${id}`;
-      default:
-        return "post/get";
-    }
-  };
+  const [post, setPost] = useState({});
+  const [preview, setPreview] = useState(false);
+  const [error, setError] = useState(false);
+  const [co_authors, setAuthors] = useState([]);
+  const [conferences, setConferences] = useState([]);
+  const [selectedTopic, setSelectedTopic] = useState(null);
+  const [availableTopics, setAvailableTopics] = useState([]);
+
+  useEffect(() => {
+    const fetchTopics = async () => {
+      try {
+        const response = await request.get('topic/get?rtf=id,title');
+        setAvailableTopics(response.data);
+        
+        // If we're in a topic context, set the selected topic
+        if (context === 'topic') {
+          setSelectedTopic(id);
+        }
+      } catch (error) {
+        console.error('Failed to fetch topics:', error);
+        Notify({ status: "error", content: "Failed to load topics" });
+      }
+    };
+
+    fetchTopics();
+  }, [context, id]);
 
   function handleChange(e) {
     let { id, value } = e.target;
@@ -461,21 +471,39 @@ let CreatePost = () => {
         content: "Please check your Arxiv link",
       });
 
-    let data = { ...post, co_authors, conferences, topic_id: id };
+    if (!selectedTopic) {
+      return Notify({
+        status: "error",
+        content: "Please select a topic before creating a post.",
+      });
+    }
+
+    let data = { ...post, co_authors, conferences, topic_id: selectedTopic };
 
     try {
       await request.post("post/create", data);
       Notify({ status: "success", content: `Post ${post?.title} created` });
-      mutate(URL());
+      
+      // Mutate multiple endpoints to ensure data is updated everywhere
+      mutate('post/get?q=recent');
+      mutate(`post/get?topic_id=${selectedTopic}`);
+      if (context === 'post') {
+        mutate(`post/get?id=${id}`);
+      }
+      
+      handleClose();
     } catch (error) {
       let msg = error?.response?.data?.msg ?? error?.message;
       Notify({ status: "error", content: msg });
     }
   }
 
-  const dispatch = useDispatch();
   const handleClose = () => {
     dispatch(toggle({ type: "MODAL", active: false, id: "", size: "" }));
+  };
+
+  const handleTopicChange = (event) => {
+    setSelectedTopic(event.target.value);
   };
 
   return (
@@ -553,6 +581,26 @@ let CreatePost = () => {
             value={co_authors?.map((author) => author?.name)}
             onChange={handleAuthors}
           />
+        </Stack>
+
+        <Stack spacing={1}>
+          <Typography variant="label">Topic *</Typography>
+          <Select
+            value={selectedTopic || ''}
+            onChange={handleTopicChange}
+            displayEmpty
+            required
+            input={<OutlinedInput />}
+          >
+            <MenuItem value="" disabled>
+              Select a topic
+            </MenuItem>
+            {availableTopics.map((topic) => (
+              <MenuItem key={topic.id} value={topic.id}>
+                {topic.title}
+              </MenuItem>
+            ))}
+          </Select>
         </Stack>
 
         <Stack direction="row" justifyContent="end">

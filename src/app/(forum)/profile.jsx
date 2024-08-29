@@ -182,7 +182,7 @@ const findPostForComment = async (commentId) => {
 let Comments = () => {
   const [commentsWithPosts, setCommentsWithPosts] = useState([]);
   let { data: comments } = useSWR(
-    `comment/get?q=profile&rtf= id,body,votes,user`,
+    `comment/get?q=profile&rtf=id,body,votes,user`,
     fetcher
   );
 

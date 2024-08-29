@@ -56,6 +56,9 @@ let Modals = () => {
     left: "50%",
     transform: "translate(-50%, -50%)",
     width: sizes[size],
+    maxWidth: '90%',
+    maxHeight: '90vh',
+    overflowY: 'auto',
     bgcolor: "background.paper",
     borderRadius: 1,
     p: 3,
@@ -381,8 +384,6 @@ let CreatePost = () => {
   const { active: isactive, name } = useSelector((state) => state.persisted.user);
 
   const { id, context } = useSelector((state) => state.unpersisted.data.details);
-  console.log('context', context);
-  console.log('id', id);
 
   const [post, setPost] = useState({});
   const [preview, setPreview] = useState(false);

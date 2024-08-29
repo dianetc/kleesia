@@ -327,7 +327,7 @@ let TopicDetails = () => {
   let [details, setDetails] = useState(undefined);
 
   useEffect(() => {
-    data && setDetails(data[0]);
+    setDetails(data && data[0]);
   }, [data]);
 
   return details ? (

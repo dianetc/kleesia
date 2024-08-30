@@ -175,11 +175,10 @@ let Title = ({ id, user, topic_id, children }) => {
 
 let User = ({ id, name, followed, created_at }) => {
   let { mutate } = useSWRConfig();
+  let [isFollowing, setIsFollowing] = useState(followed);
 
-  let { active: isactive } = useSelector((state) => state.persisted.user);
-
-  let { name: store_user_name } = useSelector(
-    (state) => state?.persisted?.user
+  let { active: isactive, name: store_user_name } = useSelector(
+    (state) => state.persisted.user
   );
 
   let { id: post_id, context } = useSelector(
@@ -190,6 +189,22 @@ let User = ({ id, name, followed, created_at }) => {
 
   let date = created_at?.split("T")[0]?.replace(/-/g, ".");
 
+  const handleFollow = async () => {
+    if (!isactive) return;
+
+    try {
+      const result = await createFollow({ context: "user", contx: id });
+      setIsFollowing(result);
+      mutate(URL());
+    } catch (error) {
+      console.error("Error following user:", error);
+    }
+  };
+
+  useEffect(() => {
+    setIsFollowing(followed);
+  }, [followed]);
+
   return (
     <Stack direction="row" justifyContent="space-between">
       <Stack direction="row" alignItems="center" spacing={3}>
@@ -197,19 +212,16 @@ let User = ({ id, name, followed, created_at }) => {
 
         {isactive && name !== store_user_name && (
           <Button
-            variant={followed ? "outlined" : "contained"}
+            variant={isFollowing ? "outlined" : "contained"}
             size="small"
             disabled={!isactive}
-            onClick={async () => {
-              let follow = await createFollow({ context: "user", contx: id });
-              mutate(URL());
-            }}
+            onClick={handleFollow}
           >
             <Stack direction="row" spacing={2} alignItems="center">
               <Typography variant="small">
-                {followed ? "Unfollow" : "Follow"}
+                {isFollowing ? "Unfollow" : "Follow"}
               </Typography>
-              {followed ? <TickIcon size={13} /> : <PlusIcon size={20} />}
+              {isFollowing ? <TickIcon size={13} /> : <PlusIcon size={20} />}
             </Stack>
           </Button>
         )}

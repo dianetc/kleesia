@@ -304,10 +304,7 @@ let ProfileDetails = () => {
 
 let TopicDetails = () => {
   let { active } = useSelector((state) => state.persisted.user);
-
-  let { context, id, topic } = useSelector(
-    (state) => state.unpersisted.data.details
-  );
+  let { context, id, topic } = useSelector((state) => state.unpersisted.data.details);
 
   function URL() {
     let _url = (id) => `topic/get?id=${id}&rtf=id,title,rules,user=name`;
@@ -318,17 +315,32 @@ let TopicDetails = () => {
       case "post":
         return _url(topic);
       default:
-        return undefined;
+        return null;
     }
   }
 
-  let { data } = useSWR(URL(), fetcher);
+  let { data: topicData } = useSWR(URL(), fetcher);
+  let { data: postsData } = useSWR(topicData ? `post/get?topic_id=${topicData[0]?.id}` : null, fetcher);
 
   let [details, setDetails] = useState(undefined);
 
   useEffect(() => {
-    setDetails(data && data[0]);
-  }, [data]);
+    if (topicData && topicData[0] && postsData) {
+      const topicDetails = topicData[0];
+      const posts = postsData;
+
+      // Extract unique conference tags from posts
+      const allConferences = posts.flatMap(post => post.conferences || []);
+      const uniqueConferences = [...new Set(allConferences)];
+
+      setDetails({
+        ...topicDetails,
+        conferences: uniqueConferences
+      });
+    } else {
+      setDetails(topicData && topicData[0]);
+    }
+  }, [topicData]);
 
   return details ? (
     <Stack spacing={4}>
@@ -492,20 +504,30 @@ let Featured = ({
           </Stack>
         </Stack>
         <Divider sx={{ margin: "16px 0" }} />
-        <Stack>
-          <Typography fontWeight={600}>Tags:</Typography>
-          <Stack direction="row" alignContent="center" spacing={1}>
-            {conferences?.map((conference, index) => {
-              return (
+        {conferences?.length > 0 && (
+          <Stack spacing={1}>
+            <Typography fontWeight={600}>Tags:</Typography>
+            <Stack direction="row" flexWrap="wrap" alignItems="center" spacing={1}>
+              {conferences.map((conference, index) => (
                 <Chip
-                  key={conference?.id}
+                  key={index}
                   label={conference}
-                  color={`#${index * 3}${index * 7}${index * 8}`}
+                  size="small"
+                  sx={{
+                    backgroundColor: '#ffffff',
+                    color: '#000080',
+                    fontSize: '0.75rem',
+                    height: '24px',
+                    border: '1px solid #000080',
+                    '& .MuiChip-label': {
+                      padding: '0 8px',
+                    },
+                  }}
                 />
-              );
-            })}
+              ))}
+            </Stack>
           </Stack>
-        </Stack>
+        )}
       </Box>
     </Stack>
   );

@@ -46,10 +46,11 @@ export default async function GET(request, response) {
       votes: true,
       conferences: true,
       user: { select: { name: true } },
+      co_authors: true, 
     };
 
     let posts = await prisma.post.findMany(options);
-    let post_details = await getPostDetails(user?.id, posts);
+    let post_details = await getPostDetails(user, posts); 
 
     let data = [];
 

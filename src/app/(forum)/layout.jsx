@@ -364,6 +364,7 @@ let TopicDetails = () => {
 };
 
 let Featured = ({
+  id,
   user,
   title,
   followed,
@@ -374,18 +375,37 @@ let Featured = ({
   let { active: isactive, name: currentUserName } = useSelector((state) => state.persisted.user);
   let dispatch = useDispatch();
   let [status, setStatus] = useState(followed);
-  // let { mutate } = useSWRConfig();
+  let { mutate } = useSWRConfig();
 
   let [editable, setEditable] = useState(false);
 
-  let { name } = useSelector((state) => state.persisted.user);
-  let { context, id } = useSelector((state) => state.unpersisted.data.details);
+  let { context } = useSelector((state) => state.unpersisted.data.details);
 
   useEffect(() => {
     setEditable(id && context === "topic" && currentUserName === user?.name);
   }, [context, id, currentUserName, user?.name]);
 
+  useEffect(() => {
+    setStatus(followed);
+  }, [followed]);
+
   const isTopicCreator = currentUserName === user?.name;
+
+  const handleFollow = async () => {
+    if (!isactive) return;
+
+    try {
+      const result = await createFollow({
+        context: "topic",
+        contx: id,
+      });
+      setStatus(result);
+      // Mutate the data to ensure consistency across the app
+      mutate(`topic/get?id=${id}&rtf=id,title,rules,user=name`);
+    } catch (error) {
+      console.error('Error following topic:', error);
+    }
+  };
 
   return (
     <Stack spacing={4}>
@@ -485,13 +505,7 @@ let Featured = ({
                 variant={status ? "outlined" : "contained"}
                 fullWidth
                 size="small"
-                onClick={async () => {
-                  let follow = await createFollow({
-                    context: "topic",
-                    contx: id,
-                  });
-                  setStatus(follow);
-                }}
+                onClick={handleFollow}
               >
                 <Stack direction="row" spacing={2} alignItems="center">
                   <Typography variant="small">

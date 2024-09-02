@@ -523,17 +523,17 @@ let CreatePost = () => {
           </IconButton>
         </Stack>
         <Stack spacing={1}>
-          <Typography variant="label">Title *</Typography>
+          <Typography variant="label">Title * (LaTeX enabled)</Typography>
           <OutlinedInput
             id="title"
             onChange={handleChange}
             size="small"
             required
-            placeholder="Enter post title"
+            placeholder="Enter post title (LaTeX enabled, e.g., $E = mc^2$)"
           />
         </Stack>
         <Stack spacing={1}>
-          <Typography variant="label">Summary *</Typography>
+          <Typography variant="label">Summary * (LaTeX and paragraphs enabled)</Typography>
           <TextField
             id="body"
             onChange={handleChange}

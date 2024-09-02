@@ -1,5 +1,13 @@
+import dynamic from 'next/dynamic';
 import React from 'react';
-import { MathJax, MathJaxContext } from 'better-react-mathjax'
+
+const MathJax = dynamic(() => import('better-react-mathjax').then((mod) => mod.MathJax), {
+  ssr: false,
+});
+
+const MathJaxContext = dynamic(() => import('better-react-mathjax').then((mod) => mod.MathJaxContext), {
+  ssr: false,
+});
 
 const config = {
   loader: { load: ["input/tex", "output/svg"] },
@@ -24,4 +32,6 @@ const LatexRenderer = ({ children }) => {
   );
 };
 
-export default LatexRenderer;
+export default dynamic(() => Promise.resolve(LatexRenderer), {
+  ssr: false,
+});

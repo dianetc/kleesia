@@ -238,7 +238,6 @@ let Description = ({ id, co_authors, children }) => {
   const dispatch = useDispatch();
   const [expanded, setExpanded] = useState(false);
   const [truncatedText, setTruncatedText] = useState("");
-  const [renderKey, setRenderKey] = useState(0);
 
   const truncate = useCallback((str, n) => {
     if (str.length <= n) return str;
@@ -257,11 +256,19 @@ let Description = ({ id, co_authors, children }) => {
     setTruncatedText(truncate(children, 500));
   }, [children, truncate]);
 
-  const toggleReadMore = () => {
+  const toggleReadMore = useCallback(() => {
     setExpanded((prev) => !prev);
-    setRenderKey(prevKey => prevKey + 1);  // Force re-render
     dispatch(toggle({ type: "READMORE", id: id, active: !expanded }));
-  };
+    
+    // Force MathJax to reprocess the content
+    setTimeout(() => {
+      if (window.MathJax) {
+        window.MathJax.typesetPromise([document.body]).catch((err) => 
+          console.error('MathJax typesetting failed:', err)
+        );
+      }
+    }, 0);
+  }, [dispatch, expanded, id]);
 
   const content = expanded ? children : truncatedText;
 
@@ -277,7 +284,7 @@ let Description = ({ id, co_authors, children }) => {
           },
         }}
       >
-        <LatexRenderer key={`latex-${renderKey}-${expanded}`}>
+        <LatexRenderer key={expanded ? 'full' : 'truncated'}>
           {content.split('\n').map((paragraph, index) => (
             <p key={index}>{paragraph}</p>
           ))}

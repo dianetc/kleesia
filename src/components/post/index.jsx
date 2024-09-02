@@ -151,7 +151,7 @@ let Title = ({ id, user, topic_id, children }) => {
           dispatch(setDetails({ context: "post", id, topic: topic_id }));
         }}
       >
-        {children}
+        <LatexRenderer>{children}</LatexRenderer>
       </Typography>
       {editable && (
         <IconButton
@@ -236,25 +236,45 @@ let ArxivLink = ({ link = "..." }) => {
 };
 
 let Description = ({ id, co_authors, children }) => {
-  let dispatch = useDispatch();
-
-  let { id: store_id, active } = useSelector(
-    (state) => state?.unpersisted?.ui?.post?.readMore
-  );
+  const dispatch = useDispatch();
+  const [expanded, setExpanded] = useState(false);
+  const [truncatedText, setTruncatedText] = useState("");
 
   useEffect(() => {
-    dispatch(toggle({ type: "READMORE", id: id, active: true }));
-  }, []);
+    const truncate = (str, n) => {
+      if (str.length <= n) return str;
+      const subString = str.substr(0, n-1);
+      return subString.substr(0, subString.lastIndexOf(" ")) + "...";
+    };
+    
+    setTruncatedText(truncate(children, 500));
+  }, [children]);
+
+  const toggleReadMore = () => {
+    setExpanded(!expanded);
+    dispatch(toggle({ type: "READMORE", id: id, active: !expanded }));
+  };
 
   return (
     <Stack spacing={4}>
-      <Typography variant="p">
+      <Typography
+        variant="body1"
+        component="div"
+        sx={{
+          whiteSpace: 'pre-wrap',
+          '& p': {
+            marginBottom: '1em',
+          },
+        }}
+      >
         <LatexRenderer>
-          {active && store_id === id ? children : trimming(children, 500)}
+          {(expanded ? children : truncatedText).split('\n').map((paragraph, index) => (
+            <p key={index}>{paragraph}</p>
+          ))}
         </LatexRenderer>
       </Typography>
 
-      {active && store_id === id && co_authors?.length > 0 && (
+      {expanded && co_authors?.length > 0 && (
         <Stack direction="row" spacing={1}>
           <Typography>Co-Author{"(s)"}:</Typography>
           {co_authors?.map((co_author, index) => {
@@ -271,11 +291,9 @@ let Description = ({ id, co_authors, children }) => {
         sx={{ cursor: "pointer" }}
         color="text.secondary"
         fontWeight="bold"
-        onClick={() => {
-          dispatch(toggle({ type: "READMORE", id: id, active: !active }));
-        }}
+        onClick={toggleReadMore}
       >
-        Read {active && store_id === id ? "Less" : "More"}
+        Read {expanded ? "Less" : "More"}
       </Typography>
     </Stack>
   );

@@ -17,7 +17,7 @@ export default async function GET(request, response) {
     return response.status(500).send({ msg: status });
 
   let user = await getUserRole(headers);
-  if (!user) return response.status(500).send({ msg: messages.UNAUTHORIZED });
+  //if (!user) return response.status(500).send({ msg: messages.UNAUTHORIZED });
 
   let { q } = query;
 

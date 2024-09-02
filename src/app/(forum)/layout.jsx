@@ -72,6 +72,7 @@ let Navigation = () => {
       : dispatch(setDetails({ context: "trending", id: "" }));
   }
 
+
   let SessionActions = () => {
     const router = useRouter();
 
@@ -166,7 +167,6 @@ let Navigation = () => {
               <SearchIcon size={20} />
             </InputAdornment>
           }
-          disabled={!isactive}
         />
       </Stack>
       <Stack

@@ -256,19 +256,10 @@ let Description = ({ id, co_authors, children }) => {
     setTruncatedText(truncate(children, 500));
   }, [children, truncate]);
 
-  const toggleReadMore = useCallback(() => {
+  const toggleReadMore = () => {
     setExpanded((prev) => !prev);
     dispatch(toggle({ type: "READMORE", id: id, active: !expanded }));
-    
-    // Force MathJax to reprocess the content
-    setTimeout(() => {
-      if (window.MathJax) {
-        window.MathJax.typesetPromise([document.body]).catch((err) => 
-          console.error('MathJax typesetting failed:', err)
-        );
-      }
-    }, 0);
-  }, [dispatch, expanded, id]);
+  };
 
   const content = expanded ? children : truncatedText;
 

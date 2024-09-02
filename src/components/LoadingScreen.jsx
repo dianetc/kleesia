@@ -1,6 +1,7 @@
 // components/LoadingScreen.js
 import React from 'react';
 import { Box, CircularProgress, Typography } from '@mui/material';
+import Image from 'next/image';
 
 const LoadingScreen = () => {
   return (
@@ -15,7 +16,13 @@ const LoadingScreen = () => {
         color: 'white',
       }}
     >
-      <img src="/icons/kBULB-01.svg" alt="Logo" style={{ marginBottom: '30px', width: '100px' }} />
+      <Image
+        src="/icons/kBULB-01.svg"
+        alt="Logo"
+        width={100}
+        height={100}
+        style={{ marginBottom: '30px' }}
+      />
       <Typography variant="body1" sx={{ marginBottom: '20px' }}>
         Kleesia, a platform to share, discuss, and learn about the latest scientific research. 
       </Typography>

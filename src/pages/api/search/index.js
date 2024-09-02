@@ -16,8 +16,9 @@ export default async function GET(request, response) {
   if (typeof status === "string")
     return response.status(500).send({ msg: status });
 
+  // Remove the user authentication check
   let user = await getUserRole(headers);
-  if (!user) return response.status(500).send({ msg: messages.UNAUTHORIZED });
+  // if (!user) return response.status(500).send({ msg: messages.UNAUTHORIZED });
 
   let { q } = query;
 
@@ -50,7 +51,7 @@ export default async function GET(request, response) {
     };
 
     let posts = await prisma.post.findMany(options);
-    let post_details = await getPostDetails(user, posts); 
+    let post_details = await getPostDetails(user, posts);
 
     let data = [];
 

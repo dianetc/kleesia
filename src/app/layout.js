@@ -8,15 +8,22 @@ import MuiThemeProvider from "./theme";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Script from 'next/script';
 
 export const metadata = {
   title: "kleesia",
-  description: "CS - Forum for University students",
+  description: "Forum for Learners",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <head>
+        <Script
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"
+          strategy="beforeInteractive"
+        />
+      </head>
       <body>
         <StoreProvider>
           <SWR>

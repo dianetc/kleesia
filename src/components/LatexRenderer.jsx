@@ -1,5 +1,5 @@
+import React, { useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
-import React from 'react';
 
 const MathJax = dynamic(() => import('better-react-mathjax').then((mod) => mod.MathJax), {
   ssr: false,
@@ -25,9 +25,19 @@ const config = {
 };
 
 const LatexRenderer = ({ children }) => {
+  const contentRef = useRef(null);
+
+  useEffect(() => {
+    if (contentRef.current && window.MathJax) {
+      window.MathJax.typesetPromise([contentRef.current]).catch((err) => console.error('MathJax typesetting failed:', err));
+    }
+  }, [children]);
+
   return (
     <MathJaxContext config={config}>
-      <MathJax>{children}</MathJax>
+      <MathJax>
+        <div ref={contentRef}>{children}</div>
+      </MathJax>
     </MathJaxContext>
   );
 };

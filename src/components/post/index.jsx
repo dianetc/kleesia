@@ -2,14 +2,13 @@
 
 import Link from "next/link";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import useSWR, { useSWRConfig } from "swr";
 
 import { toggle } from "@/store/slices/ui";
 import { setDetails } from "@/store/slices/data";
 import { useDispatch, useSelector } from "react-redux";
 
-import { trimming } from "@/lib/utils";
 import { createFollow } from "@/lib/features/follows";
 
 // Icon
@@ -240,20 +239,29 @@ let Description = ({ id, co_authors, children }) => {
   const [expanded, setExpanded] = useState(false);
   const [truncatedText, setTruncatedText] = useState("");
 
-  useEffect(() => {
-    const truncate = (str, n) => {
-      if (str.length <= n) return str;
-      const subString = str.substr(0, n-1);
-      return subString.substr(0, subString.lastIndexOf(" ")) + "...";
-    };
+  const truncate = useCallback((str, n) => {
+    if (str.length <= n) return str;
+    const subString = str.substr(0, n-1);
+    let truncated = subString.substr(0, subString.lastIndexOf(" ")) + "...";
     
+    // Ensure we're not cutting off LaTeX delimiters
+    const openDelimiters = (truncated.match(/\$/g) || []).length;
+    if (openDelimiters % 2 !== 0) {
+      truncated += '$';
+    }
+    return truncated;
+  }, []);
+
+  useEffect(() => {
     setTruncatedText(truncate(children, 500));
-  }, [children]);
+  }, [children, truncate]);
 
   const toggleReadMore = () => {
-    setExpanded(!expanded);
+    setExpanded((prev) => !prev);
     dispatch(toggle({ type: "READMORE", id: id, active: !expanded }));
   };
+
+  const content = expanded ? children : truncatedText;
 
   return (
     <Stack spacing={4}>
@@ -267,8 +275,8 @@ let Description = ({ id, co_authors, children }) => {
           },
         }}
       >
-        <LatexRenderer>
-          {(expanded ? children : truncatedText).split('\n').map((paragraph, index) => (
+        <LatexRenderer key={expanded ? 'full' : 'truncated'}>
+          {content.split('\n').map((paragraph, index) => (
             <p key={index}>{paragraph}</p>
           ))}
         </LatexRenderer>

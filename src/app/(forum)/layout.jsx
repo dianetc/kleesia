@@ -166,7 +166,6 @@ let Navigation = () => {
               <SearchIcon size={20} />
             </InputAdornment>
           }
-          disabled={!isactive}
         />
       </Stack>
       <Stack

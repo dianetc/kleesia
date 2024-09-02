@@ -265,22 +265,18 @@ let Description = ({ id, co_authors, children }) => {
 
   return (
     <Stack spacing={4}>
-      <Typography
-        variant="body1"
-        component="div"
-        sx={{
-          whiteSpace: 'pre-wrap',
-          '& p': {
-            marginBottom: '1em',
-          },
-        }}
-      >
-        <LatexRenderer key={expanded ? 'full' : 'truncated'}>
-          {content.split('\n').map((paragraph, index) => (
-            <p key={index}>{paragraph}</p>
-          ))}
-        </LatexRenderer>
-      </Typography>
+      <div>
+        {content.split('\n\n').map((paragraph, index) => (
+          <Typography
+            key={`${expanded ? 'full' : 'truncated'}-${index}`}
+            variant="body1"
+            component="p"
+            sx={{ marginBottom: '1em' }}
+          >
+            <LatexRenderer>{paragraph.trim()}</LatexRenderer>
+          </Typography>
+        ))}
+      </div>
 
       {expanded && co_authors?.length > 0 && (
         <Stack direction="row" spacing={1}>

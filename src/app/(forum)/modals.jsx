@@ -523,25 +523,31 @@ let CreatePost = () => {
           </IconButton>
         </Stack>
         <Stack spacing={1}>
-          <Typography variant="label">Title *</Typography>
+          <Typography variant="label">Title * (LaTeX enabled)</Typography>
           <OutlinedInput
             id="title"
             onChange={handleChange}
             size="small"
             required
-            placeholder="Enter post title"
+            placeholder="Enter post title (LaTeX enabled, e.g., $E = mc^2$)"
           />
         </Stack>
         <Stack spacing={1}>
-          <Typography variant="label">Summary *</Typography>
+          <Typography variant="label">Summary * (LaTeX and paragraphs enabled)</Typography>
           <TextField
             id="body"
             onChange={handleChange}
-            placeholder="Enter post summary"
+            placeholder="Enter post summary (press Enter for new paragraphs)"
             minRows={6}
             maxRows={12}
             required
             multiline
+            value={post.body}
+            sx={{
+              '& .MuiInputBase-root': {
+                fontFamily: 'monospace',
+              },
+            }}
           />
         </Stack>
         <FormControlLabel
@@ -753,26 +759,32 @@ let EditPost = () => {
           </IconButton>
         </Stack>
         <Stack spacing={1}>
-          <Typography variant="label">Title *</Typography>
+          <Typography variant="label">Title * (LaTeX enabled)</Typography>
           <OutlinedInput
             id="title"
             onChange={handleChange}
             value={post?.title}
             size="small"
             required
-            placeholder="Enter post title"
+            placeholder="Enter post title (LaTeX enabled, e.g., $E = mc^2$)"
           />
         </Stack>
         <Stack spacing={1}>
-          <Typography variant="label">Summary *</Typography>
+          <Typography variant="label">Summary * (LaTeX and paragraphs enabled)</Typography>
           <TextField
             id="body"
             onChange={handleChange}
-            placeholder="Enter post summary"
+            placeholder="Enter post summary (Use LaTeX for equations, press Enter for new paragraphs)"
             minRows={6}
+            maxRows={12}
             value={post?.body}
             required
             multiline
+            sx={{
+              '& .MuiInputBase-root': {
+                fontFamily: 'monospace',
+              },
+            }}
           />
         </Stack>
 

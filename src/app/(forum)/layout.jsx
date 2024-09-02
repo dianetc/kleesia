@@ -340,7 +340,7 @@ let TopicDetails = () => {
     } else {
       setDetails(topicData && topicData[0]);
     }
-  }, [topicData]);
+  }, [topicData, postsData]);
 
   return details ? (
     <Stack spacing={4}>

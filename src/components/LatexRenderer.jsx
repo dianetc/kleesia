@@ -10,7 +10,7 @@ const MathJaxContext = dynamic(() => import('better-react-mathjax').then((mod) =
 });
 
 const config = {
-  loader: { load: ["input/tex", "output/svg"] },
+  loader: { load: ["input/tex", "output/chtml"] },
   tex: {
     packages: { "[+]": ["html"] },
     inlineMath: [
@@ -31,8 +31,7 @@ const LatexRenderer = ({ children }) => {
     if (contentRef.current && window.MathJax) {
       window.MathJax.typesetPromise([contentRef.current]).catch((err) => console.error('MathJax typesetting failed:', err));
     }
-  }, [children]);
-
+  }, [children])
   return (
     <MathJaxContext config={config}>
       <MathJax>

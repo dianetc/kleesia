@@ -7,30 +7,35 @@ import SWR from "./swr";
 import MuiThemeProvider from "./theme";
 import { ToastContainer } from "react-toastify";
 import LoadingScreen from '../components/LoadingScreen';
+import { MathJaxContext } from 'better-react-mathjax';
+
+const config = {
+  loader: { load: ["input/tex", "output/chtml"] },
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']]
+  },
+  startup: {
+    pageReady: () => {
+      console.log('MathJax is loaded and ready');
+      return Promise.resolve();
+    }
+  }
+};
 
 export default function ClientLayout({ children }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const checkMathJax = () => {
-      if (window.MathJax && window.MathJax.typesetPromise) {
-        setIsLoading(false);
-      } else {
-        setTimeout(checkMathJax, 100);
-      }
-    };
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000); // Adjust time as needed
 
-    checkMathJax();
+    return () => clearTimeout(timer);
   }, []);
 
   return (
-    <>
-      <Script
-        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
-        strategy="beforeInteractive"
-        onLoad={() => console.log('MathJax script loaded')}
-        onError={() => console.error('Failed to load MathJax script')}
-      />
+    <MathJaxContext config={config}>
       {isLoading ? (
         <LoadingScreen />
       ) : (
@@ -43,6 +48,6 @@ export default function ClientLayout({ children }) {
           </SWR>
         </StoreProvider>
       )}
-    </>
+    </MathJaxContext>
   );
 }

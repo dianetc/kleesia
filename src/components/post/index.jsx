@@ -275,11 +275,11 @@ let Description = ({ id, co_authors, children }) => {
           },
         }}
       >
-        <LatexRenderer key={expanded ? 'full' : 'truncated'}>
-          {content.split('\n').map((paragraph, index) => (
-            <p key={index}>{paragraph}</p>
-          ))}
-        </LatexRenderer>
+        {content.split('\n').map((paragraph, index) => (
+          <LatexRenderer key={`${expanded ? 'full' : 'truncated'}-${index}`}>
+            {paragraph}
+          </LatexRenderer>
+        ))}
       </Typography>
 
       {expanded && co_authors?.length > 0 && (

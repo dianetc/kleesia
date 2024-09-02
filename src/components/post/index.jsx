@@ -238,7 +238,7 @@ let Description = ({ id, co_authors, children }) => {
   const dispatch = useDispatch();
   const [expanded, setExpanded] = useState(false);
   const [truncatedText, setTruncatedText] = useState("");
-  const [mounted, setMounted] = useState(false);
+  const [renderKey, setRenderKey] = useState(0);
 
   const truncate = useCallback((str, n) => {
     if (str.length <= n) return str;
@@ -255,11 +255,11 @@ let Description = ({ id, co_authors, children }) => {
 
   useEffect(() => {
     setTruncatedText(truncate(children, 500));
-    setMounted(true);
   }, [children, truncate]);
 
   const toggleReadMore = () => {
     setExpanded((prev) => !prev);
+    setRenderKey(prevKey => prevKey + 1);  // Force re-render
     dispatch(toggle({ type: "READMORE", id: id, active: !expanded }));
   };
 
@@ -277,7 +277,7 @@ let Description = ({ id, co_authors, children }) => {
           },
         }}
       >
-        <LatexRenderer key={mounted ? 'mounted' : 'unmounted'}>
+        <LatexRenderer key={`latex-${renderKey}-${expanded}`}>
           {content.split('\n').map((paragraph, index) => (
             <p key={index}>{paragraph}</p>
           ))}

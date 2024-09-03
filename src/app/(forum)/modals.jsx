@@ -135,7 +135,7 @@ let CreateTopic = () => {
     <Stack spacing={3}>
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Typography variant="h5" fontWeight={500}>
-          Create a New Topic
+          Create a New Channel
         </Typography>
         <IconButton onClick={handleClose}>
           <CloseIcon />
@@ -147,12 +147,12 @@ let CreateTopic = () => {
           onChange={handleChange}
           size="small"
           value={topic}
-          placeholder="Enter topic name"
+          placeholder="Enter channel name"
         />
       </Stack>
       <Stack spacing={2}>
         <Typography variant="h6" fontWeight={500}>
-          Topic rules
+          Channel Rules
         </Typography>
 
         {rules?.length > 0 && (
@@ -212,7 +212,7 @@ let CreateTopic = () => {
           disabled={!isactive}
         >
           <Typography variant="p" fontWeight={500}>
-            Create topic
+            Create channel
           </Typography>
         </Button>
       </Stack>
@@ -293,7 +293,7 @@ let EditTopic = () => {
     <Stack spacing={3}>
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Typography variant="h5" fontWeight={500}>
-          Create a New Topic
+          Create a New Channel
         </Typography>
         <IconButton onClick={handleClose}>
           <CloseIcon />
@@ -305,12 +305,12 @@ let EditTopic = () => {
           onChange={handleChange}
           size="small"
           value={topic}
-          placeholder="Enter topic name"
+          placeholder="Enter channel name"
         />
       </Stack>
       <Stack spacing={2}>
         <Typography variant="h6" fontWeight={500}>
-          Topic rules
+          Channel rules
         </Typography>
 
         {rules?.length > 0 && (

@@ -39,7 +39,7 @@ export let Topics = () => {
         />
       }
       list={data}
-      label="Topics"
+      label="Channels"
       callToAction={{ name: "Create new topics", action: () => {} }}
     >
       <Selector.Action>
@@ -59,7 +59,7 @@ export let Topics = () => {
           startIcon={<PlusIcon size={20} />}
         >
           <Typography variant="body2" fontWeight={600}>
-            Create Topic
+            Create Channel
           </Typography>
         </Button>
       </Selector.Action>

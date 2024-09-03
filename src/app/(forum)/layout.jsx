@@ -355,7 +355,7 @@ let TopicDetails = () => {
     >
       <Typography variant="p">
         {active
-          ? "Enter a Topics channel to view pertinent posts. "
+          ? ""
           : "Login to like, comment on, or share papers. "}
       </Typography>
     </Stack>

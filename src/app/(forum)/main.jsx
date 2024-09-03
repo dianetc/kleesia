@@ -78,11 +78,16 @@ const ContentFilter = () => {
   };
 
   return isactive ? (
-    <FormControl sx={{ m: 1, maxWidth: "7.2em" }} size="small" fullWidth>
-      <InputLabel>Filter</InputLabel>
-      <Select id="content-filter" onChange={handleChange} label="Filter">
-        <MenuItem value="recent">Recent</MenuItem>
-        <MenuItem value="trending">Trending</MenuItem>
+    <FormControl sx={{ m: 1, minWidth: 140 }} size="small">
+      <InputLabel sx={{ fontSize: '0.75rem' }}>Viewing Options</InputLabel>
+      <Select
+        id="content-filter"
+        onChange={handleChange}
+        label="Viewing Options"
+        sx={{ fontSize: '0.75rem' }}
+      >
+        <MenuItem value="recent" sx={{ fontSize: '0.75rem' }}>Recent</MenuItem>
+        <MenuItem value="trending" sx={{ fontSize: '0.75rem' }}>Trending</MenuItem>
       </Select>
     </FormControl>
   ) : (

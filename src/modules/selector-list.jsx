@@ -4,13 +4,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { toggle } from "@/store/slices/ui";
 
 import Selector from "@/components/selector";
+import CheckboxSelector from "@/components/checkbox-selector";
 
 // Materials
 import { Button, Typography } from "@mui/material";
-
-// Icons
 import { FaCirclePlus as PlusIcon } from "react-icons/fa6";
-
+import { FaFilter } from "react-icons/fa";
 // Fetch
 import useSWR from "swr";
 import { fetcher } from "@/lib/request";
@@ -76,19 +75,12 @@ export let Conferences = () => {
   let { data } = useSWR(URL(), fetcher);
 
   return (
-    <Selector
+    <CheckboxSelector
       id="conference"
-      icon={
-        <Image
-          src={"/icons/conferences.svg"}
-          width={30}
-          height={30}
-          alt={"topic icon"}
-        />
-      }
+      icon={<FaFilter size={20} />}
       list={data}
-      label="Conferences"
-    ></Selector>
+      label="Conference Filter"
+    ></CheckboxSelector>
   );
 };
 

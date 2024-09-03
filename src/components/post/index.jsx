@@ -173,22 +173,21 @@ let Title = ({ id, user, topic_id, children }) => {
 };
 
 let User = ({ id, name, initialFollowed, created_at }) => {
-  let { mutate } = useSWRConfig();
+  const [followStatus, setFollowStatus] = useState(initialFollowed);
 
-  // Use SWR to fetch and cache the follow status
-  const { data: followStatus, mutate: mutateFollowStatus } = useSWR(`user/${id}/follow-status`, null, {
-    fallbackData: initialFollowed
-  });
-
-  let { active: isactive, name: store_user_name } = useSelector(
+  const { active: isactive, name: store_user_name } = useSelector(
     (state) => state.persisted.user
   );
 
-  let { id: post_id, context } = useSelector(
-    (state) => state.unpersisted.data.details
-  );
-
-  let URL = () => (context === "post" ? `post/get?id=${post_id}` : "post/get");
+  useEffect(() => {
+    // Check localStorage for saved follow status
+    const savedStatus = localStorage.getItem(`followStatus_${id}`);
+    if (savedStatus !== null) {
+      setFollowStatus(JSON.parse(savedStatus));
+    } else {
+      setFollowStatus(initialFollowed);
+    }
+  }, [id, initialFollowed]);
 
   let date = created_at?.split("T")[0]?.replace(/-/g, ".");
 
@@ -197,8 +196,9 @@ let User = ({ id, name, initialFollowed, created_at }) => {
 
     try {
       const result = await createFollow({ context: "user", contx: id });
-      mutateFollowStatus(result, false); // Update local cache
-      mutate(URL()); // Update global state
+      setFollowStatus(result);
+      // Save the new status to localStorage
+      localStorage.setItem(`followStatus_${id}`, JSON.stringify(result));
     } catch (error) {
       console.error("Error following user:", error);
     }

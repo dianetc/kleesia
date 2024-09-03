@@ -759,18 +759,18 @@ let EditPost = () => {
           </IconButton>
         </Stack>
         <Stack spacing={1}>
-          <Typography variant="label">Title * (LaTeX enabled)</Typography>
+          <Typography variant="label">Title *</Typography>
           <OutlinedInput
             id="title"
             onChange={handleChange}
             value={post?.title}
             size="small"
             required
-            placeholder="Enter post title (LaTeX enabled, e.g., $E = mc^2$)"
+            placeholder="Enter post title"
           />
         </Stack>
         <Stack spacing={1}>
-          <Typography variant="label">Summary * (LaTeX and paragraphs enabled)</Typography>
+          <Typography variant="label">Summary *</Typography>
           <TextField
             id="body"
             onChange={handleChange}

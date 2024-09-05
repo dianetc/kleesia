@@ -1,5 +1,15 @@
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
+
+// Create an SES client
+const sesClient = new SESClient({
+  region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
+});
 
 export const allowed_emails = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[eE][dD][uU]$/;
 export const allowed_arxiv_links = /https:\/\/arxiv\.org\/abs\/\d{1,}\.\d{1,}/;
@@ -59,6 +69,37 @@ export function Notify({ status = "", content = "..." }) {
   status ? toast[status](content, config) : toast(content, config);
 }
 
+export const generateTempPassword = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+};
+
+export const sendEmail = async (to, subject, text) => {
+  const params = {
+    Source: process.env.FROM_EMAIL,
+    Destination: {
+      ToAddresses: [to],
+    },
+    Message: {
+      Subject: {
+        Data: subject,
+      },
+      Body: {
+        Text: {
+          Data: text,
+        },
+      },
+    },
+  };
+
+  try {
+    const command = new SendEmailCommand(params);
+    const response = await sesClient.send(command);
+    console.log(`Email sent successfully to ${to}. MessageId: ${response.MessageId}`);
+  } catch (error) {
+    console.error('Error sending email:', error);
+    throw new Error('Failed to send email');
+  }
+};
 
 export function escapeSearchString(str) {
   if (!str) return '';

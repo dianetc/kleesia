@@ -131,7 +131,7 @@ let Login = () => {
               />
             </Stack>
             <Stack direction="row" justifyContent="end">
-              <Link href={"/"}>Forgot password?</Link>
+              <Link href={"/forget"}>Forgot password?</Link>
             </Stack>
             <Button variant="contained" type="submit">
               Login

@@ -23,6 +23,19 @@ function checkAuthorization(init) {
 
 checkAuthorization(request);
 
+// Add these new functions for the forget password flow
+export const forgotPassword = async (email) => {
+  return request.post("auth/forget-password", { email });
+};
+
+export const verifyTempPassword = async (email, tempPassword) => {
+  return request.post("auth/verify-temp-password", { email, tempPassword });
+};
+
+export const resetPassword = async (email, tempPassword, newPassword) => {
+  return request.post("auth/reset-password", { email, tempPassword, newPassword });
+};
+
 export const fetcher = async (...args) => {
   let response = await request.get(...args);
   if (!response?.status === 200) return;

@@ -38,7 +38,7 @@ export let Topics = () => {
         />
       }
       list={data}
-      label="Channels"
+      label={context === "profile" ? "Followed Channels" : "Channels"}
       callToAction={{ name: "Create new topics", action: () => {} }}
     >
       <Selector.Action>

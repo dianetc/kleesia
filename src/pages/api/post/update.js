@@ -44,7 +44,7 @@ export default async function UPDATE(request, response) {
     if (arxiv_link?.length > 0)
       return response
         .status(500)
-        .send({ msg: "This arxiv link has already been used" });
+        .send({ msg: "This rxiv link has already been used" });
 
     let conferences = await findSertConferences(body?.conferences, user_id);
     body.conferences = conferences;

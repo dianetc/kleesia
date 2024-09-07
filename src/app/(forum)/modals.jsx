@@ -469,7 +469,7 @@ let CreatePost = () => {
     if (error)
       return Notify({
         status: "error",
-        content: "Please check your Arxiv link",
+        content: "Please check your rxiv link",
       });
 
     if (!selectedTopic) {
@@ -563,14 +563,14 @@ let CreatePost = () => {
           </Box>
         )}
         <Stack spacing={1}>
-          <Typography variant="label">Arxiv Abstract Link *</Typography>
+          <Typography variant="label">Arxiv/biorxiv/medrxiv link *</Typography>
           <OutlinedInput
             id="arxiv_link"
             onChange={handleChange}
             size="small"
             error={error}
             required
-            placeholder="Enter abstract link, e.g, arxiv.org/abs/<id>"
+            placeholder="Enter arxiv abstract or biorxiv/medrxiv content link"
           />
         </Stack>
         <Stack spacing={1}>
@@ -701,7 +701,7 @@ let EditPost = () => {
     if (error)
       return Notify({
         status: "error",
-        content: "Please check your Arxiv link",
+        content: "Please check your rxiv link",
       });
 
     let payload = { ...post, co_authors, conferences };

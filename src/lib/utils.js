@@ -12,7 +12,7 @@ const sesClient = new SESClient({
 });
 
 export const allowed_emails = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[eE][dD][uU]$/;
-export const allowed_arxiv_links = /https:\/\/arxiv\.org\/abs\/\d{1,}\.\d{1,}/;
+export const allowed_arxiv_links = /^https?:\/\/((?:www\.)?arxiv\.org\/abs\/\d{1,}\.\d{1,}|(?:www\.)?(?:bio|med)rxiv\.org\/(?:content|c)\/10\.1101\/\d{4}\.\d{2}\.\d{2}\.?\d*)/;
 
 export function isPayloadValid({ fields = [], payload }) {
   for (var i = 0; i < fields.length; i++) {

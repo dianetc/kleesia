@@ -570,7 +570,7 @@ let CreatePost = () => {
             size="small"
             error={error}
             required
-            placeholder="Enter a arxiv *abstract* or biorxiv/medrxiv *content* link"
+            placeholder="Enter an arxiv *abstract* or biorxiv/medrxiv *content* link"
           />
         </Stack>
         <Stack spacing={1}>
@@ -770,11 +770,11 @@ let EditPost = () => {
           />
         </Stack>
         <Stack spacing={1}>
-          <Typography variant="label">Summary *</Typography>
+          <Typography variant="label">Summarize Key Arguments</Typography>
           <TextField
             id="body"
             onChange={handleChange}
-            placeholder="Enter post summary (Use LaTeX for equations, press Enter for new paragraphs)"
+            placeholder="Tell us the main claims this paper makes!"
             minRows={6}
             maxRows={12}
             value={post?.body}
@@ -801,7 +801,7 @@ let EditPost = () => {
           </Box>
         )}
         <Stack spacing={1}>
-          <Typography variant="label">Arxiv Abstract Link *</Typography>
+          <Typography variant="label">Arxiv, biorxiv, or medrxiv link</Typography>
           <OutlinedInput
             id="arxiv_link"
             onChange={handleChange}
@@ -809,7 +809,7 @@ let EditPost = () => {
             error={error}
             value={post?.arxiv_link}
             required
-            placeholder="Enter abstract link, e.g, arxiv.org/abs/<id>"
+            placeholder="Enter an arxiv *abstract* or biorxiv/medrxiv *content* link"
           />
         </Stack>
         <Stack spacing={1}>

@@ -523,7 +523,7 @@ let CreatePost = () => {
           </IconButton>
         </Stack>
         <Stack spacing={1}>
-          <Typography variant="label">Title *</Typography>
+          <Typography variant="label">Title</Typography>
           <OutlinedInput
             id="title"
             onChange={handleChange}
@@ -533,11 +533,11 @@ let CreatePost = () => {
           />
         </Stack>
         <Stack spacing={1}>
-          <Typography variant="label">Summary *</Typography>
+          <Typography variant="label">Summarize Key Arguments</Typography>
           <TextField
             id="body"
             onChange={handleChange}
-            placeholder="Enter post summary (press Enter for new paragraphs)"
+            placeholder="Tell us the main claims this paper makes!"
             minRows={6}
             maxRows={12}
             required
@@ -563,14 +563,14 @@ let CreatePost = () => {
           </Box>
         )}
         <Stack spacing={1}>
-          <Typography variant="label">Arxiv/biorxiv/medrxiv link *</Typography>
+          <Typography variant="label">Arxiv, biorxiv, or medrxiv link</Typography>
           <OutlinedInput
             id="arxiv_link"
             onChange={handleChange}
             size="small"
             error={error}
             required
-            placeholder="Enter arxiv abstract or biorxiv/medrxiv content link"
+            placeholder="Enter a arxiv *abstract* or biorxiv/medrxiv *content* link"
           />
         </Stack>
         <Stack spacing={1}>
@@ -591,7 +591,7 @@ let CreatePost = () => {
         </Stack>
 
         <Stack spacing={1}>
-          <Typography variant="label">Topic *</Typography>
+          <Typography variant="label">Topic</Typography>
           <Select
             value={selectedTopic || ''}
             onChange={handleTopicChange}

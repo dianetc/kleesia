@@ -140,22 +140,22 @@ let Navigation = () => {
       justifyContent="space-between"
       alignItems="center"
       sx={{
-        width: "100vw",
+        width: "100%",
         height: "10vh",
-        padding: "0 2rem", // Increased padding for consistency
+        padding: "0 2rem",
         borderBottom: "1px solid #E8E8E8",
       }}
     >
       <Stack sx={{ width: "25%" }}>
         <Image src="/icons/logo.svg" width={46} height={46} alt={"Kleesia"} />
       </Stack>
-      <Stack sx={{ width: "50%" }}>
+      <Stack sx={{ width: "50%", alignItems: "center" }}>
         <OutlinedInput
           sx={{
-            width: "100%", // Full width of the container
-            height: "46px",
+            width: "70%", // Reduced width
+            height: "40px", // Slightly reduced height
             border: "none",
-            background: (theme) => theme.palette.background.main,
+            background: (theme) => theme.palette.grey[200],
           }}
           onKeyDown={(e) => {
             e.key === "Enter"
@@ -164,10 +164,10 @@ let Navigation = () => {
           }}
           onChange={handleSearch}
           autoFocus={false}
-          placeholder="Search by Post Title.."
+          placeholder="Search by Post Title..."
           endAdornment={
             <InputAdornment position="end">
-              <SearchIcon size={20} />
+              <SearchIcon size={18} />
             </InputAdornment>
           }
         />
@@ -189,7 +189,7 @@ let Content = ({ children }) => {
     <Box
       sx={{
         width: "50%",
-        background: (theme) => theme.palette.background.main,
+        background: (theme) => theme.palette.grey[200],
         overflowY: "scroll",
       }}
     >
@@ -223,7 +223,7 @@ let LeftBar = () => {
             }}
             direction="row"
             spacing={2}
-            padding={5} // Adjusted padding to match the top content
+            padding={5}
             alignItems="center"
             sx={{ cursor: "pointer" }}
           >
@@ -475,7 +475,7 @@ let Featured = ({
             alignItems="center"
             justifyContent="center"
             spacing={2}
-            sx={{ mt: 2 }} // Added margin top for better spacing
+            sx={{ mt: 2 }}
           >
             <Button
               fullWidth

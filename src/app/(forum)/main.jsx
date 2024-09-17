@@ -79,9 +79,11 @@ const ContentFilter = () => {
 
   return isactive ? (
     <FormControl sx={{ m: 1, minWidth: 140 }} size="small">
-      <InputLabel sx={{ fontSize: '0.75rem' }}>Viewing Options</InputLabel>
+      <InputLabel id="content-filter-label" sx={{ fontSize: '0.75rem' }}>Viewing Options</InputLabel>
       <Select
+        labelId="content-filter-label"
         id="content-filter"
+        value={details.context}
         onChange={handleChange}
         label="Viewing Options"
         sx={{ fontSize: '0.75rem' }}

@@ -77,10 +77,14 @@ export let Conferences = () => {
   return (
     <CheckboxSelector
       id="conference"
-      icon={<FaFilter size={20} />}
+      icon={
+        <div style={{ width: 30, height: 30, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <FaFilter size={20} />
+        </div>
+      }
       list={data}
       label="Conference Filter"
-    ></CheckboxSelector>
+    />
   );
 };
 

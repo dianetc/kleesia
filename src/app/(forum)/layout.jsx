@@ -28,6 +28,10 @@ import {
   Typography,
   OutlinedInput,
   InputAdornment,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 
 // Icons
@@ -133,22 +137,22 @@ let Navigation = () => {
   return (
     <Stack
       direction="row"
-      justifyContent={"space-between"}
+      justifyContent="space-between"
       alignItems="center"
       sx={{
         width: "100vw",
         height: "10vh",
-        padding: "0 1.45em",
+        padding: "0 2rem", // Increased padding for consistency
         borderBottom: "1px solid #E8E8E8",
       }}
     >
-      <Stack sx={{ width: "35%" }}>
+      <Stack sx={{ width: "25%" }}>
         <Image src="/icons/logo.svg" width={46} height={46} alt={"Kleesia"} />
       </Stack>
-      <Stack sx={{ width: "40%" }}>
+      <Stack sx={{ width: "50%" }}>
         <OutlinedInput
           sx={{
-            width: "446px",
+            width: "100%", // Full width of the container
             height: "46px",
             border: "none",
             background: (theme) => theme.palette.background.main,
@@ -170,8 +174,8 @@ let Navigation = () => {
       </Stack>
       <Stack
         sx={{ width: "25%", height: "100%", maxHeight: "46px" }}
-        direction={"row"}
-        justifyContent={"end"}
+        direction="row"
+        justifyContent="flex-end"
         spacing={2}
       >
         <SessionActions />
@@ -204,12 +208,11 @@ let LeftBar = () => {
       <Stack
         sx={{ width: "100%", height: "100%" }}
         direction="column"
-        alignItems={"stretch"}
-        justifyContent={"space-between"}
+        alignItems="stretch"
+        justifyContent="space-between"
       >
         <Stack height="100%" spacing={3} sx={{ p: 3 }}>
           <Topics />
-          <Divider />
           {context === "profile" ? <Followers /> : <Conferences />}
         </Stack>
 
@@ -218,10 +221,10 @@ let LeftBar = () => {
             onClick={() => {
               dispatch(logout(request));
             }}
-            direction={"row"}
+            direction="row"
             spacing={2}
-            padding={4}
-            alignItems={"center"}
+            padding={5} // Adjusted padding to match the top content
+            alignItems="center"
             sx={{ cursor: "pointer" }}
           >
             <Image
@@ -472,6 +475,7 @@ let Featured = ({
             alignItems="center"
             justifyContent="center"
             spacing={2}
+            sx={{ mt: 2 }} // Added margin top for better spacing
           >
             <Button
               fullWidth
@@ -491,7 +495,7 @@ let Featured = ({
             >
               <Stack
                 direction="row"
-                spacing={2}
+                spacing={1}
                 alignItems="center"
                 justifyContent="center"
               >
@@ -506,7 +510,7 @@ let Featured = ({
                 size="small"
                 onClick={handleFollow}
               >
-                <Stack direction="row" spacing={2} alignItems="center">
+                <Stack direction="row" spacing={1} alignItems="center">
                   <Typography variant="small">
                     {status ? "Unfollow" : "Follow"}
                   </Typography>

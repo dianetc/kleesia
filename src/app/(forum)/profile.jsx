@@ -6,7 +6,6 @@ import { setDetails, resetDetails } from "@/store/slices/data";
 import { Notify } from "@/lib/utils";
 import { Skeleton} from '@mui/material';
 import { useParams, useRouter } from 'next/navigation';
-import Link from 'next/link';
 
 import Post from "@/components/post";
 import { Comment } from "@/components/comments";
@@ -27,7 +26,7 @@ import {
 } from "@mui/material";
 
 import { TabContext, TabList, TabPanel } from "@mui/lab";
-//
+
 import useSWR from "swr";
 import request, { fetcher } from "@/lib/request";
 
@@ -45,7 +44,7 @@ let Profile = () => {
   if (isWrongUser) {
     return (
       <Stack spacing={3} sx={{ padding: 8, alignItems: 'center' }}>
-        <Typography variant="h4">Oops! This isn't your profile</Typography>
+        <Typography variant="h4">Oops! This isn&apos;t your profile</Typography>
         <Typography> Currently, you can only view your own profile.</Typography>
       </Stack>
     );

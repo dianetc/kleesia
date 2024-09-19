@@ -5,11 +5,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { setDetails, resetDetails } from "@/store/slices/data";
 import { Notify } from "@/lib/utils";
 import { Skeleton} from '@mui/material';
-
+import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 import Post from "@/components/post";
 import { Comment } from "@/components/comments";
-
 
 import {
   Box,
@@ -32,13 +32,35 @@ import useSWR from "swr";
 import request, { fetcher } from "@/lib/request";
 
 let Profile = () => {
-  return (
-    <Stack spacing={3} sx={{ padding: 8 }}>
-      <Bio />
-      <Divider />
-      <Tabs />
-    </Stack>
-  );
+  const { username } = useParams();
+  const currentUser = useSelector((state) => state.persisted.user.name);
+  const [isWrongUser, setIsWrongUser] = useState(false);
+
+  useEffect(() => {
+    if (username && username !== currentUser) {
+      setIsWrongUser(true);
+    }
+  }, [username, currentUser]);
+
+  if (isWrongUser) {
+    return (
+      <Stack spacing={3} sx={{ padding: 8, alignItems: 'center' }}>
+        <Typography variant="h4">Oops! This isn't your profile</Typography>
+        <Typography> Currently, you can only view your own profile.</Typography>
+      </Stack>
+    );
+  }
+
+  if (username === currentUser) {
+    return (
+      <Stack spacing={3} sx={{ padding: 8 }}>
+        <Bio />
+        <Divider />
+        <Tabs />
+      </Stack>
+    );
+  }
+
 };
 
 let Bio = () => {

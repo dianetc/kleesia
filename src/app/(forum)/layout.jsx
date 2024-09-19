@@ -78,6 +78,7 @@ let Navigation = () => {
 
   let SessionActions = () => {
     const router = useRouter();
+    const { name: username } = useSelector((state) => state.persisted.user);
 
     if (!isactive) {
       return (
@@ -114,13 +115,13 @@ let Navigation = () => {
           size="large"
           variant="outlined"
           onClick={() => {
-            // * Comment to disable access if the context is not complete
-            dispatch(
-              setDetails({
-                context: context === "profile" ? "trending" : "profile",
-              })
-            );
-            // * //
+            if (context === "profile") {
+              dispatch(setDetails({ context: "trending" }));
+              router.push('/'); // Assuming trending is the home page
+            } else {
+              dispatch(setDetails({ context: "profile" }));
+              router.push(`/profile/${username}`);
+            }
           }}
         >
           <Stack direction="row" spacing={3} alignItems="center">

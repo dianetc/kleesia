@@ -45,7 +45,7 @@ let Profile = () => {
     return (
       <Stack spacing={3} sx={{ padding: 8, alignItems: 'center' }}>
         <Typography variant="h4">Oops! This isn&apos;t your profile</Typography>
-        <Typography> Currently, you can only view your own profile.</Typography>
+        <Typography> Currently, you can only view your own profile (and must be logged in).</Typography>
       </Stack>
     );
   }

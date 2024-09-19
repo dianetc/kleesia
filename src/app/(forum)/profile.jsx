@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setDetails, resetDetails } from "@/store/slices/data";
 import { Notify } from "@/lib/utils";
 import { Skeleton} from '@mui/material';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, usePathname, useRouter } from 'next/navigation';
 
 import Post from "@/components/post";
 import { Comment } from "@/components/comments";
@@ -31,9 +31,14 @@ import useSWR from "swr";
 import request, { fetcher } from "@/lib/request";
 
 let Profile = () => {
-  const { username } = useParams();
+  //const { username } = useParams();
+  const pathname = usePathname();
   const currentUser = useSelector((state) => state.persisted.user.name);
   const [isWrongUser, setIsWrongUser] = useState(false);
+
+  const pathParts = pathname.split('/');
+  const username = pathParts[pathParts.length - 1];
+
 
   useEffect(() => {
     if (username && username !== currentUser) {

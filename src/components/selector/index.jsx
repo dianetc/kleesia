@@ -2,8 +2,8 @@
 
 import { useDispatch } from "react-redux";
 import { setDetails } from "@/store/slices/data";
-
 import { useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 
 import Stack from "@mui/material/Stack";
 import Divider from "@mui/material/Divider";
@@ -15,7 +15,6 @@ import Typography from "@mui/material/Typography";
 import { RiCheckboxBlankFill as BoxIcon } from "react-icons/ri";
 import { VscTriangleDown as DownArrowIcon } from "react-icons/vsc";
 
-
 import {
   Accordion,
   AccordionSummary,
@@ -26,6 +25,14 @@ import {
 let Selector = ({ id = "", icon, list = [], label = "", children }) => {
   let { active: isactive } = useSelector((state) => state.persisted.user);
   let dispatch = useDispatch();
+  let router = useRouter();
+
+  const handleItemClick = (child) => {
+    dispatch(setDetails({ context: id, id: child?.id, title: child?.title }));
+    if (id === "topic") {
+      router.push(`/channel/${encodeURIComponent(child?.title)}`);
+    }
+  };
 
   return (
     <Accordion>
@@ -57,15 +64,13 @@ let Selector = ({ id = "", icon, list = [], label = "", children }) => {
                 <Stack
                   direction="row"
                   key={child.id}
-                  onClick={() => {
-                    dispatch(setDetails({ context: id, id: child?.id }));
-                  }}
+                  onClick={() => handleItemClick(child)}
                   spacing={2}
                   sx={{ cursor: "pointer" }}
                 >
                   <BoxIcon
                     size={20}
-                    color="#A9A9A9"//{`#${index * 3}${index * 7}${index * 8}`}
+                    color="#A9A9A9"
                   />
                   <Typography variant="p">{child?.title}</Typography>
                 </Stack>

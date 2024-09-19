@@ -2,6 +2,8 @@ import Image from "next/image";
 
 import { useDispatch, useSelector } from "react-redux";
 import { toggle } from "@/store/slices/ui";
+import { useRouter } from 'next/navigation';
+import { setDetails } from '@/store/slices/data';
 
 import Selector from "@/components/selector";
 import CheckboxSelector from "@/components/checkbox-selector";
@@ -15,7 +17,8 @@ import useSWR from "swr";
 import { fetcher } from "@/lib/request";
 
 export let Topics = () => {
-  let dispatch = useDispatch();
+  const router = useRouter();
+  const dispatch = useDispatch();
   let { active: isactive } = useSelector((state) => state.persisted.user);
   let { context } = useSelector((state) => state.unpersisted.data.details);
 
@@ -25,6 +28,11 @@ export let Topics = () => {
     revalidateOnFocus: true,
     revalidateIfStale: true,
   });
+
+  const handleTopicClick = async (topic) => {
+    await dispatch(setDetails({ context: "topic", id: topic.id, title: topic.name }));
+    router.push(`/channel/${encodeURIComponent(topic.name)}`);
+  };
 
   return (
     <Selector
@@ -40,6 +48,7 @@ export let Topics = () => {
       list={data}
       label={context === "profile" ? "Followed Channels" : "Channels"}
       callToAction={{ name: "Create new topics", action: () => {} }}
+      onItemClick={handleTopicClick}
     >
       <Selector.Action>
         <Button

@@ -14,6 +14,22 @@ const nextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: '/channel/:name',
+        destination: '/channel/[name]',
+      },
+      {
+        source: '/profile/:username',
+        destination: '/profile/[username]',
+      },
+      {
+        source: '/post/:id',
+        destination: '/post/[id]',
+      },
+    ];
+  },
 };
 
 export default nextConfig;

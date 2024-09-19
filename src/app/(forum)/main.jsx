@@ -6,7 +6,6 @@ import { setDetails, resetDetails } from "@/store/slices/data";
 import Post from "@/components/post";
 import { Comments } from "@/components/comments"; // Add this import
 
-
 import {
   Button,
   Stack,
@@ -17,24 +16,64 @@ import {
   InputLabel,
   FormControl,
   OutlinedInput,
+  CircularProgress,
+  Box,
 } from "@mui/material";
-//
+
 import useSWR from "swr";
 import { fetcher } from "@/lib/request";
-//
+
+import { useRouter } from 'next/navigation';
 
 let Main = () => {
+  const { id, context } = useSelector((state) => state.unpersisted.data.details);
+
+  const URL = () => {
+    switch (context) {
+      case "post":
+        return `post/get?id=${id}`;
+      case "topic":
+        return `post/get?topic_id=${id}`;
+      case "conference":
+        return `post/get?conferences[]=${id}`;
+      case "recent":
+        return "post/get?q=recent";
+      case "search":
+        return `search?q=${id}`;
+      default:
+        return "post/get";
+    }
+  };
+
+  const { data, error, isLoading } = useSWR(URL(), fetcher, {
+    revalidateIfStale: true,
+    revalidateOnFocus: true,
+  });
+
+  if (isLoading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return <Typography color="error">Error loading content</Typography>;
+  }
+
   return (
     <Stack spacing={3} sx={{ padding: 8 }}>
       <Header />
       <Divider />
-      <Content />
+      <Content data={data} />
     </Stack>
   );
 };
 
 const Header = () => {
   let dispatch = useDispatch();
+  let router = useRouter();
   let { context } = useSelector((state) => state.unpersisted.data.details);
 
   let mapping = {
@@ -45,6 +84,11 @@ const Header = () => {
     search: "Search",
   };
 
+  const handleGoBack = () => {
+    dispatch(resetDetails());
+    router.push('/');
+  };
+
   return (
     <Stack spacing={4}>
       {context !== "trending" && (
@@ -52,9 +96,7 @@ const Header = () => {
           variant="text"
           fontWeight={600}
           sx={{ width: "10%", cursor: "pointer", color: "#1976d2" }}
-          onClick={() => {
-            dispatch(resetDetails());
-          }}
+          onClick={handleGoBack}
         >
           Go back
         </Typography>
@@ -98,7 +140,7 @@ const ContentFilter = () => {
   );
 };
 
-const Content = () => {
+const Content = (props) => {
   let { id, context } = useSelector((state) => state.unpersisted.data.details);
 
   let URL = () => {
@@ -124,7 +166,6 @@ const Content = () => {
   });
 
   if (context === "post" && data && data.length === 1) {
-    // Detailed view for a single post
     const post = data[0];
     return (
       <Stack spacing={3}>

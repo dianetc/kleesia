@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setDetails, resetDetails } from "@/store/slices/data";
 
 import Post from "@/components/post";
+import { Comments } from "@/components/comments"; // Add this import
+
 
 import {
   Button,
@@ -41,7 +43,6 @@ const Header = () => {
     topic: "Recent Posts",
     recent: "Recent Activity",
     search: "Search",
-    post: "Post",
   };
 
   return (
@@ -122,6 +123,41 @@ const Content = () => {
     revalidateOnFocus: true,
   });
 
+  if (context === "post" && data && data.length === 1) {
+    // Detailed view for a single post
+    const post = data[0];
+    return (
+      <Stack spacing={3}>
+        <Post key={post.id} {...post} isDetailedView={true}>
+          <Post.Title
+            id={post?.id}
+            topic_id={post?.topic_id}
+            user={post?.user?.name}
+          >
+            {post?.title}
+          </Post.Title>
+          {post?.user && (
+            <Post.User created_at={post?.created_at} {...post?.user} />
+          )}
+          {post?.arxiv_link && (
+            <Post.Arxiv id={post?.id} link={post?.arxiv_link} />
+          )}
+          {post?.body && (
+            <Post.Description id={post?.id} co_authors={post?.co_authors}>
+              {post?.body}
+            </Post.Description>
+          )}
+        </Post>
+        <Comments
+          post={post.id}
+          topic={post.topic_id}
+          count={post.comments}
+        />
+      </Stack>
+    );
+  }
+
+  // List view (Trending or other contexts)
   return (
     <Stack spacing={3}>
       {data &&

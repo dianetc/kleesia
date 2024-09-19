@@ -44,6 +44,7 @@ let Post = ({
   topic_id,
   direction,
   conferences = [],
+  isDetailedView = false, // Add this prop
 }) => {
   let { active: isactive } = useSelector((state) => state.persisted.user);
   let [viewComments, setViewComments] = useState(false);
@@ -94,27 +95,29 @@ let Post = ({
           >
             <Stack direction="row" spacing={4}>
               <Votes id={id} count={votes} direction={direction} />
-              <Trigger
-                id={id}
-                count={comments}
-                toggle={() => {
-                  dispatch(
-                    setDetails({
-                      context: "post",
-                      id,
-                      topic: topic_id,
-                      isComment: true,
-                    })
-                  );
-                  setViewComments(!viewComments);
-                }}
-              />
+              {!isDetailedView && ( // Only show Trigger in preview mode
+                <Trigger
+                  id={id}
+                  count={comments}
+                  toggle={() => {
+                    dispatch(
+                      setDetails({
+                        context: "post",
+                        id,
+                        topic: topic_id,
+                        isComment: true,
+                      })
+                    );
+                    setViewComments(!viewComments);
+                  }}
+                />
+              )}
             </Stack>
             <Conferences list={conferences} />
           </Stack>
         </CardActions>
       </Card>
-      {viewComments && (
+      {viewComments && !isDetailedView && ( // Only show Comments in preview mode
         <Comments
           post={id}
           topic={topic_id}

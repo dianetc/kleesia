@@ -524,7 +524,7 @@ let Featured = ({
         <Divider sx={{ margin: "16px 0" }} />
         {conferences?.length > 0 && (
           <Stack spacing={1}>
-            <Typography fontWeight={600}>Featured Conferences:</Typography>
+            <Typography fontWeight={500}>Featured Conferences:</Typography>
             <Stack direction="row" flexWrap="wrap" alignItems="center" spacing={1}>
               {conferences.map((conference, index) => (
                 <Chip

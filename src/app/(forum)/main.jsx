@@ -65,7 +65,6 @@ let Main = () => {
   return (
     <Stack spacing={3} sx={{ padding: 8 }}>
       <Header />
-      <Divider />
       <Content data={data} />
     </Stack>
   );
